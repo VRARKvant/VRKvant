@@ -28,7 +28,6 @@
             }
         }
 
-        // Проверка темы при загрузке
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -57,70 +56,63 @@
         #mobile-menu { transition: transform 0.3s ease-in-out; }
         #mobile-menu.hidden-menu { transform: translateX(100%); }
         
+        /* Стили для карусели портфолио (скрываем скроллбар, но оставляем прокрутку) */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         /* =========================================
            СТИЛИ ДЛЯ ОФОРМЛЕНИЯ СТАТЕЙ (MARKDOWN)
            ========================================= */
         .prose { color: #334155; line-height: 1.75; }
         .dark .prose { color: #cbd5e1; }
         
-        /* Заголовки */
         .prose h1 { font-family: 'Unbounded', sans-serif; font-size: 2rem; margin-bottom: 1.5rem; color: #8b5cf6; font-weight: 700; line-height: 1.2; }
         .prose h2 { font-family: 'Unbounded', sans-serif; font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; }
         .prose h3 { font-family: 'Unbounded', sans-serif; font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.75rem; font-weight: 700; }
         
         .prose p { margin-bottom: 1.25rem; }
         
-        /* Ссылки */
         .prose a { color: #8b5cf6; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; transition: color 0.2s; }
         .prose a:hover { color: #7c3aed; }
         .dark .prose a { color: #a78bfa; }
         .dark .prose a:hover { color: #c4b5fd; }
         
-        /* Списки */
         .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
         .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
         .prose li { margin-bottom: 0.5rem; }
         
-        /* Акценты (Жирный текст) */
         .prose strong { font-weight: 700; color: #0f172a; }
         .dark .prose strong { color: #f8fafc; }
         
-        /* Цитаты */
         .prose blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; margin-bottom: 1.5rem; font-style: italic; background: #f8fafc; padding: 1rem; border-radius: 0 0.5rem 0.5rem 0; }
         .dark .prose blockquote { background: #1e293b; border-left-color: #a78bfa; color: #94a3b8; }
         
-        /* Картинки и разделители */
         .prose img { max-width: 100%; border-radius: 0.75rem; margin: 2rem auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .prose hr { border: 0; border-top: 2px dashed #e2e8f0; margin: 2rem 0; }
         .dark .prose hr { border-top-color: #334155; }
         
-        /* Код (одиночные слова) */
-        .prose p code, .prose li code { background: #f1f5f9; color: #ec4899; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875em; }
-        .dark .prose p code, .dark .prose li code { background: #0f172a; color: #f472b6; }
+        .prose p code, .prose li code { background: #f1f5f9; color: #8b5cf6; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875em; font-weight: 600; }
+        .dark .prose p code, .dark .prose li code { background: #1e293b; color: #a78bfa; }
         
-        /* Код (многострочные блоки скриптов) */
-        .prose pre { position: relative; background: #1e293b; padding: 1.25rem; padding-top: 3rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2); }
+        .prose pre { position: relative; background: #1e293b; padding: 1.25rem; padding-top: 3rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4); color: #e2e8f0; }
         .dark .prose pre { background: #0f172a; border: 1px solid #1e293b; }
-        .prose pre code { background: transparent; color: inherit; padding: 0; border-radius: 0; font-size: 0.9em; font-family: 'Courier New', Courier, monospace; }
+        .prose pre code { background: transparent !important; padding: 0; border-radius: 0; font-size: 0.9em; font-family: 'Courier New', Courier, monospace; line-height: 1.5; }
 
-        /* Кнопки копирования и бейдж языка */
         .copy-code-btn { position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(255, 255, 255, 0.1); color: #cbd5e1; border: none; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }
         .copy-code-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
         .lang-badge { position: absolute; top: 0.75rem; left: 1.25rem; color: #64748b; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.05em; }
     </style>
 </head>
-<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
+<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen pb-20">
 
     <!-- Навигация -->
     <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-900">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <!-- Логотип -->
             <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
                 <div class="bg-kvant p-2 rounded-xl text-white shadow-lg shadow-kvant/30"><i class="fas fa-vr-cardboard text-xl"></i></div>
                 <span class="heading-font font-bold text-lg tracking-tighter uppercase">VR/AR <span class="text-kvant">Квантум</span></span>
             </div>
 
-            <!-- Десктопное меню -->
             <div class="hidden md:flex items-center space-x-8 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 <button onclick="showPage('home')" class="nav-item active hover:text-kvant transition" id="nav-home">Главная</button>
                 <button onclick="showPage('tracks')" class="nav-item hover:text-kvant transition" id="nav-tracks">Треки</button>
@@ -128,17 +120,14 @@
                 <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 hover:rotate-12 transition-all"><i id="theme-icon" class="fas fa-moon"></i></button>
             </div>
 
-            <!-- Мобильная кнопка меню (Бургер) -->
             <div class="flex md:hidden items-center space-x-4">
                 <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400"><i id="theme-icon-mobile" class="fas fa-moon"></i></button>
-                <button onclick="toggleMobileMenu()" class="text-slate-600 dark:text-slate-300 text-2xl focus:outline-none">
-                    <i id="menu-toggle-icon" class="fas fa-bars"></i>
-                </button>
+                <button onclick="toggleMobileMenu()" class="text-slate-600 dark:text-slate-300 text-2xl focus:outline-none"><i id="menu-toggle-icon" class="fas fa-bars"></i></button>
             </div>
         </div>
     </nav>
 
-    <!-- Мобильное меню (Overlay) -->
+    <!-- Мобильное меню -->
     <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white dark:bg-slate-950 hidden-menu md:hidden flex flex-col p-8">
         <div class="flex justify-between items-center mb-12">
             <span class="heading-font font-bold text-lg uppercase">Меню</span>
@@ -149,16 +138,15 @@
             <button onclick="showPage('tracks')" class="text-left py-2 border-b border-slate-100 dark:border-slate-800">Треки</button>
             <button onclick="showPage('cheats')" class="text-left py-2 border-b border-slate-100 dark:border-slate-800">Шпаргалки</button>
         </nav>
-        <div class="mt-auto text-center text-slate-400 text-xs uppercase tracking-widest">
-            VR/AR Квантум
-        </div>
     </div>
 
     <!-- Главная страница -->
-    <main id="home" class="page-content pt-32 px-6 active">
-        <div class="max-w-5xl mx-auto text-center">
+    <main id="home" class="page-content pt-32 active">
+        <!-- Блок 1: Приветствие и Треки -->
+        <div class="max-w-6xl mx-auto px-6 text-center mb-24">
             <h1 class="heading-font text-3xl md:text-6xl mb-8 leading-tight uppercase tracking-tighter">Центр Знаний <br><span class="text-kvant italic">VR Kvant</span></h1>
             <p class="text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-12">Все учебные материалы, инструкции по оборудованию и гайды по разработке в одном месте.</p>
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div onclick="loadArticle('articles/blender/intro.md')" class="p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all shadow-sm">
                     <i class="fas fa-cube text-3xl mb-6 text-orange-500"></i>
@@ -174,6 +162,28 @@
                     <i class="fas fa-bolt text-3xl mb-6 text-slate-400"></i>
                     <h3 class="heading-font text-lg mb-2 text-slate-900 dark:text-white">Unreal</h3>
                     <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">Визуализация</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок 2: ПОРТФОЛИО (Карусель) -->
+        <div class="w-full bg-slate-50 dark:bg-slate-900/50 py-20 border-y border-slate-100 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 class="heading-font text-2xl md:text-4xl uppercase tracking-tighter">Наши <span class="text-kvant">проекты</span></h2>
+                        <p class="text-sm text-slate-500 mt-2">Лучшие работы учеников квантума</p>
+                    </div>
+                    <div class="hidden md:flex space-x-2">
+                        <button onclick="scrollPortfolio(-300)" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-left"></i></button>
+                        <button onclick="scrollPortfolio(300)" class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Контейнер карусели -->
+                <div id="portfolio-carousel" class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 pt-4 hide-scrollbar scroll-smooth">
+                    <!-- Сюда подгружаются проекты из portfolio.json -->
+                    <div class="flex items-center justify-center w-full py-10 opacity-50"><i class="fas fa-circle-notch fa-spin text-2xl"></i> Загрузка проектов...</div>
                 </div>
             </div>
         </div>
@@ -206,16 +216,26 @@
         </div>
     </section>
 
-    <!-- Футер -->
-    <footer class="mt-20 py-12 border-t border-slate-100 dark:border-slate-900 text-center text-slate-400 text-[10px] uppercase tracking-[0.2em]">
-        <p>© 2024 VR/AR Квантум • База Знаний</p>
-    </footer>
-
     <script>
-        const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json' };
+        const CONFIG = { 
+            tracks: 'articles/tracks.json', 
+            cheats: 'articles/cheats.json',
+            portfolio: 'articles/portfolio.json' // Новый манифест!
+        };
         let lastPage = 'home';
 
-        // Функция для добавления кнопок "Копировать" к коду и активации подсветки
+        // Инициализация Highlight.js
+        if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                },
+                langPrefix: 'hljs language-'
+            });
+        }
+
+        // Подсветка и кнопки копирования
         function addCodeFeatures() {
             document.querySelectorAll('#article-content pre').forEach((pre) => {
                 if (pre.querySelector('.copy-code-btn')) return;
@@ -224,23 +244,18 @@
                 let lang = "CODE";
                 
                 if (codeBlock) {
-                    // Извлекаем язык для метки
                     if (codeBlock.className) {
                         const match = codeBlock.className.match(/language-(\w+)/);
                         if (match) lang = match[1];
                     }
-                    
-                    // Активируем красивую подсветку синтаксиса
                     hljs.highlightElement(codeBlock);
                 }
 
-                // Метка языка
                 const langBadge = document.createElement('div');
                 langBadge.className = 'lang-badge';
                 langBadge.textContent = lang;
                 pre.appendChild(langBadge);
 
-                // Кнопка копирования
                 const btn = document.createElement('button');
                 btn.className = 'copy-code-btn';
                 btn.innerHTML = '<i class="far fa-copy"></i> Копировать';
@@ -248,9 +263,7 @@
                 btn.onclick = () => {
                     navigator.clipboard.writeText(codeBlock.innerText).then(() => {
                         btn.innerHTML = '<i class="fas fa-check text-green-400"></i> Скопировано';
-                        setTimeout(() => {
-                            btn.innerHTML = '<i class="far fa-copy"></i> Копировать';
-                        }, 2000);
+                        setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Копировать'; }, 2000);
                     });
                 };
                 pre.appendChild(btn);
@@ -263,10 +276,7 @@
 
         function showPage(pageId) {
             document.getElementById('mobile-menu').classList.add('hidden-menu');
-
-            if (pageId !== 'article-viewer') {
-                lastPage = pageId;
-            }
+            if (pageId !== 'article-viewer') lastPage = pageId;
 
             document.querySelectorAll('.page-content').forEach(p => {
                 p.classList.remove('active');
@@ -279,11 +289,8 @@
             
             document.querySelectorAll('.nav-item').forEach(n => {
                 const isCurrent = n.id === 'nav-' + pageId || (pageId === 'article-viewer' && n.id === 'nav-' + lastPage);
-                if (isCurrent) {
-                    n.classList.add('text-kvant');
-                } else {
-                    n.classList.remove('text-kvant');
-                }
+                if (isCurrent) n.classList.add('text-kvant');
+                else n.classList.remove('text-kvant');
             });
 
             if (pageId === 'tracks') loadTracks();
@@ -291,48 +298,55 @@
             window.scrollTo(0, 0);
         }
 
-        function goBack() {
-            showPage(lastPage);
-        }
+        function goBack() { showPage(lastPage); }
 
-        async function loadTracks() {
+        // --- НОВАЯ ФУНКЦИЯ ДЛЯ ПОРТФОЛИО ---
+        async function loadPortfolio() {
             try {
-                const res = await fetch(CONFIG.tracks);
-                if(!res.ok) throw new Error("JSON не найден");
+                const res = await fetch(CONFIG.portfolio);
+                if(!res.ok) throw new Error("JSON портфолио не найден");
                 const data = await res.json();
-                document.getElementById('tracks-container').innerHTML = data.tracks.map(t => `
-                    <div class="bg-slate-50 dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border border-slate-100 dark:border-slate-800">
-                        <div class="flex items-center space-x-4 mb-6 md:mb-8">
-                            <div class="w-10 h-10 ${t.colorClass} rounded-xl flex items-center justify-center text-white"><i class="${t.icon}"></i></div>
-                            <h3 class="heading-font text-lg">${t.name}</h3>
+                
+                document.getElementById('portfolio-carousel').innerHTML = data.projects.map(p => `
+                    <div class="snap-center shrink-0 w-[85vw] md:w-[450px] bg-white dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-lg border border-slate-100 dark:border-slate-700 group cursor-pointer" onclick="loadArticle('articles/portfolio/${p.file}')">
+                        <div class="h-48 md:h-64 bg-slate-200 dark:bg-slate-700 relative overflow-hidden">
+                            <!-- Если картинки нет, показываем красивую заглушку -->
+                            ${p.image ? `<img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${p.title}">` : 
+                                       `<div class="w-full h-full flex items-center justify-center text-slate-400 text-4xl group-hover:scale-110 transition duration-500"><i class="fas fa-image"></i></div>`}
+                            
+                            <div class="absolute top-4 left-4 flex gap-2">
+                                ${p.tags.map(tag => `<span class="bg-black/50 backdrop-blur-md text-white text-[10px] uppercase font-bold px-3 py-1 rounded-full">${tag}</span>`).join('')}
+                            </div>
                         </div>
-                        <div class="space-y-3">
-                            ${t.lessons.map(l => `<div onclick="loadArticle('articles/${t.id}/${l.file}')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 ring-kvant transition text-sm"><span class="font-bold">${l.title}</span><i class="fas fa-play text-[10px] text-kvant"></i></div>`).join('')}
+                        <div class="p-6 md:p-8">
+                            <h3 class="heading-font text-xl mb-2 group-hover:text-kvant transition">${p.title}</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2">${p.description}</p>
+                            <div class="flex items-center text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                <i class="fas fa-users mr-2"></i> ${p.authors}
+                            </div>
                         </div>
                     </div>
                 `).join('');
             } catch(e) { 
-                console.error(e);
-                document.getElementById('tracks-container').innerHTML = '<p class="text-center col-span-3 py-10 opacity-50">Ошибка загрузки треков. Проверьте файл tracks.json</p>'; 
+                console.error("Портфолио пока не создано", e);
+                document.getElementById('portfolio-carousel').innerHTML = `
+                    <div class="w-full py-10 text-center text-slate-400">
+                        <i class="fas fa-folder-open text-4xl mb-4"></i>
+                        <p>Проекты скоро появятся здесь.</p>
+                        <p class="text-xs mt-2">Создайте файл articles/portfolio.json</p>
+                    </div>`;
             }
         }
 
-        async function loadCheats() {
-            try {
-                const res = await fetch(CONFIG.cheats);
-                if(!res.ok) throw new Error("JSON не найден");
-                const data = await res.json();
-                document.getElementById('cheats-container').innerHTML = data.cheats.map(c => `
-                    <div onclick="loadArticle('articles/cheats/${c.file}')" class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group text-left">
-                        <span class="font-bold text-sm md:text-base">${c.title}</span>
-                        <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
-                    </div>
-                `).join('');
-            } catch(e) { 
-                console.error(e);
-                document.getElementById('cheats-container').innerHTML = '<p class="text-center py-10 opacity-50">Ошибка загрузки шпаргалок. Проверьте файл cheats.json</p>'; 
-            }
+        // Кнопки прокрутки карусели
+        function scrollPortfolio(amount) {
+            const carousel = document.getElementById('portfolio-carousel');
+            carousel.scrollBy({ left: amount, behavior: 'smooth' });
         }
+
+        // --- СТАРЫЕ ФУНКЦИИ ---
+        async function loadTracks() { /* ... код треков ... */ }
+        async function loadCheats() { /* ... код шпаргалок ... */ }
 
         async function loadArticle(path) {
             showPage('article-viewer');
@@ -342,13 +356,9 @@
                 const res = await fetch(path);
                 if (!res.ok) throw new Error("Файл не найден");
                 const text = await res.text();
-                
-                // Рендер текста и добавление красивых кнопок кода
                 area.innerHTML = typeof marked.parse === 'function' ? marked.parse(text) : marked(text);
-                addCodeFeatures(); // Теперь эта функция добавлена и всё будет работать!
-
+                addCodeFeatures(); 
             } catch(e) {
-                console.error(e);
                 area.innerHTML = `<div class="text-center py-10"><h2 class="heading-font text-xl">Статья не найдена</h2><p class="text-slate-500 mt-2">Проверьте путь к файлу: <code>${path}</code></p></div>`;
             }
         }
@@ -369,7 +379,32 @@
         window.onload = () => {
             const isDark = document.documentElement.classList.contains('dark');
             updateThemeIcons(isDark);
+            
+            // Загружаем портфолио при старте главной страницы
+            loadPortfolio();
         };
+        
+        // Восстановление функций треков и шпаргалок для надежности
+        async function loadTracks() {
+            try {
+                const res = await fetch(CONFIG.tracks);
+                if(!res.ok) throw new Error();
+                const data = await res.json();
+                document.getElementById('tracks-container').innerHTML = data.tracks.map(t => `
+                    <div class="bg-slate-50 dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center space-x-4 mb-6"><div class="w-10 h-10 ${t.colorClass} rounded-xl flex items-center justify-center text-white"><i class="${t.icon}"></i></div><h3 class="heading-font text-lg">${t.name}</h3></div>
+                        <div class="space-y-3">${t.lessons.map(l => `<div onclick="loadArticle('articles/${t.id}/${l.file}')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 ring-kvant transition text-sm"><span class="font-bold">${l.title}</span><i class="fas fa-play text-[10px] text-kvant"></i></div>`).join('')}</div>
+                    </div>`).join('');
+            } catch(e) {}
+        }
+        async function loadCheats() {
+            try {
+                const res = await fetch(CONFIG.cheats);
+                if(!res.ok) throw new Error();
+                const data = await res.json();
+                document.getElementById('cheats-container').innerHTML = data.cheats.map(c => `<div onclick="loadArticle('articles/cheats/${c.file}')" class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group text-left"><span class="font-bold text-sm md:text-base">${c.title}</span><i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i></div>`).join('');
+            } catch(e) {}
+        }
     </script>
 </body>
 </html>

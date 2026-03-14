@@ -1,0 +1,20 @@
+{
+  "projects": [
+    {
+      "title": "VR-Симулятор химической лаборатории",
+      "description": "Полноценный симулятор для Oculus Quest 2, где можно смешивать реактивы без риска взорвать школу.",
+      "authors": "Команда 'Reactives': Иванов И., Петров А.",
+      "tags": ["Unity", "VR", "C#"],
+      "image": "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?auto=format&fit=crop&q=80&w=800",
+      "file": "vr_chemistry.md"
+    },
+    {
+      "title": "ArchViz: Квартира будущего",
+      "description": "Фотореалистичная визуализация интерьера с возможностью менять цвета мебели и время суток.",
+      "authors": "Смирнова А.",
+      "tags": ["Unreal 5", "Blender"],
+      "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800",
+      "file": "archviz_future.md"
+    }
+  ]
+}
