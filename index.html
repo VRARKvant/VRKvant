@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Lab Junior — Портал разработчика</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        :root {
+            --accent: #8b5cf6;
+            --accent-dark: #6d28d9;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .heading-font { font-family: 'Unbounded', sans-serif; }
+
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Навигация -->
+    <nav class="fixed top-0 w-full glass-card z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
+                <div class="bg-violet-600 p-2 rounded-xl text-white">
+                    <i class="fas fa-cubes text-xl"></i>
+                </div>
+                <span class="heading-font font-bold text-lg tracking-tighter">VR.LAB</span>
+            </div>
+            
+            <div class="hidden md:flex space-x-8 font-bold text-sm uppercase tracking-widest text-slate-500">
+                <button onclick="showPage('home')" class="nav-link active hover:text-violet-600 transition" id="nav-home">Главная</button>
+                <button onclick="showPage('tracks')" class="nav-link hover:text-violet-600 transition" id="nav-tracks">Треки</button>
+                <button onclick="showPage('cheats')" class="nav-link hover:text-violet-600 transition" id="nav-cheats">Шпаргалки</button>
+                <button onclick="showPage('team')" class="nav-link hover:text-violet-600 transition" id="nav-team">Команда</button>
+            </div>
+
+            <button class="bg-slate-900 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-violet-600 transition shadow-lg shadow-slate-200">
+                Войти
+            </button>
+        </div>
+    </nav>
+
+    <!-- Главная страница -->
+    <main id="home" class="page-section active pt-32 px-6">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="heading-font text-5xl md:text-7xl mb-8 leading-tight">Твое будущее в <span class="text-violet-600">3D</span> формате</h1>
+            <p class="text-xl text-slate-500 mb-12 max-w-2xl mx-auto">Научись создавать игры, моделировать персонажей и работать в команде над реальными VR проектами.</p>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-20">
+                <div onclick="showPage('tracks')" class="group p-8 bg-violet-600 rounded-[2rem] text-white text-left cursor-pointer hover:scale-[1.02] transition transform shadow-2xl shadow-violet-200">
+                    <i class="fas fa-vr-cardboard text-4xl mb-6"></i>
+                    <h3 class="heading-font text-2xl mb-2">Треки развития</h3>
+                    <p class="opacity-80">От первой кнопки в Unity до полноценной VR-игры.</p>
+                </div>
+                <div onclick="showPage('cheats')" class="group p-8 bg-white rounded-[2rem] text-left border-2 border-slate-100 cursor-pointer hover:scale-[1.02] transition transform shadow-xl shadow-slate-100">
+                    <i class="fas fa-bolt text-4xl mb-6 text-amber-400"></i>
+                    <h3 class="heading-font text-2xl mb-2 text-slate-900">Шпаргалки</h3>
+                    <p class="text-slate-500">Быстрые советы по коду, железу и моделированию.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Треки обучения -->
+    <section id="tracks" class="page-section pt-32 px-6 max-w-7xl mx-auto">
+        <h2 class="heading-font text-3xl mb-12 text-center">Выбирай свое <span class="text-violet-600">направление</span></h2>
+        <div class="grid lg:grid-cols-2 gap-10">
+            <!-- VR Card -->
+            <div class="bg-white rounded-[2.5rem] p-10 shadow-xl border border-slate-50">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-14 h-14 bg-violet-100 text-violet-600 rounded-2xl flex items-center justify-center text-2xl">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <h3 class="heading-font text-2xl">VR Разработчик</h3>
+                        <p class="text-slate-400 font-bold text-sm uppercase">Unity + C# + Oculus</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 rounded-2xl flex justify-between items-center">
+                        <span class="font-bold">Миссия 1: Настройка среды</span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-bold">Доступно</span>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-2xl flex justify-between items-center opacity-60">
+                        <span class="font-bold">Миссия 2: Физика рук</span>
+                        <i class="fas fa-lock text-slate-400"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- 3D Card -->
+            <div class="bg-white rounded-[2.5rem] p-10 shadow-xl border border-slate-50">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div>
+                        <h3 class="heading-font text-2xl">3D Моделлер</h3>
+                        <p class="text-slate-400 font-bold text-sm uppercase">Blender + Texturing</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-50 rounded-2xl flex justify-between items-center">
+                        <span class="font-bold">Миссия 1: Лоу-поли мир</span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-xs font-bold">Доступно</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Шпаргалки -->
+    <section id="cheats" class="page-section pt-32 px-6 max-w-5xl mx-auto">
+        <h2 class="heading-font text-3xl mb-12">Библиотека <span class="text-violet-600">знаний</span></h2>
+        <div class="grid gap-6">
+            <details class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden group">
+                <summary class="p-6 cursor-pointer font-bold text-lg flex justify-between items-center list-none">
+                    Как подключить Oculus Quest 2 к ПК?
+                    <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
+                </summary>
+                <div class="p-6 pt-0 text-slate-600 border-t border-slate-50">
+                    <ol class="list-decimal ml-5 space-y-2">
+                        <li>Установи приложение Oculus на компьютер.</li>
+                        <li>Используй качественный кабель USB 3.0.</li>
+                        <li>Включи "Quest Link" в настройках шлема.</li>
+                        <li>В Unity в Project Settings выбери Oculus в разделе XR Plug-in Management.</li>
+                    </ol>
+                </div>
+            </details>
+            
+            <details class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden group">
+                <summary class="p-6 cursor-pointer font-bold text-lg flex justify-between items-center list-none">
+                    Горячие клавиши Blender (База)
+                    <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
+                </summary>
+                <div class="p-6 pt-0 text-slate-600 border-t border-slate-50">
+                    <div class="grid grid-cols-2 gap-4">
+                        <p><strong>G</strong> — Перемещение</p>
+                        <p><strong>R</strong> — Вращение</p>
+                        <p><strong>S</strong> — Масштаб</p>
+                        <p><strong>Tab</strong> — Режим редактирования</p>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <!-- Команда -->
+    <section id="team" class="page-section pt-32 px-6 max-w-5xl mx-auto text-center">
+        <h2 class="heading-font text-3xl mb-8">Работа в <span class="text-violet-600">команде</span></h2>
+        <p class="text-slate-500 mb-12">Разработка игр — это всегда командный труд. Вот наши роли:</p>
+        <div class="grid md:grid-cols-3 gap-8 text-left">
+            <div class="p-6 bg-white rounded-3xl shadow-lg border-b-4 border-blue-500">
+                <h4 class="font-black text-blue-500 mb-2">👨‍💻 Программист</h4>
+                <p class="text-sm">Оживляет мир, пишет логику и настраивает взаимодействия.</p>
+            </div>
+            <div class="p-6 bg-white rounded-3xl shadow-lg border-b-4 border-pink-500">
+                <h4 class="font-black text-pink-500 mb-2">🎨 Художник</h4>
+                <p class="text-sm">Создает визуальный стиль, модели и атмосферу игры.</p>
+            </div>
+            <div class="p-6 bg-white rounded-3xl shadow-lg border-b-4 border-amber-500">
+                <h4 class="font-black text-amber-500 mb-2">🎩 Геймдизайнер</h4>
+                <p class="text-sm">Придумывает правила, уровни и следит, чтобы было интересно.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-32 py-12 border-t border-slate-100 text-center text-slate-400 text-sm">
+        <p>© 2024 VR Lab Junior. Твой путь в метавселенную начинается здесь.</p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // Скрыть все страницы
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            // Показать выбранную
+            document.getElementById(pageId).classList.add('active');
+            
+            // Обновить навигацию
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('nav-' + pageId).classList.add('active');
+            
+            // Скролл вверх
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
