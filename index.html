@@ -291,6 +291,9 @@
                 if (!res.ok) throw new Error("Файл не найден");
                 const text = await res.text();
                 area.innerHTML = typeof marked.parse === 'function' ? marked.parse(text) : marked(text);
+                
+                // Добавляем красивости для блоков кода
+                addCodeFeatures();
             } catch(e) {
                 area.innerHTML = `<div class="text-center py-10"><h2 class="heading-font text-xl">Статья не найдена</h2><p class="text-slate-500 mt-2">Проверьте путь к файлу: <code>${path}</code></p></div>`;
             }
