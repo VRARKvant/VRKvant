@@ -215,27 +215,23 @@
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json' };
         let lastPage = 'home';
 
-        // Настройка marked.js для Highlight.js
-        if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
-            marked.setOptions({
-                highlight: function(code, lang) {
-                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                    return hljs.highlight(code, { language }).value;
-                },
-                langPrefix: 'hljs language-'
-            });
-        }
-
-        // Функция для добавления кнопок "Копировать" к коду
+        // Функция для добавления кнопок "Копировать" к коду и активации подсветки
         function addCodeFeatures() {
             document.querySelectorAll('#article-content pre').forEach((pre) => {
                 if (pre.querySelector('.copy-code-btn')) return;
 
                 const codeBlock = pre.querySelector('code');
                 let lang = "CODE";
-                if (codeBlock && codeBlock.className) {
-                    const match = codeBlock.className.match(/language-(\w+)/);
-                    if (match) lang = match[1];
+                
+                if (codeBlock) {
+                    // Извлекаем язык для метки
+                    if (codeBlock.className) {
+                        const match = codeBlock.className.match(/language-(\w+)/);
+                        if (match) lang = match[1];
+                    }
+                    
+                    // Активируем красивую подсветку синтаксиса
+                    hljs.highlightElement(codeBlock);
                 }
 
                 // Метка языка
