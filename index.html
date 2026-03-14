@@ -48,6 +48,9 @@
         #article-content blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; font-style: italic; margin-bottom: 1.5rem; color: #64748b; }
         #article-content code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 0.4rem; font-size: 0.9em; font-family: monospace; }
         .dark #article-content code { background: #1e293b; }
+        
+        .track-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .track-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
@@ -79,66 +82,40 @@
     <section id="home" class="page-content pt-32 px-6 active">
         <div class="max-w-5xl mx-auto">
             <div class="text-center mb-16">
-                <h1 class="heading-font text-4xl md:text-6xl mb-6 leading-tight uppercase tracking-tighter">Центр Знаний <br><span class="text-kvant italic">VR Kvant</span></h1>
-                <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">Выбирай инструмент, проходи миссии и создавай проекты, которые изменят реальность.</p>
+                <h1 class="heading-font text-4xl md:text-6xl mb-6 leading-tight uppercase tracking-tighter">База знаний <br><span class="text-kvant italic text-3xl md:text-5xl">VR Kvant</span></h1>
+                <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">Добро пожаловать на учебный портал. Здесь собраны все инструкции и задания для работы в квантуме.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
-                <div onclick="loadArticle('articles/blender_intro.md')" class="p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-kvant transition-all cursor-pointer group shadow-sm">
-                    <i class="fas fa-cube text-3xl mb-6 text-orange-500 group-hover:scale-110 transition"></i>
-                    <h3 class="heading-font text-lg mb-2 uppercase">Blender</h3>
-                    <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">3D Моделирование</p>
+                <!-- Карточки быстрого доступа -->
+                <div onclick="loadArticle('articles/blender/intro.md')" class="track-card p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-orange-500 cursor-pointer shadow-sm">
+                    <i class="fas fa-cube text-3xl mb-6 text-orange-500"></i>
+                    <h3 class="heading-font text-lg mb-2 uppercase tracking-tight">Blender</h3>
+                    <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">3D Графика</p>
                 </div>
-                <div onclick="loadArticle('articles/unity_intro.md')" class="p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-kvant transition-all cursor-pointer group shadow-sm">
-                    <i class="fab fa-unity text-3xl mb-6 text-indigo-500 group-hover:scale-110 transition"></i>
-                    <h3 class="heading-font text-lg mb-2 uppercase">Unity</h3>
-                    <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">VR Разработка</p>
+                <div onclick="loadArticle('articles/unity/intro.md')" class="track-card p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-indigo-500 cursor-pointer shadow-sm">
+                    <i class="fab fa-unity text-3xl mb-6 text-indigo-500"></i>
+                    <h3 class="heading-font text-lg mb-2 uppercase tracking-tight">Unity</h3>
+                    <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">Разработка</p>
                 </div>
-                <div onclick="loadArticle('articles/unreal_intro.md')" class="p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-kvant transition-all cursor-pointer group shadow-sm">
-                    <i class="fas fa-bolt text-3xl mb-6 text-slate-700 dark:text-slate-300 group-hover:scale-110 transition"></i>
-                    <h3 class="heading-font text-lg mb-2 uppercase">Unreal</h3>
-                    <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">High-End Графика</p>
+                <div onclick="loadArticle('articles/unreal/intro.md')" class="track-card p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border-2 border-transparent hover:border-slate-400 cursor-pointer shadow-sm">
+                    <i class="fas fa-bolt text-3xl mb-6 text-slate-700 dark:text-slate-300"></i>
+                    <h3 class="heading-font text-lg mb-2 uppercase tracking-tight">Unreal</h3>
+                    <p class="text-xs text-slate-500 uppercase font-bold tracking-widest">Визуализация</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Список треков -->
+    <!-- Страница треков -->
     <section id="tracks" class="page-content pt-32 px-6 hidden">
         <div class="max-w-6xl mx-auto">
-            <h2 class="heading-font text-3xl mb-12 uppercase tracking-tighter text-center">Все обучающие <span class="text-kvant">программы</span></h2>
+            <h2 class="heading-font text-3xl mb-12 uppercase tracking-tighter text-center">Обучающие <span class="text-kvant">траектории</span></h2>
             
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Blender Card -->
-                <div class="bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center space-x-4 mb-8">
-                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center"><i class="fas fa-shapes"></i></div>
-                        <h3 class="heading-font text-xl">Blender Track</h3>
-                    </div>
-                    <div class="space-y-3">
-                        <div onclick="loadArticle('articles/blender_intro.md')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 ring-kvant transition">
-                            <span class="font-bold text-sm">Вступление: Почему Blender?</span>
-                            <i class="fas fa-play text-[10px] text-kvant"></i>
-                        </div>
-                        <div class="p-4 bg-white/50 dark:bg-slate-800/50 rounded-2xl flex justify-between items-center opacity-50">
-                            <span class="font-bold text-sm italic">Урок 1: Твой первый пончик</span>
-                            <i class="fas fa-lock text-[10px]"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Unity Card -->
-                <div class="bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center space-x-4 mb-8">
-                        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fab fa-unity"></i></div>
-                        <h3 class="heading-font text-xl">Unity Track</h3>
-                    </div>
-                    <div class="space-y-3">
-                        <div onclick="loadArticle('articles/unity_intro.md')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 ring-kvant transition">
-                            <span class="font-bold text-sm">Вступление: Оживляем миры</span>
-                            <i class="fas fa-play text-[10px] text-kvant"></i>
-                        </div>
-                    </div>
+            <div id="tracks-container" class="grid md:grid-cols-3 gap-8">
+                <!-- Сюда подгружаются списки уроков из JSON -->
+                <div class="text-center col-span-3 py-10">
+                    <i class="fas fa-circle-notch fa-spin text-3xl text-kvant"></i>
                 </div>
             </div>
         </div>
@@ -151,28 +128,33 @@
                 <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition"></i> Назад к списку
             </button>
             <article id="article-content" class="bg-white dark:bg-slate-900 p-8 md:p-16 rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800">
-                Загрузка...
+                <!-- Контент Markdown -->
             </article>
         </div>
     </section>
 
     <!-- Шпаргалки -->
     <section id="cheats" class="page-content pt-32 px-6 hidden">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="heading-font text-3xl mb-8">База <span class="text-kvant">шпаргалок</span></h2>
-            <p class="text-slate-500 mb-12">Здесь будут собраны гайды по подключению шлемов и работе в команде.</p>
-            <div class="p-12 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[3rem]">
-                <i class="fas fa-tools text-4xl text-slate-300 mb-4"></i>
-                <p class="font-bold text-slate-400 uppercase tracking-widest">Раздел в разработке</p>
+        <div class="max-w-4xl mx-auto">
+            <h2 class="heading-font text-3xl mb-12 uppercase tracking-tighter text-center">Центр <span class="text-kvant">помощи</span></h2>
+            <div id="cheats-container" class="space-y-4">
+                <!-- Динамические шпаргалки -->
             </div>
         </div>
     </section>
 
     <footer class="mt-20 py-12 border-t border-slate-100 dark:border-slate-900 text-center text-slate-400 text-[10px] uppercase tracking-[0.2em]">
-        <p>© 2024 VR/AR Квантум • Сделано для будущих разработчиков</p>
+        <p>© 2024 VR/AR КВАНТУМ • БАЗА ЗНАНИЙ</p>
     </footer>
 
     <script>
+        // Конфигурация путей
+        const CONFIG = {
+            tracksManifest: 'articles/tracks.json',
+            cheatsManifest: 'articles/cheats.json'
+        };
+
+        // Навигация
         function showPage(pageId) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
             const targetPage = document.getElementById(pageId);
@@ -186,8 +168,65 @@
                     nav.classList.add('text-kvant', 'border-b-2', 'border-kvant');
                 }
             });
+
+            if (pageId === 'tracks') loadTracksData();
+            if (pageId === 'cheats') loadCheatsData();
         }
 
+        // Загрузка списка треков
+        async function loadTracksData() {
+            const container = document.getElementById('tracks-container');
+            try {
+                const response = await fetch(CONFIG.tracksManifest);
+                const data = await response.json();
+                
+                container.innerHTML = data.tracks.map(track => `
+                    <div class="bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 flex flex-col">
+                        <div class="flex items-center space-x-4 mb-8">
+                            <div class="w-12 h-12 ${track.colorClass} rounded-xl flex items-center justify-center text-white">
+                                <i class="${track.icon}"></i>
+                            </div>
+                            <h3 class="heading-font text-xl">${track.name}</h3>
+                        </div>
+                        <div class="space-y-3 flex-grow">
+                            ${track.lessons.map(lesson => `
+                                <div onclick="loadArticle('articles/${track.id}/${lesson.file}')" 
+                                     class="p-4 bg-white dark:bg-slate-800 rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 ring-kvant transition">
+                                    <span class="font-bold text-sm">${lesson.title}</span>
+                                    <i class="fas fa-play text-[10px] text-kvant"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = `<p class="col-span-3 text-center text-slate-400">Ошибка загрузки списка треков. Проверьте файл tracks.json</p>`;
+            }
+        }
+
+        // Загрузка шпаргалок
+        async function loadCheatsData() {
+            const container = document.getElementById('cheats-container');
+            try {
+                const response = await fetch(CONFIG.cheatsManifest);
+                const data = await response.json();
+                container.innerHTML = data.cheats.map(cheat => `
+                    <details class="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+                        <summary class="p-6 cursor-pointer font-bold flex justify-between items-center list-none">
+                            ${cheat.title}
+                            <i class="fas fa-chevron-down group-open:rotate-180 transition"></i>
+                        </summary>
+                        <div class="p-6 pt-0 text-slate-500 text-sm border-t border-slate-50 dark:border-slate-800">
+                            ${marked.parse(cheat.content)}
+                        </div>
+                    </details>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = `<p class="text-center text-slate-400">Шпаргалки пока не добавлены.</p>`;
+            }
+        }
+
+        // Загрузка статьи
         async function loadArticle(filePath) {
             showPage('article-viewer');
             const contentArea = document.getElementById('article-content');
@@ -199,12 +238,7 @@
                 const text = await response.text();
                 contentArea.innerHTML = marked.parse(text);
             } catch (error) {
-                contentArea.innerHTML = `
-                    <div class="text-center py-20">
-                        <h2 class="heading-font text-2xl mb-4">Файл еще не создан</h2>
-                        <p class="text-slate-500">Создай файл <code>${filePath}</code> в папке репозитория, чтобы увидеть контент.</p>
-                    </div>
-                `;
+                contentArea.innerHTML = `<div class="text-center py-20"><h2 class="heading-font text-2xl mb-4">Файл не найден</h2><p>Путь: ${filePath}</p></div>`;
             }
         }
 
