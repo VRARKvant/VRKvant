@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VR/AR Квантум — База знаний</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)">
-    <script src="[https://cdn.jsdelivr.net/npm/marked/marked.min.js](https://cdn.jsdelivr.net/npm/marked/marked.min.js)"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Библиотека для Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -20,6 +23,7 @@
             }
         }
 
+        // Проверка темы при загрузке
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -27,51 +31,69 @@
         }
     </script>
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap](https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap)');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        /* Шрифты */
+        @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            transition: background-color 0.3s, color 0.3s; 
+        }
         .heading-font { font-family: 'Unbounded', sans-serif; }
+        
+        /* Логика переключения страниц */
         .page-content { display: none; }
         .page-content.active { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Markdown Styles */
-        .prose h1 { font-family: 'Unbounded', sans-serif; font-size: 1.75rem; margin-bottom: 1.5rem; color: #8b5cf6; font-weight: 700; }
-        .prose h2 { font-family: 'Unbounded', sans-serif; font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; }
-        .prose p { margin-bottom: 1rem; line-height: 1.8; color: #475569; }
-        .dark .prose p { color: #cbd5e1; }
-        .prose ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
-        
-        /* Цитаты */
-        .prose blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; margin-bottom: 1.5rem; color: #64748b; font-style: italic; background: #f8fafc; padding: 1rem; border-radius: 0 0.5rem 0.5rem 0; }
-        .dark .prose blockquote { background: #1e293b; color: #94a3b8; }
-
-        /* Inline-код (одиночные слова в тексте) */
-        .prose p code, .prose li code { background: #f1f5f9; color: #ec4899; padding: 0.2rem 0.4rem; border-radius: 0.4rem; font-size: 0.9em; font-family: monospace; }
-        .dark .prose p code, .dark .prose li code { background: #1e293b; color: #f472b6; }
-
-        /* Блоки кода (многострочные) */
-        .prose pre { 
-            background: #1e293b; /* Всегда темный фон для блоков кода (как в IDE) */
-            padding: 1.25rem; 
-            border-radius: 0.75rem; 
-            overflow-x: auto; /* Скроллинг длинных строк */
-            margin-bottom: 1.5rem;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
-        .dark .prose pre { background: #0f172a; border: 1px solid #1e293b; }
-        
-        /* Текст внутри блока кода */
-        .prose pre code { 
-            background: transparent; 
-            color: #e2e8f0; 
-            padding: 0; 
-            font-size: 0.9em; 
-            font-family: 'Courier New', Courier, monospace; 
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
 
-        /* Mobile Menu Animation */
+        /* Мобильное меню */
         #mobile-menu { transition: transform 0.3s ease-in-out; }
         #mobile-menu.hidden-menu { transform: translateX(100%); }
+        
+        /* СТИЛИ ДЛЯ СТАТЕЙ MARKDOWN (.prose) */
+        .prose { color: #334155; line-height: 1.75; }
+        .dark .prose { color: #cbd5e1; }
+        
+        .prose h1 { font-family: 'Unbounded', sans-serif; font-size: 2rem; margin-bottom: 1.5rem; color: #8b5cf6; font-weight: 700; line-height: 1.2; }
+        .prose h2 { font-family: 'Unbounded', sans-serif; font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; font-weight: 700; }
+        .prose h3 { font-family: 'Unbounded', sans-serif; font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.75rem; font-weight: 700; }
+        
+        .prose p { margin-bottom: 1.25rem; }
+        
+        /* Ссылки */
+        .prose a { color: #8b5cf6; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; transition: color 0.2s; }
+        .prose a:hover { color: #7c3aed; }
+        .dark .prose a { color: #a78bfa; }
+        .dark .prose a:hover { color: #c4b5fd; }
+        
+        /* Списки */
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+        .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        
+        /* Акценты */
+        .prose strong { font-weight: 700; color: #0f172a; }
+        .dark .prose strong { color: #f8fafc; }
+        
+        /* Цитаты */
+        .prose blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; margin-bottom: 1.5rem; font-style: italic; background: #f8fafc; padding: 1rem; border-radius: 0 0.5rem 0.5rem 0; }
+        .dark .prose blockquote { background: #1e293b; border-left-color: #a78bfa; color: #94a3b8; }
+        
+        /* Картинки и разделители */
+        .prose img { max-width: 100%; border-radius: 0.75rem; margin: 2rem auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .prose hr { border: 0; border-top: 2px dashed #e2e8f0; margin: 2rem 0; }
+        .dark .prose hr { border-top-color: #334155; }
+        
+        /* Код (одиночный) */
+        .prose p code, .prose li code { background: #f1f5f9; color: #ec4899; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875em; }
+        .dark .prose p code, .dark .prose li code { background: #0f172a; color: #f472b6; }
+        
+        /* Код (многострочный) */
+        .prose pre { background: #1e293b; padding: 1.25rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2); }
+        .dark .prose pre { background: #0f172a; border: 1px solid #1e293b; }
+        .prose pre code { background: transparent; color: #e2e8f0; padding: 0; border-radius: 0; font-size: 0.9em; font-family: 'Courier New', Courier, monospace; }
     </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
@@ -87,10 +109,10 @@
 
             <!-- Десктопное меню -->
             <div class="hidden md:flex items-center space-x-8 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                <button onclick="showPage('home')" class="nav-item active" id="nav-home">Главная</button>
-                <button onclick="showPage('tracks')" class="nav-item" id="nav-tracks">Треки</button>
-                <button onclick="showPage('cheats')" class="nav-item" id="nav-cheats">Шпаргалки</button>
-                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 transition-all"><i id="theme-icon" class="fas fa-moon"></i></button>
+                <button onclick="showPage('home')" class="nav-item active hover:text-kvant transition" id="nav-home">Главная</button>
+                <button onclick="showPage('tracks')" class="nav-item hover:text-kvant transition" id="nav-tracks">Треки</button>
+                <button onclick="showPage('cheats')" class="nav-item hover:text-kvant transition" id="nav-cheats">Шпаргалки</button>
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 hover:rotate-12 transition-all"><i id="theme-icon" class="fas fa-moon"></i></button>
             </div>
 
             <!-- Мобильная кнопка меню (Бургер) -->
@@ -119,6 +141,7 @@
         </div>
     </div>
 
+    <!-- Главная страница -->
     <main id="home" class="page-content pt-32 px-6 active">
         <div class="max-w-5xl mx-auto text-center">
             <h1 class="heading-font text-3xl md:text-6xl mb-8 leading-tight uppercase tracking-tighter">Центр Знаний <br><span class="text-kvant italic">VR Kvant</span></h1>
@@ -143,6 +166,7 @@
         </div>
     </main>
 
+    <!-- Страница треков -->
     <section id="tracks" class="page-content pt-32 px-6 hidden">
         <div class="max-w-6xl mx-auto">
             <h2 class="heading-font text-2xl md:text-3xl mb-12 uppercase tracking-tighter text-center">Учебные <span class="text-kvant">траектории</span></h2>
@@ -150,6 +174,7 @@
         </div>
     </section>
 
+    <!-- Страница шпаргалок -->
     <section id="cheats" class="page-content pt-32 px-6 hidden">
         <div class="max-w-4xl mx-auto">
             <h2 class="heading-font text-2xl md:text-3xl mb-12 uppercase tracking-tighter text-center">База <span class="text-kvant">шпаргалок</span></h2>
@@ -157,16 +182,19 @@
         </div>
     </section>
 
+    <!-- Просмотр статьи -->
     <section id="article-viewer" class="page-content pt-32 px-6 hidden">
         <div class="max-w-4xl mx-auto">
             <button onclick="goBack()" class="mb-8 group flex items-center text-kvant font-bold uppercase text-xs tracking-widest">
                 <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition"></i> Назад
             </button>
+            <!-- Блок .prose отвечает за форматирование Markdown -->
             <article id="article-content" class="prose max-w-none bg-white dark:bg-slate-900 p-6 md:p-16 rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
             </article>
         </div>
     </section>
 
+    <!-- Футер -->
     <footer class="mt-20 py-12 border-t border-slate-100 dark:border-slate-900 text-center text-slate-400 text-[10px] uppercase tracking-[0.2em]">
         <p>© 2024 VR/AR Квантум • База Знаний</p>
     </footer>
@@ -175,21 +203,35 @@
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json' };
         let lastPage = 'home';
 
+        // Открытие/закрытие мобильного меню
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden-menu');
+            document.getElementById('mobile-menu').classList.toggle('hidden-menu');
         }
 
+        // Переключение страниц
         function showPage(pageId) {
             document.getElementById('mobile-menu').classList.add('hidden-menu');
-            if (pageId !== 'article-viewer') lastPage = pageId;
 
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active', 'hidden'));
-            document.querySelectorAll('.page-content').forEach(p => p.id !== pageId ? p.classList.add('hidden') : p.classList.add('active'));
+            if (pageId !== 'article-viewer') {
+                lastPage = pageId;
+            }
+
+            document.querySelectorAll('.page-content').forEach(p => {
+                p.classList.remove('active');
+                p.classList.add('hidden');
+                if(p.id === pageId) {
+                    p.classList.remove('hidden');
+                    p.classList.add('active');
+                }
+            });
             
             document.querySelectorAll('.nav-item').forEach(n => {
                 const isCurrent = n.id === 'nav-' + pageId || (pageId === 'article-viewer' && n.id === 'nav-' + lastPage);
-                n.classList.toggle('text-kvant', isCurrent);
+                if (isCurrent) {
+                    n.classList.add('text-kvant');
+                } else {
+                    n.classList.remove('text-kvant');
+                }
             });
 
             if (pageId === 'tracks') loadTracks();
@@ -197,11 +239,16 @@
             window.scrollTo(0, 0);
         }
 
-        function goBack() { showPage(lastPage); }
+        // Возврат назад
+        function goBack() {
+            showPage(lastPage);
+        }
 
+        // Загрузка треков
         async function loadTracks() {
             try {
                 const res = await fetch(CONFIG.tracks);
+                if(!res.ok) throw new Error("JSON не найден");
                 const data = await res.json();
                 document.getElementById('tracks-container').innerHTML = data.tracks.map(t => `
                     <div class="bg-slate-50 dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border border-slate-100 dark:border-slate-800">
@@ -214,12 +261,17 @@
                         </div>
                     </div>
                 `).join('');
-            } catch(e) { console.error("Ошибка", e); }
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('tracks-container').innerHTML = '<p class="text-center col-span-3 py-10 opacity-50">Ошибка загрузки треков. Проверьте файл tracks.json</p>'; 
+            }
         }
 
+        // Загрузка шпаргалок
         async function loadCheats() {
             try {
                 const res = await fetch(CONFIG.cheats);
+                if(!res.ok) throw new Error("JSON не найден");
                 const data = await res.json();
                 document.getElementById('cheats-container').innerHTML = data.cheats.map(c => `
                     <div onclick="loadArticle('articles/cheats/${c.file}')" class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group text-left">
@@ -227,23 +279,29 @@
                         <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition"></i>
                     </div>
                 `).join('');
-            } catch(e) { console.error("Ошибка", e); }
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('cheats-container').innerHTML = '<p class="text-center py-10 opacity-50">Ошибка загрузки шпаргалок. Проверьте файл cheats.json</p>'; 
+            }
         }
 
+        // Загрузка статьи
         async function loadArticle(path) {
             showPage('article-viewer');
             const area = document.getElementById('article-content');
             area.innerHTML = '<div class="flex justify-center p-10"><i class="fas fa-circle-notch fa-spin text-3xl text-kvant"></i></div>';
             try {
                 const res = await fetch(path);
-                if (!res.ok) throw new Error();
+                if (!res.ok) throw new Error("Файл не найден");
                 const text = await res.text();
+                // Рендерим Markdown в HTML
                 area.innerHTML = typeof marked.parse === 'function' ? marked.parse(text) : marked(text);
             } catch(e) {
-                area.innerHTML = '<div class="text-center py-10"><h2 class="heading-font text-xl">Статья не найдена</h2></div>';
+                area.innerHTML = `<div class="text-center py-10"><h2 class="heading-font text-xl">Статья не найдена</h2><p class="text-slate-500 mt-2">Проверьте путь к файлу: <code>${path}</code></p></div>`;
             }
         }
 
+        // Переключение темы
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -257,7 +315,11 @@
             });
         }
 
-        window.onload = () => updateThemeIcons(document.documentElement.classList.contains('dark'));
+        // Инициализация при загрузке
+        window.onload = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            updateThemeIcons(isDark);
+        };
     </script>
 </body>
 </html>
