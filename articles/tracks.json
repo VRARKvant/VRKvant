@@ -1,0 +1,40 @@
+{
+  "tracks": [
+    {
+      "id": "blender",
+      "name": "Blender Track",
+      "icon": "fas fa-shapes",
+      "colorClass": "bg-orange-500",
+      "lessons": [
+        {
+          "title": "Вступление",
+          "file": "intro.md"
+        }
+      ]
+    },
+    {
+      "id": "unity",
+      "name": "Unity Track",
+      "icon": "fab fa-unity",
+      "colorClass": "bg-indigo-600",
+      "lessons": [
+        {
+          "title": "Вступление",
+          "file": "intro.md"
+        }
+      ]
+    },
+    {
+      "id": "unreal",
+      "name": "Unreal Engine",
+      "icon": "fas fa-bolt",
+      "colorClass": "bg-slate-700",
+      "lessons": [
+        {
+          "title": "Вступление",
+          "file": "intro.md"
+        }
+      ]
+    }
+  ]
+}
