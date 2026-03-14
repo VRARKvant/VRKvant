@@ -8,8 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <!-- Библиотека для Markdown -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Подсветка синтаксиса Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -94,9 +99,14 @@
         .dark .prose p code, .dark .prose li code { background: #0f172a; color: #f472b6; }
         
         /* Код (многострочные блоки скриптов) */
-        .prose pre { background: #1e293b; padding: 1.25rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2); }
+        .prose pre { position: relative; background: #1e293b; padding: 1.25rem; padding-top: 3rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2); }
         .dark .prose pre { background: #0f172a; border: 1px solid #1e293b; }
-        .prose pre code { background: transparent; color: #e2e8f0; padding: 0; border-radius: 0; font-size: 0.9em; font-family: 'Courier New', Courier, monospace; }
+        .prose pre code { background: transparent; color: inherit; padding: 0; border-radius: 0; font-size: 0.9em; font-family: 'Courier New', Courier, monospace; }
+
+        /* Кнопки копирования и бейдж языка */
+        .copy-code-btn { position: absolute; top: 0.75rem; right: 0.75rem; background: rgba(255, 255, 255, 0.1); color: #cbd5e1; border: none; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+        .copy-code-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+        .lang-badge { position: absolute; top: 0.75rem; left: 1.25rem; color: #64748b; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.05em; }
     </style>
 </head>
 <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
@@ -205,6 +215,52 @@
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json' };
         let lastPage = 'home';
 
+        // Настройка marked.js для Highlight.js
+        if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+                    return hljs.highlight(code, { language }).value;
+                },
+                langPrefix: 'hljs language-'
+            });
+        }
+
+        // Функция для добавления кнопок "Копировать" к коду
+        function addCodeFeatures() {
+            document.querySelectorAll('#article-content pre').forEach((pre) => {
+                if (pre.querySelector('.copy-code-btn')) return;
+
+                const codeBlock = pre.querySelector('code');
+                let lang = "CODE";
+                if (codeBlock && codeBlock.className) {
+                    const match = codeBlock.className.match(/language-(\w+)/);
+                    if (match) lang = match[1];
+                }
+
+                // Метка языка
+                const langBadge = document.createElement('div');
+                langBadge.className = 'lang-badge';
+                langBadge.textContent = lang;
+                pre.appendChild(langBadge);
+
+                // Кнопка копирования
+                const btn = document.createElement('button');
+                btn.className = 'copy-code-btn';
+                btn.innerHTML = '<i class="far fa-copy"></i> Копировать';
+                
+                btn.onclick = () => {
+                    navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+                        btn.innerHTML = '<i class="fas fa-check text-green-400"></i> Скопировано';
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="far fa-copy"></i> Копировать';
+                        }, 2000);
+                    });
+                };
+                pre.appendChild(btn);
+            });
+        }
+
         function toggleMobileMenu() {
             document.getElementById('mobile-menu').classList.toggle('hidden-menu');
         }
@@ -290,11 +346,13 @@
                 const res = await fetch(path);
                 if (!res.ok) throw new Error("Файл не найден");
                 const text = await res.text();
-                area.innerHTML = typeof marked.parse === 'function' ? marked.parse(text) : marked(text);
                 
-                // Добавляем красивости для блоков кода
-                addCodeFeatures();
+                // Рендер текста и добавление красивых кнопок кода
+                area.innerHTML = typeof marked.parse === 'function' ? marked.parse(text) : marked(text);
+                addCodeFeatures(); // Теперь эта функция добавлена и всё будет работать!
+
             } catch(e) {
+                console.error(e);
                 area.innerHTML = `<div class="text-center py-10"><h2 class="heading-font text-xl">Статья не найдена</h2><p class="text-slate-500 mt-2">Проверьте путь к файлу: <code>${path}</code></p></div>`;
             }
         }
