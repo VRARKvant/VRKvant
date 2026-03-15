@@ -60,7 +60,7 @@
         
         .prose h1 { font-family: 'Unbounded', sans-serif; font-size: 2rem; margin-bottom: 2rem; color: #8b5cf6; font-weight: 700; line-height: 1.2; }
         
-        /* Очистка обтекания (чтобы текст после картинок с [LEFT]/[RIGHT] не ломался) */
+        /* Очистка обтекания, чтобы новые блоки не наслаивались на картинки слева/справа */
         .prose .collapsible-header, .prose h2, .prose h3, .prose blockquote, .prose hr { clear: both; }
 
         /* Автоматические спойлеры */
@@ -236,7 +236,6 @@
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json', portfolio: 'articles/portfolio.json' };
         let lastPage = 'home', currentDir = ""; 
 
-        // Инициализация Highlight.js
         if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
             marked.setOptions({
                 highlight: (code, lang) => hljs.getLanguage(lang) ? hljs.highlight(code, { language: lang }).value : hljs.highlightAuto(code).value,
@@ -244,71 +243,48 @@
             });
         }
 
-        // --- МАГИЯ 1: Кастомные теги (Галерея и До/После) ---
-        // Обрабатываем их ДО того, как текст попадет в Marked.js
+        // --- МАГИЯ 1: Кастомные теги (Картинки, Галерея и До/После) ---
         function processCustomTags(text) {
-            // Галерея: [gallery: img1.png | img2.png]
+            // ВАЖНО: Весь HTML-код возвращается в одну строку (без отступов/пробелов в начале),
+            // чтобы Markdown не принимал его за блок кода!
+
+            // 1. Картинка СЛЕВА
+            text = text.replace(/\[left:\s*(.+?)\s*\|\s*(.+?)\]/g, (match, url, alt) => {
+                return `<div class="md:float-left w-full md:w-[45%] md:mr-6 mb-4 mt-2"><img src="${url.trim()}" alt="${alt.trim()}" class="w-full rounded-[1rem] shadow-lg border border-slate-200 dark:border-slate-800 m-0"></div>`;
+            });
+
+            // 2. Картинка СПРАВА
+            text = text.replace(/\[right:\s*(.+?)\s*\|\s*(.+?)\]/g, (match, url, alt) => {
+                return `<div class="md:float-right w-full md:w-[45%] md:ml-6 mb-4 mt-2"><img src="${url.trim()}" alt="${alt.trim()}" class="w-full rounded-[1rem] shadow-lg border border-slate-200 dark:border-slate-800 m-0"></div>`;
+            });
+
+            // 3. Галерея: [gallery: img1.png | img2.png]
             text = text.replace(/\[gallery:\s*(.+?)\]/g, (match, imagesStr) => {
                 const images = imagesStr.split('|').map(s => s.trim());
                 const id = 'gallery-' + Math.random().toString(36).substr(2, 9);
-                
-                let html = `<div class="relative w-full overflow-hidden rounded-[1rem] my-8 shadow-xl border border-slate-200 dark:border-slate-800 group" id="${id}">`;
-                html += `<div class="flex transition-transform duration-500 ease-out" id="${id}-track">`;
-                images.forEach(img => {
-                    html += `<div class="w-full shrink-0"><img src="${img}" class="w-full object-cover m-0 border-none rounded-none shadow-none pointer-events-none" style="display:block;"></div>`;
-                });
+                let html = `<div class="relative w-full overflow-hidden rounded-[1rem] my-8 shadow-xl border border-slate-200 dark:border-slate-800 group clear-both" id="${id}"><div class="flex transition-transform duration-500 ease-out" id="${id}-track">`;
+                images.forEach(img => { html += `<div class="w-full shrink-0"><img src="${img}" class="w-full object-cover m-0 border-none rounded-none shadow-none pointer-events-none" style="display:block;"></div>`; });
                 html += `</div>`;
-                
                 if (images.length > 1) {
                     html += `<button onclick="moveGallery('${id}', -1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-kvant z-10"><i class="fas fa-chevron-left"></i></button>`;
                     html += `<button onclick="moveGallery('${id}', 1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-kvant z-10"><i class="fas fa-chevron-right"></i></button>`;
-                    
                     html += `<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">`;
-                    images.forEach((_, i) => {
-                        html += `<div class="w-2.5 h-2.5 rounded-full transition-colors duration-300 ${i===0?'bg-white':'bg-white/40'} shadow-md" id="${id}-dot-${i}"></div>`;
-                    });
+                    images.forEach((_, i) => { html += `<div class="w-2.5 h-2.5 rounded-full transition-colors duration-300 ${i===0?'bg-white':'bg-white/40'} shadow-md" id="${id}-dot-${i}"></div>`; });
                     html += `</div>`;
                 }
                 html += `</div>`;
                 return html;
             });
 
-            // Слайдер ДО/ПОСЛЕ: [compare: before.png | after.png]
+            // 4. Слайдер ДО/ПОСЛЕ: [compare: before.png | after.png]
             text = text.replace(/\[compare:\s*(.+?)\s*\|\s*(.+?)\]/g, (match, img1, img2) => {
-                return `
-                <div class="relative w-full overflow-hidden rounded-[1rem] my-8 shadow-xl border border-slate-200 dark:border-slate-800 select-none">
-                   <img src="${img2.trim()}" class="w-full block m-0 border-none rounded-none shadow-none pointer-events-none" alt="После">
-                   <img src="${img1.trim()}" class="compare-before absolute top-0 left-0 w-full h-full object-cover m-0 border-none rounded-none shadow-none pointer-events-none" style="clip-path: inset(0 50% 0 0);" alt="До">
-                   <input type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20 m-0" oninput="updateCompare(this)">
-                   <div class="compare-handle absolute top-0 bottom-0 w-1 bg-white pointer-events-none z-10 left-1/2 -translate-x-1/2 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-                      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md">
-                         <i class="fas fa-arrows-alt-h text-sm"></i>
-                      </div>
-                   </div>
-                </div>`;
+                return `<div class="relative w-full overflow-hidden rounded-[1rem] my-8 shadow-xl border border-slate-200 dark:border-slate-800 select-none clear-both"><img src="${img2.trim()}" class="w-full block m-0 border-none rounded-none shadow-none pointer-events-none" alt="После"><img src="${img1.trim()}" class="compare-before absolute top-0 left-0 w-full h-full object-cover m-0 border-none rounded-none shadow-none pointer-events-none" style="clip-path: inset(0 50% 0 0);" alt="До"><input type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20 m-0" oninput="updateCompare(this)"><div class="compare-handle absolute top-0 bottom-0 w-1 bg-white pointer-events-none z-10 left-1/2 -translate-x-1/2 shadow-[0_0_10px_rgba(0,0,0,0.5)]"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md"><i class="fas fa-arrows-alt-h text-sm"></i></div></div></div>`;
             });
+
+            // 5. Ручной сброс обтекания
+            text = text.replace(/\[clear\]/gi, '<div style="clear: both; margin-bottom: 2rem;"></div>');
 
             return text;
-        }
-
-        // --- МАГИЯ 2: Обтекание картинок текстом ---
-        function styleCustomImages() {
-            document.querySelectorAll('#article-content img').forEach(img => {
-                const alt = img.getAttribute('alt') || '';
-                
-                // Пропускаем картинки, которые уже внутри галереи или слайдера
-                if (img.closest('.group') || img.closest('.select-none')) return;
-
-                if (alt.includes('[LEFT]')) {
-                    img.classList.add('float-left', 'md:w-1/2', 'mr-6', 'mb-4', 'mt-2');
-                    img.style.marginLeft = '0';
-                    img.setAttribute('alt', alt.replace('[LEFT]', '').trim());
-                } else if (alt.includes('[RIGHT]')) {
-                    img.classList.add('float-right', 'md:w-1/2', 'ml-6', 'mb-4', 'mt-2');
-                    img.style.marginRight = '0';
-                    img.setAttribute('alt', alt.replace('[RIGHT]', '').trim());
-                }
-            });
         }
 
         // Глобальные функции для Галереи и Слайдера ДО/ПОСЛЕ
@@ -337,7 +313,6 @@
             wrapper.querySelector('.compare-handle').style.left = `${val}%`;
         }
 
-        // Оформление цитат
         function styleSpecialQuotes() {
             const quotes = document.querySelectorAll('#article-content blockquote');
             quotes.forEach(q => {
@@ -349,65 +324,42 @@
             });
         }
 
-        // Авто-спойлеры
         function makeHeadersCollapsible() {
             const area = document.getElementById('article-content');
             if (!area) return;
-            
             const headers = Array.from(area.querySelectorAll('h2, h3'));
             headers.forEach(header => {
                 if (!header.parentNode) return;
-                
                 header.classList.add('collapsible-header', 'active');
                 const contentWrapper = document.createElement('div');
                 contentWrapper.className = 'collapsible-content show';
-                
                 const stopTags = header.tagName === 'H2' ? ['H1', 'H2'] : ['H1', 'H2', 'H3'];
-                
                 let next = header.nextElementSibling;
                 while (next && !stopTags.includes(next.tagName)) {
-                    const elementToMove = next; 
-                    next = next.nextElementSibling; 
-                    contentWrapper.appendChild(elementToMove);
+                    const elementToMove = next; next = next.nextElementSibling; contentWrapper.appendChild(elementToMove);
                 }
-                
                 header.parentNode.insertBefore(contentWrapper, next);
-                header.onclick = () => { 
-                    header.classList.toggle('active'); 
-                    contentWrapper.classList.toggle('show'); 
-                };
+                header.onclick = () => { header.classList.toggle('active'); contentWrapper.classList.toggle('show'); };
             });
         }
 
-        // Перехват внутренних ссылок
         function interceptInternalLinks() {
             document.querySelectorAll('#article-content a').forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && href.endsWith('.md') && !href.startsWith('http')) {
-                    link.onclick = (e) => { 
-                        e.preventDefault(); 
-                        loadArticle(href.startsWith('/') ? href.substring(1) : currentDir + href); 
-                    };
+                    link.onclick = (e) => { e.preventDefault(); loadArticle(href.startsWith('/') ? href.substring(1) : currentDir + href); };
                 }
             });
         }
 
-        // Подсветка кода
         function addCodeFeatures() {
             document.querySelectorAll('#article-content pre').forEach((pre) => {
                 if (pre.querySelector('.copy-code-btn')) return;
-                
                 const codeBlock = pre.querySelector('code');
                 if (!codeBlock) return; 
-                
                 let lang = "CODE";
-                if (codeBlock.className) { 
-                    const match = codeBlock.className.match(/language-(\w+)/); 
-                    if (match) lang = match[1]; 
-                }
-                
+                if (codeBlock.className) { const match = codeBlock.className.match(/language-(\w+)/); if (match) lang = match[1]; }
                 if (typeof hljs !== 'undefined') hljs.highlightElement(codeBlock);
-                
                 const badge = document.createElement('div'); badge.className = 'lang-badge'; badge.textContent = lang; pre.appendChild(badge);
                 const btn = document.createElement('button'); btn.className = 'copy-code-btn'; btn.innerHTML = '<i class="far fa-copy"></i> Copy';
                 btn.onclick = () => { navigator.clipboard.writeText(codeBlock.innerText).then(() => { btn.innerHTML = '<i class="fas fa-check text-green-400"></i> Done'; setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000); }); };
@@ -415,7 +367,6 @@
             });
         }
 
-        // Загрузка статьи с обработкой ошибок
         async function loadArticle(path) {
             showPage('article-viewer');
             const area = document.getElementById('article-content');
@@ -428,14 +379,13 @@
                 let text = await res.text();
                 currentDir = path.substring(0, path.lastIndexOf('/') + 1);
                 
-                // Шаг 1: Предварительная обработка (Галереи и Слайдеры ДО/ПОСЛЕ)
+                // Шаг 1: Превращаем наши шорткоды в HTML
                 text = processCustomTags(text);
                 
                 // Шаг 2: Рендер Markdown
                 area.innerHTML = marked.parse(text);
                 
                 // Шаг 3: Постобработка
-                styleCustomImages(); // Расположение картинок слева/справа
                 makeHeadersCollapsible();
                 styleSpecialQuotes(); 
                 addCodeFeatures(); 
@@ -451,7 +401,6 @@
                         <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200 dark:border-red-900/50 text-left">
                             <code class="text-sm font-mono text-red-600 dark:text-red-400 block whitespace-pre-wrap">${e.message}</code>
                         </div>
-                        <p class="text-xs text-slate-400 mt-6 uppercase tracking-widest font-bold">Убедитесь, что название файла в .json совпадает с файлом в папке.</p>
                     </div>`; 
             }
         }
