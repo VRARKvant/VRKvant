@@ -191,7 +191,7 @@
     <section id="article-viewer" class="page-content pt-20 md:pt-32 px-4 md:px-6 hidden">
         <div class="max-w-[90rem] mx-auto flex items-start gap-8 pb-16 md:pb-20 relative">
             
-            <!-- ЛЕВОЕ МЕНЮ: Иерархия (Видно только на больших экранах) -->
+            <!-- ЛЕВОЕ МЕНЮ: Иерархия -->
             <aside class="hidden lg:block w-64 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pr-4 pb-10">
                 <h3 class="heading-font text-[10px] text-slate-400 mb-6 uppercase tracking-[0.2em] font-bold"><i class="fas fa-sitemap mr-2"></i> Иерархия</h3>
                 <div id="left-sidebar-content" class="space-y-8"></div>
@@ -203,7 +203,7 @@
                 <article id="article-content" class="prose max-w-none bg-white dark:bg-slate-900 px-5 py-8 md:p-12 lg:p-16 rounded-[1.5rem] md:rounded-[3rem] shadow-xl md:shadow-2xl border border-slate-100 dark:border-slate-800 overflow-x-hidden relative"></article>
             </div>
 
-            <!-- ПРАВОЕ МЕНЮ: Оглавление статьи (Видно только на очень больших экранах) -->
+            <!-- ПРАВОЕ МЕНЮ: Оглавление статьи -->
             <aside class="hidden xl:block w-64 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pl-4 pb-10 border-l border-slate-100 dark:border-slate-800/50">
                 <h3 class="heading-font text-[10px] text-slate-400 mb-6 uppercase tracking-[0.2em] font-bold"><i class="fas fa-list-ul mr-2"></i> Содержание</h3>
                 <div id="right-sidebar-content" class="space-y-2"></div>
@@ -218,7 +218,7 @@
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json', portfolio: 'articles/portfolio.json' };
         let lastPage = 'home', currentDir = ""; 
         
-        // Глобальная база данных для левого бокового меню
+        // Глобальная база данных
         window.siteData = { tracks: null, cheats: null };
 
         if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
@@ -228,7 +228,7 @@
             });
         }
 
-        // --- МАГИЯ 1: Кастомные теги с защитой кода (Маскировка) ---
+        // --- МАГИЯ 1: Кастомные теги ---
         function processCustomTags(text) {
             const codeBlocks = [];
 
@@ -345,7 +345,7 @@
             });
         }
 
-        // --- МАГИЯ 2: Подгрузка глобальной базы для бокового меню ---
+        // --- МАГИЯ 2: Подгрузка базы данных ---
         async function loadGlobalData() {
             try {
                 if(!window.siteData.tracks) {
@@ -359,36 +359,77 @@
             } catch(e) { console.error("Ошибка загрузки манифестов", e); }
         }
 
-        // --- МАГИЯ 3: Левое боковое меню (Иерархия) ---
+        // --- МАГИЯ 3: Левое меню (Иерархия с аккордеоном) ---
         function buildLeftSidebar(currentPath) {
             const container = document.getElementById('left-sidebar-content');
             if(!container) return;
             let html = '';
             
             if(window.siteData.tracks) {
-                html += `<div><h4 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center"><div class="w-2 h-2 bg-kvant rounded-full mr-2"></div>Треки</h4><ul class="space-y-1 text-sm border-l-2 border-slate-100 dark:border-slate-800 ml-1 pl-4">`;
-                window.siteData.tracks.forEach(t => {
-                    html += `<li class="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-4 mb-2">${t.name}</li>`;
+                html += `<div><h4 class="font-bold text-slate-800 dark:text-white mb-2 flex items-center"><div class="w-2 h-2 bg-kvant rounded-full mr-2"></div>Треки</h4>`;
+                window.siteData.tracks.forEach((t, i) => {
+                    const listId = `sidebar-track-list-${i}`;
+                    const iconId = `sidebar-track-icon-${i}`;
+                    
+                    html += `
+                    <div class="mb-1">
+                        <button onclick="toggleSidebarMenu('${listId}', '${iconId}')" class="w-full flex items-center justify-between text-left font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-2 hover:text-kvant transition-colors group">
+                            <span>${t.name}</span>
+                            <i id="${iconId}" class="fas fa-chevron-down text-[10px] transition-transform duration-300 group-hover:text-kvant"></i>
+                        </button>
+                        <div id="${listId}" class="overflow-hidden transition-all duration-500 max-h-[2000px] opacity-100">
+                            <!-- Увеличенные отступы: ml-1.5 и pl-4 создают красивую лесенку -->
+                            <ul class="space-y-2 text-sm border-l-2 border-slate-100 dark:border-slate-800 ml-1.5 pl-4 pb-2 mb-2">`;
+                    
                     t.lessons.forEach(l => {
                         const path = `articles/${t.id}/${l.file}`;
                         const isActive = path === currentPath;
-                        html += `<li><button onclick="loadArticle('${path}')" class="text-left w-full transition-colors py-1 ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
+                        html += `<li><button onclick="loadArticle('${path}')" class="text-left w-full transition-colors ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
                     });
+                    
+                    html += `       </ul>
+                        </div>
+                    </div>`;
                 });
-                html += `</ul></div>`;
+                html += `</div>`;
             }
 
             if(window.siteData.cheats) {
-                html += `<div><h4 class="font-bold text-slate-800 dark:text-white mb-4 flex items-center"><div class="w-2 h-2 bg-amber-500 rounded-full mr-2"></div>Шпаргалки</h4><ul class="space-y-1 text-sm border-l-2 border-slate-100 dark:border-slate-800 ml-1 pl-4">`;
+                html += `<div class="mt-8">
+                    <button onclick="toggleSidebarMenu('sidebar-cheats-list', 'sidebar-cheats-icon')" class="w-full flex items-center justify-between text-left font-bold text-slate-800 dark:text-white mb-2 hover:text-amber-500 transition-colors group">
+                        <span class="flex items-center"><div class="w-2 h-2 bg-amber-500 rounded-full mr-2"></div>Шпаргалки</span>
+                        <i id="sidebar-cheats-icon" class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 group-hover:text-amber-500"></i>
+                    </button>
+                    <div id="sidebar-cheats-list" class="overflow-hidden transition-all duration-500 max-h-[2000px] opacity-100">
+                        <ul class="space-y-2 text-sm border-l-2 border-slate-100 dark:border-slate-800 ml-1.5 pl-4 pb-2">`;
                 window.siteData.cheats.forEach(c => {
                     const path = `articles/cheats/${c.file}`;
                     const isActive = path === currentPath;
-                    html += `<li><button onclick="loadArticle('${path}')" class="text-left w-full transition-colors py-1 ${isActive ? 'text-amber-500 font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${c.title}</button></li>`;
+                    html += `<li><button onclick="loadArticle('${path}')" class="text-left w-full transition-colors ${isActive ? 'text-amber-500 font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${c.title}</button></li>`;
                 });
-                html += `</ul></div>`;
+                html += `       </ul>
+                    </div>
+                </div>`;
             }
 
             container.innerHTML = html;
+        }
+
+        // Функция плавной анимации сворачивания боковых меню
+        function toggleSidebarMenu(listId, iconId) {
+            const list = document.getElementById(listId);
+            const icon = document.getElementById(iconId);
+            if (!list || !icon) return;
+            
+            if (list.classList.contains('max-h-0')) {
+                list.classList.remove('max-h-0', 'opacity-0');
+                list.classList.add('max-h-[2000px]', 'opacity-100');
+                icon.classList.remove('-rotate-90');
+            } else {
+                list.classList.add('max-h-0', 'opacity-0');
+                list.classList.remove('max-h-[2000px]', 'opacity-100');
+                icon.classList.add('-rotate-90');
+            }
         }
 
         // --- МАГИЯ 4: Правое боковое меню (Оглавление) ---
@@ -397,7 +438,6 @@
             if(!container) return;
             container.innerHTML = '';
             
-            // Собираем все h2 и h3 из статьи
             const headers = Array.from(document.querySelectorAll('#article-content h2, #article-content h3'));
             
             if(headers.length === 0) {
@@ -406,7 +446,6 @@
             }
 
             headers.forEach((h, i) => {
-                // Добавляем ID каждому заголовку, чтобы к нему можно было скроллить
                 const id = 'heading-' + i;
                 h.id = id;
                 const isH3 = h.tagName === 'H3';
@@ -416,7 +455,6 @@
                 link.textContent = h.textContent;
                 
                 link.onclick = () => {
-                    // Умный скролл: если заголовок спрятан под другим спойлером, сначала открываем родительский спойлер
                     const wrapper = h.closest('.collapsible-content');
                     if (wrapper) {
                         const parentH2 = wrapper.previousElementSibling;
@@ -424,11 +462,9 @@
                             parentH2.click(); 
                         }
                     }
-                    // Если сам заголовок свернут - разворачиваем его
                     if (!h.classList.contains('active')) {
                         h.click();
                     }
-                    // Скроллим (с небольшой задержкой, чтобы анимация развертывания успела сработать)
                     setTimeout(() => { h.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
                 };
                 
@@ -454,7 +490,6 @@
                 addCodeFeatures(); 
                 interceptInternalLinks();
 
-                // Строим боковые меню после загрузки статьи
                 await loadGlobalData();
                 buildLeftSidebar(path);
                 buildToC();
@@ -531,7 +566,7 @@
         window.onload = () => { 
             updateThemeIcons(document.documentElement.classList.contains('dark')); 
             loadPortfolio(); 
-            loadGlobalData(); // Предзагружаем базу знаний в фоне
+            loadGlobalData(); 
         };
     </script>
 </body>
