@@ -60,6 +60,7 @@
         
         .prose h1 { font-family: 'Unbounded', sans-serif; font-size: 2rem; margin-bottom: 2rem; color: #8b5cf6; font-weight: 700; line-height: 1.2; }
         
+        /* Автоматические спойлеры */
         .prose .collapsible-header { 
             display: flex; align-items: center; justify-content: space-between;
             cursor: pointer; padding: 1rem 1.5rem; margin: 1rem -1.5rem; border-radius: 1rem;
@@ -83,14 +84,13 @@
         }
         .prose .collapsible-content.show { max-height: 15000px; opacity: 1; margin-bottom: 2rem; }
         
-        /* ЦИТАТЫ (ОБЩИЕ) */
+        /* Умные цветные цитаты */
         .prose blockquote { 
             border-left: 5px solid #8b5cf6; padding: 1.25rem 1.5rem; margin: 2rem 0; 
             background: #f8fafc; border-radius: 0 1rem 1rem 0; position: relative;
         }
         .dark .prose blockquote { background: #1e293b; border-color: #a78bfa; }
 
-        /* Умные цитаты по ключевым словам */
         .prose blockquote.quote-important { border-color: #ef4444; background: #fef2f2; }
         .dark .prose blockquote.quote-important { background: #450a0a; border-color: #f87171; }
         
@@ -103,10 +103,17 @@
         .prose blockquote.quote-note { border-color: #3b82f6; background: #eff6ff; }
         .dark .prose blockquote.quote-note { background: #1e3a8a; border-color: #60a5fa; }
 
+        /* Базовые элементы */
         .prose img { max-width: 100%; border-radius: 1rem; margin: 2rem auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
         .prose hr { border: 0; border-top: 2px dashed #e2e8f0; margin: 2.5rem 0; }
         .dark .prose hr { border-top-color: #334155; }
+        .prose p { margin-bottom: 1.25rem; }
+        .prose a { color: #8b5cf6; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; transition: color 0.2s; }
+        .prose a:hover { color: #7c3aed; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+        .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
         
+        /* Блоки кода */
         .prose p code, .prose li code { background: #f1f5f9; color: #8b5cf6; padding: 0.2rem 0.4rem; border-radius: 0.4rem; font-family: monospace; font-size: 0.9em; font-weight: 600; }
         .dark .prose p code, .dark .prose li code { background: #1e293b; color: #a78bfa; }
         
@@ -188,6 +195,7 @@
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json', portfolio: 'articles/portfolio.json' };
         let lastPage = 'home', currentDir = ""; 
 
+        // Инициализация Highlight.js
         if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
             marked.setOptions({
                 highlight: (code, lang) => hljs.getLanguage(lang) ? hljs.highlight(code, { language: lang }).value : hljs.highlightAuto(code).value,
@@ -195,31 +203,31 @@
             });
         }
 
+        // Оформление цитат
         function styleSpecialQuotes() {
             const quotes = document.querySelectorAll('#article-content blockquote');
             quotes.forEach(q => {
                 const text = q.innerText.toLowerCase();
                 if (text.includes('важно:')) q.classList.add('quote-important');
-                else if (text.includes('совет:')) q.classList.add('quote-tip');
+                else if (text.includes('совет:') || text.includes('лайфхак:')) q.classList.add('quote-tip');
                 else if (text.includes('внимание:') || text.includes('предупреждение:')) q.classList.add('quote-warning');
-                else if (text.includes('заметка:')) q.classList.add('quote-note');
+                else if (text.includes('заметка:') || text.includes('информация:')) q.classList.add('quote-note');
             });
         }
 
+        // Авто-спойлеры
         function makeHeadersCollapsible() {
             const area = document.getElementById('article-content');
-            // Обязательно переводим NodeList в массив, чтобы порядок обработки был точным
-            const headers = Array.from(area.querySelectorAll('h2, h3'));
+            if (!area) return;
             
+            const headers = Array.from(area.querySelectorAll('h2, h3'));
             headers.forEach(header => {
-                header.classList.add('collapsible-header');
-                header.classList.add('active'); // Раскрыто по умолчанию
+                if (!header.parentNode) return;
                 
+                header.classList.add('collapsible-header', 'active');
                 const contentWrapper = document.createElement('div');
-                contentWrapper.className = 'collapsible-content show'; // Раскрыто по умолчанию
+                contentWrapper.className = 'collapsible-content show';
                 
-                // Умная иерархия: H2 собирает всё до следующего H1 или H2
-                // H3 собирает всё только до следующего H1, H2 или H3
                 const stopTags = header.tagName === 'H2' ? ['H1', 'H2'] : ['H1', 'H2', 'H3'];
                 
                 let next = header.nextElementSibling;
@@ -237,38 +245,35 @@
             });
         }
 
-        async function loadArticle(path) {
-            showPage('article-viewer');
-            const area = document.getElementById('article-content');
-            area.innerHTML = '<div class="flex justify-center p-20"><i class="fas fa-circle-notch fa-spin text-4xl text-kvant"></i></div>';
-            try {
-                const res = await fetch(path);
-                if (!res.ok) throw new Error();
-                const text = await res.text();
-                currentDir = path.substring(0, path.lastIndexOf('/') + 1);
-                area.innerHTML = marked.parse(text);
-                makeHeadersCollapsible();
-                styleSpecialQuotes(); // Магия цветных цитат
-                addCodeFeatures(); 
-                interceptInternalLinks();
-            } catch(e) { area.innerHTML = `<div class="text-center py-20"><h2 class="heading-font text-2xl text-red-500">Ошибка загрузки</h2></div>`; }
-        }
-
+        // Перехват внутренних ссылок
         function interceptInternalLinks() {
             document.querySelectorAll('#article-content a').forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && href.endsWith('.md') && !href.startsWith('http')) {
-                    link.onclick = (e) => { e.preventDefault(); loadArticle(href.startsWith('/') ? href.substring(1) : currentDir + href); };
+                    link.onclick = (e) => { 
+                        e.preventDefault(); 
+                        loadArticle(href.startsWith('/') ? href.substring(1) : currentDir + href); 
+                    };
                 }
             });
         }
 
+        // Подсветка кода и кнопка
         function addCodeFeatures() {
             document.querySelectorAll('#article-content pre').forEach((pre) => {
+                if (pre.querySelector('.copy-code-btn')) return;
+                
                 const codeBlock = pre.querySelector('code');
+                if (!codeBlock) return; 
+                
                 let lang = "CODE";
-                if (codeBlock.className) { const match = codeBlock.className.match(/language-(\w+)/); if (match) lang = match[1]; }
-                hljs.highlightElement(codeBlock);
+                if (codeBlock.className) { 
+                    const match = codeBlock.className.match(/language-(\w+)/); 
+                    if (match) lang = match[1]; 
+                }
+                
+                if (typeof hljs !== 'undefined') hljs.highlightElement(codeBlock);
+                
                 const badge = document.createElement('div'); badge.className = 'lang-badge'; badge.textContent = lang; pre.appendChild(badge);
                 const btn = document.createElement('button'); btn.className = 'copy-code-btn'; btn.innerHTML = '<i class="far fa-copy"></i> Copy';
                 btn.onclick = () => { navigator.clipboard.writeText(codeBlock.innerText).then(() => { btn.innerHTML = '<i class="fas fa-check text-green-400"></i> Done'; setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000); }); };
@@ -276,33 +281,64 @@
             });
         }
 
+        // Загрузка статьи с обработкой ошибок
+        async function loadArticle(path) {
+            showPage('article-viewer');
+            const area = document.getElementById('article-content');
+            area.innerHTML = '<div class="flex justify-center p-20"><i class="fas fa-circle-notch fa-spin text-4xl text-kvant"></i></div>';
+            
+            try {
+                // Исключаем загрузку из кэша браузера (всегда актуальный файл)
+                const res = await fetch(path + '?t=' + new Date().getTime());
+                
+                if (!res.ok) throw new Error(`Код ${res.status}: Файл не найден по пути "${path}"`);
+                
+                const text = await res.text();
+                currentDir = path.substring(0, path.lastIndexOf('/') + 1);
+                
+                area.innerHTML = marked.parse(text);
+                
+                makeHeadersCollapsible();
+                styleSpecialQuotes(); 
+                addCodeFeatures(); 
+                interceptInternalLinks();
+                
+            } catch(e) { 
+                console.error(e);
+                area.innerHTML = `
+                    <div class="text-center py-20 px-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-red-200 dark:border-red-900/30">
+                        <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-6 drop-shadow-lg"></i>
+                        <h2 class="heading-font text-2xl text-slate-800 dark:text-white mb-4">Ошибка загрузки статьи</h2>
+                        <p class="text-slate-500 mb-6">Сайту не удалось найти или обработать файл. Пожалуйста, проверьте манифест.</p>
+                        <div class="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl border border-red-200 dark:border-red-900/50 text-left">
+                            <code class="text-sm font-mono text-red-600 dark:text-red-400 block whitespace-pre-wrap">
+                                ${e.message}
+                            </code>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-6 uppercase tracking-widest font-bold">Убедитесь, что название файла в .json совпадает с файлом в папке.</p>
+                    </div>`; 
+            }
+        }
+
+        // Загрузчики данных
         async function loadPortfolio() {
             try {
-                const res = await fetch(CONFIG.portfolio);
+                const res = await fetch(CONFIG.portfolio + '?t=' + new Date().getTime());
+                if(!res.ok) throw new Error();
                 const data = await res.json();
                 document.getElementById('portfolio-carousel').innerHTML = data.projects.map(p => `
                     <div class="snap-center shrink-0 w-[85vw] md:w-[500px] bg-white dark:bg-slate-900 rounded-[3rem] overflow-hidden shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer" onclick="loadArticle('articles/portfolio/${p.file}')">
                         <div class="h-56 md:h-72 bg-slate-100 dark:bg-slate-800 relative overflow-hidden">${p.image ? `<img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">` : `<div class="w-full h-full flex items-center justify-center text-4xl opacity-20"><i class="fas fa-image"></i></div>`}<div class="absolute top-6 left-6 flex gap-2">${p.tags.map(t => `<span class="bg-black/40 backdrop-blur-md text-white text-[9px] uppercase font-black px-4 py-1.5 rounded-full border border-white/20">${t}</span>`).join('')}</div></div>
                         <div class="p-8 md:p-10"><h3 class="heading-font text-2xl mb-4 group-hover:text-kvant transition">${p.title}</h3><p class="text-slate-500 text-sm mb-6 line-clamp-2">${p.description}</p><div class="flex items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest"><i class="fas fa-user-circle mr-2 text-kvant"></i> ${p.authors}</div></div>
                     </div>`).join('');
-            } catch(e) { document.getElementById('portfolio-carousel').innerHTML = ''; }
+            } catch(e) { document.getElementById('portfolio-carousel').innerHTML = '<div class="w-full text-center py-20 opacity-30 italic">Проекты появятся здесь в ближайшее время...</div>'; }
         }
-
-        function scrollPortfolio(v) { document.getElementById('portfolio-carousel').scrollBy({ left: v, behavior: 'smooth' }); }
-        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden-menu'); }
-        function toggleTheme() { const isDark = document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', isDark ? 'dark' : 'light'); updateThemeIcons(isDark); }
-        function updateThemeIcons(isDark) { const icon = document.getElementById('theme-icon'); if (icon) icon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon'); }
-        function showPage(pId) {
-            document.getElementById('mobile-menu').classList.add('hidden-menu'); if (pId !== 'article-viewer') lastPage = pId;
-            document.querySelectorAll('.page-content').forEach(p => { p.classList.remove('active'); p.classList.add('hidden'); if(p.id === pId) { p.classList.remove('hidden'); p.classList.add('active'); } });
-            document.querySelectorAll('.nav-item').forEach(n => { n.classList.toggle('text-kvant', n.id === 'nav-' + pId || (pId === 'article-viewer' && n.id === 'nav-' + lastPage)); });
-            if (pId === 'tracks') loadTracks(); if (pId === 'cheats') loadCheats(); window.scrollTo(0, 0);
-        }
-        function goBack() { showPage(lastPage); }
 
         async function loadTracks() {
             try {
-                const res = await fetch(CONFIG.tracks); const data = await res.json();
+                const res = await fetch(CONFIG.tracks + '?t=' + new Date().getTime()); 
+                if(!res.ok) throw new Error();
+                const data = await res.json();
                 document.getElementById('tracks-container').innerHTML = data.tracks.map(t => `
                     <div class="bg-slate-50 dark:bg-slate-900 rounded-[3rem] p-8 md:p-10 border border-slate-100 dark:border-slate-800"><div class="flex items-center space-x-5 mb-10"><div class="w-14 h-14 ${t.colorClass} rounded-2xl flex items-center justify-center text-white shadow-lg"><i class="${t.icon} text-xl"></i></div><h3 class="heading-font text-xl">${t.name}</h3></div><div class="space-y-4">${t.lessons.map(l => `<div onclick="loadArticle('articles/${t.id}/${l.file}')" class="p-5 bg-white dark:bg-slate-800 rounded-2xl flex justify-between items-center cursor-pointer hover:ring-4 ring-kvant/20 transition group"><span class="font-bold text-sm group-hover:text-kvant transition">${l.title}</span><i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i></div>`).join('')}</div></div>`).join('');
             } catch(e) {}
@@ -310,10 +346,27 @@
 
         async function loadCheats() {
             try {
-                const res = await fetch(CONFIG.cheats); const data = await res.json();
+                const res = await fetch(CONFIG.cheats + '?t=' + new Date().getTime()); 
+                if(!res.ok) throw new Error();
+                const data = await res.json();
                 document.getElementById('cheats-container').innerHTML = data.cheats.map(c => `<div onclick="loadArticle('articles/cheats/${c.file}')" class="p-8 bg-slate-50 dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group"><span class="font-bold tracking-tight italic">${c.title}</span><div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fas fa-arrow-right"></i></div></div>`).join('');
             } catch(e) {}
         }
+
+        // Управление UI
+        function scrollPortfolio(v) { document.getElementById('portfolio-carousel').scrollBy({ left: v, behavior: 'smooth' }); }
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden-menu'); }
+        function toggleTheme() { const isDark = document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', isDark ? 'dark' : 'light'); updateThemeIcons(isDark); }
+        function updateThemeIcons(isDark) { const icon = document.getElementById('theme-icon'); if (icon) icon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon'); }
+        
+        function showPage(pId) {
+            document.getElementById('mobile-menu').classList.add('hidden-menu'); 
+            if (pId !== 'article-viewer') lastPage = pId;
+            document.querySelectorAll('.page-content').forEach(p => { p.classList.remove('active'); p.classList.add('hidden'); if(p.id === pId) { p.classList.remove('hidden'); p.classList.add('active'); } });
+            document.querySelectorAll('.nav-item').forEach(n => { n.classList.toggle('text-kvant', n.id === 'nav-' + pId || (pId === 'article-viewer' && n.id === 'nav-' + lastPage)); });
+            if (pId === 'tracks') loadTracks(); if (pId === 'cheats') loadCheats(); window.scrollTo(0, 0);
+        }
+        function goBack() { showPage(lastPage); }
 
         window.onload = () => { updateThemeIcons(document.documentElement.classList.contains('dark')); loadPortfolio(); };
     </script>
