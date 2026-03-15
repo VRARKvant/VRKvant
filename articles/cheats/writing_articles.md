@@ -75,7 +75,7 @@ Markdown — это текстовый стандарт, который прев
 ```
 
 **Как это выглядит:**
-![Пример работы нодов в Unreal](https://via.placeholder.com/600x150.png?text=Скриншот+вашего+кода)
+![Пример работы нодов в Unreal](https://picsum.photos/600/150)
 
 > **Важно:** В реальных статьях вы должны ссылаться на локальные файлы в папке `img`, например: `![Окно](img/unreal/interface_1.png)`. Названия файлов — только латиница!
 
@@ -104,7 +104,9 @@ public class PlayerController : MonoBehaviour {
 
 ### Видео (YouTube)
 Наш сайт поддерживает вставку через `iframe`. На YouTube нажмите «Поделиться» -> «Встроить» и скопируйте HTML-код. Вставьте его прямо в файл статьи.
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/nhXbdBy1DTU?si=jchSW2QjOb2J4IO_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ---
 
 ## 3. Ссылки
