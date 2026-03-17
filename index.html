@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VR/AR Квантум — База знаний</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥽</text></svg>">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome для иконок -->
@@ -36,7 +38,6 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Тонкий скроллбар для боковых меню */
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -56,7 +57,6 @@
         .prose .collapsible-header:hover { background: #f1f5f9; }
         .dark .prose .collapsible-header:hover { background: #1e293b; }
 
-        /* Отступ при скролле из Оглавления, чтобы заголовок не прятался под шапку */
         .prose h2.collapsible-header, .prose h3.collapsible-header { scroll-margin-top: 6rem; }
 
         .prose h2.collapsible-header { font-family: 'Unbounded', sans-serif; font-size: 1.25rem; font-weight: 700; color: #8b5cf6; padding: 0.8rem 1rem; margin: 1rem -1rem; border-radius: 0.75rem; }
@@ -133,14 +133,15 @@
 
     <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-900">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.hash='home'">
                 <div class="bg-kvant p-2 rounded-xl text-white shadow-lg shadow-kvant/30"><i class="fas fa-vr-cardboard text-lg md:text-xl"></i></div>
                 <span class="heading-font font-bold text-base md:text-lg tracking-tighter uppercase">VR/AR <span class="text-kvant">Квантум</span></span>
             </div>
             <div class="hidden md:flex items-center space-x-8 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                <button onclick="showPage('home')" class="nav-item active hover:text-kvant transition" id="nav-home">Главная</button>
-                <button onclick="showPage('tracks')" class="nav-item hover:text-kvant transition" id="nav-tracks">Треки</button>
-                <button onclick="showPage('cheats')" class="nav-item hover:text-kvant transition" id="nav-cheats">Шпаргалки</button>
+                <button onclick="window.location.hash='home'" class="nav-item active hover:text-kvant transition" id="nav-home">Главная</button>
+                <button onclick="window.location.hash='tracks'" class="nav-item hover:text-kvant transition" id="nav-tracks">Треки</button>
+                <button onclick="window.location.hash='cheats'" class="nav-item hover:text-kvant transition" id="nav-cheats">Шпаргалки</button>
+                <button onclick="window.location.hash='projects'" class="nav-item hover:text-kvant transition" id="nav-projects">Проекты</button>
                 <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 transition-transform hover:scale-110"><i id="theme-icon" class="fas fa-moon"></i></button>
             </div>
             <div class="md:hidden flex items-center gap-4">
@@ -153,32 +154,76 @@
     <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white dark:bg-slate-950 hidden-menu md:hidden flex flex-col p-6">
         <div class="flex justify-between items-center mb-10"><span class="heading-font font-bold text-lg uppercase">Меню</span><button onclick="toggleMobileMenu()" class="text-3xl">&times;</button></div>
         <nav class="flex flex-col space-y-6 text-xl font-bold">
-            <button onclick="showPage('home')" class="text-left py-2 border-b dark:border-slate-800">Главная</button>
-            <button onclick="showPage('tracks')" class="text-left py-2 border-b dark:border-slate-800">Треки</button>
-            <button onclick="showPage('cheats')" class="text-left py-2 border-b dark:border-slate-800">Шпаргалки</button>
+            <button onclick="window.location.hash='home'; toggleMobileMenu();" class="text-left py-2 border-b dark:border-slate-800">Главная</button>
+            <button onclick="window.location.hash='tracks'; toggleMobileMenu();" class="text-left py-2 border-b dark:border-slate-800">Треки</button>
+            <button onclick="window.location.hash='cheats'; toggleMobileMenu();" class="text-left py-2 border-b dark:border-slate-800">Шпаргалки</button>
+            <button onclick="window.location.hash='projects'; toggleMobileMenu();" class="text-left py-2 border-b dark:border-slate-800">Проекты</button>
         </nav>
     </div>
 
     <main id="home" class="page-content pt-20 md:pt-32 active">
-        <div class="max-w-6xl mx-auto px-4 md:px-6 text-center mb-12 md:mb-20">
+        <div class="max-w-6xl mx-auto px-4 md:px-6 text-center mb-12 md:mb-16">
             <h1 class="heading-font text-2xl md:text-6xl mb-6 md:mb-8 leading-tight uppercase tracking-tighter mt-4">Центр Знаний <br><span class="text-kvant italic">VR Kvant</span></h1>
             <p class="text-sm md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 md:mb-16 px-2">Все учебные материалы, инструкции по оборудованию и гайды по разработке в одном месте.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <div onclick="loadArticle('articles/blender/intro.md')" class="p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-2"><i class="fas fa-cube text-3xl md:text-4xl mb-4 md:mb-6 text-orange-500"></i><h3 class="heading-font text-lg md:text-xl mb-2">Blender</h3><p class="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest">3D Modeling</p></div>
-                <div onclick="loadArticle('articles/unity/intro.md')" class="p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-2"><i class="fab fa-unity text-3xl md:text-4xl mb-4 md:mb-6 text-indigo-500"></i><h3 class="heading-font text-lg md:text-xl mb-2">Unity</h3><p class="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest">VR Development</p></div>
-                <div onclick="loadArticle('articles/unreal/intro.md')" class="p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-2"><i class="fas fa-bolt text-3xl md:text-4xl mb-4 md:mb-6 text-amber-500"></i><h3 class="heading-font text-lg md:text-xl mb-2">Unreal</h3><p class="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest">Visual Coding</p></div>
+        </div>
+
+        <!-- КАРУСЕЛЬ ТРЕКОВ НА ГЛАВНОЙ (Теперь листается вбок!) -->
+        <div class="max-w-7xl mx-auto px-4 md:px-6 mb-20 md:mb-24">
+            <div class="flex justify-between items-end mb-6 md:mb-10">
+                <div><h2 class="heading-font text-2xl md:text-4xl uppercase tracking-tighter">Наши <span class="text-kvant">треки</span></h2><p class="text-xs md:text-base text-slate-500 mt-2 md:mt-3">Выбери направление для изучения</p></div>
+                <div class="hidden md:flex space-x-3">
+                    <button onclick="document.getElementById('home-tracks-carousel').scrollBy({left: -350, behavior: 'smooth'})" class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-left"></i></button>
+                    <button onclick="document.getElementById('home-tracks-carousel').scrollBy({left: 350, behavior: 'smooth'})" class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div id="home-tracks-carousel" class="flex overflow-x-auto snap-x snap-mandatory gap-6 md:gap-8 pb-6 hide-scrollbar scroll-smooth">
+                <!-- Blender -->
+                <div onclick="window.location.hash='article:articles/blender/intro.md'" class="snap-center shrink-0 w-[80vw] md:w-[320px] p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-2 flex flex-col items-center">
+                    <img src="https://cdn.simpleicons.org/blender/f97316" alt="Blender Logo" class="w-10 h-10 md:w-12 md:h-12 mb-4 md:mb-6">
+                    <h3 class="heading-font text-lg md:text-xl mb-2 w-full text-center">Blender</h3>
+                    <p class="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest text-center w-full">3D Modeling</p>
+                </div>
+                <!-- Unity -->
+                <div onclick="window.location.hash='article:articles/unity/intro.md'" class="snap-center shrink-0 w-[80vw] md:w-[320px] p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-2 flex flex-col items-center">
+                    <i class="fab fa-unity text-4xl md:text-[3rem] mb-4 md:mb-6 text-indigo-500 leading-none h-10 md:h-12 flex items-center"></i>
+                    <h3 class="heading-font text-lg md:text-xl mb-2 w-full text-center">Unity</h3>
+                    <p class="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest text-center w-full">VR Development</p>
+                </div>
+                <!-- Unreal Engine -->
+                <div onclick="window.location.hash='article:articles/unreal/intro.md'" class="snap-center shrink-0 w-[80vw] md:w-[320px] p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-2 flex flex-col items-center">
+                    <img src="https://cdn.simpleicons.org/unrealengine/f59e0b" alt="Unreal Logo" class="w-10 h-10 md:w-12 md:h-12 mb-4 md:mb-6">
+                    <h3 class="heading-font text-lg md:text-xl mb-2 w-full text-center">Unreal</h3>
+                    <p class="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest text-center w-full">Visual Coding</p>
+                </div>
             </div>
         </div>
+        
+        <!-- КАРУСЕЛЬ ПРОЕКТОВ НА ГЛАВНОЙ -->
         <div class="w-full bg-slate-50 dark:bg-slate-900/50 py-16 md:py-24 border-y border-slate-100 dark:border-slate-800">
             <div class="max-w-7xl mx-auto px-4 md:px-6">
                 <div class="flex justify-between items-end mb-8 md:mb-12">
                     <div><h2 class="heading-font text-2xl md:text-5xl uppercase tracking-tighter">Наши <span class="text-kvant">проекты</span></h2><p class="text-xs md:text-base text-slate-500 mt-2 md:mt-4">Результаты работы команд в текущем учебном году</p></div>
-                    <div class="hidden md:flex space-x-3"><button onclick="scrollPortfolio(-400)" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-left"></i></button><button onclick="scrollPortfolio(400)" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-right"></i></button></div>
+                    <div class="hidden md:flex space-x-3">
+                        <button onclick="document.getElementById('portfolio-carousel').scrollBy({left: -400, behavior: 'smooth'})" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-left"></i></button>
+                        <button onclick="document.getElementById('portfolio-carousel').scrollBy({left: 400, behavior: 'smooth'})" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-right"></i></button>
+                    </div>
                 </div>
                 <div id="portfolio-carousel" class="flex overflow-x-auto snap-x snap-mandatory gap-6 md:gap-8 pb-6 md:pb-10 hide-scrollbar scroll-smooth"><div class="w-full text-center py-10 md:py-20 opacity-50"><i class="fas fa-spinner fa-spin mr-2"></i> Загрузка проектов...</div></div>
+                <div class="text-center mt-6">
+                    <button onclick="window.location.hash='projects'" class="text-kvant text-xs md:text-sm font-bold uppercase tracking-widest hover:opacity-70 transition group">Показать все проекты <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i></button>
+                </div>
             </div>
         </div>
     </main>
+
+    <!-- НОВАЯ ВКЛАДКА ПРОЕКТОВ -->
+    <section id="projects" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center">Все <span class="text-kvant">Проекты</span></h2>
+            <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
+        </div>
+    </section>
 
     <section id="tracks" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
         <div class="max-w-6xl mx-auto"><h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center italic underline decoration-kvant underline-offset-8">Учебные Траектории</h2><div id="tracks-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10"></div></div>
@@ -191,22 +236,20 @@
     <section id="article-viewer" class="page-content pt-20 md:pt-32 px-4 md:px-6 hidden">
         <div class="max-w-[90rem] mx-auto flex items-start gap-8 pb-16 md:pb-20 relative">
             
-            <!-- ЛЕВОЕ МЕНЮ: Иерархия -->
             <aside class="hidden lg:block w-64 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pr-4 pb-10">
                 <h3 class="heading-font text-[10px] text-slate-400 mb-6 uppercase tracking-[0.2em] font-bold"><i class="fas fa-sitemap mr-2"></i> Иерархия</h3>
                 <div id="left-sidebar-content" class="space-y-8"></div>
             </aside>
 
-            <!-- ЦЕНТРАЛЬНАЯ ЧАСТЬ: Контент -->
             <div class="flex-1 min-w-0 max-w-4xl mx-auto w-full">
-                <button onclick="goBack()" class="mb-6 md:mb-10 group flex items-center text-kvant font-bold uppercase text-[10px] md:text-xs tracking-[0.2em] hover:opacity-70 transition"><i class="fas fa-long-arrow-alt-left mr-3 group-hover:-translate-x-2 transition"></i> Вернуться назад</button>
+                <button onclick="goBackSafe()" class="mb-6 md:mb-10 group flex items-center text-kvant font-bold uppercase text-[10px] md:text-xs tracking-[0.2em] hover:opacity-70 transition"><i class="fas fa-long-arrow-alt-left mr-3 group-hover:-translate-x-2 transition"></i> Вернуться назад</button>
                 <article id="article-content" class="prose max-w-none bg-white dark:bg-slate-900 px-5 py-8 md:p-12 lg:p-16 rounded-[1.5rem] md:rounded-[3rem] shadow-xl md:shadow-2xl border border-slate-100 dark:border-slate-800 overflow-x-hidden relative"></article>
             </div>
 
-            <!-- ПРАВОЕ МЕНЮ: Оглавление статьи -->
+            <!-- ОБНОВЛЕННОЕ ОГЛАВЛЕНИЕ (БУТЕРБРОД) -->
             <aside class="hidden xl:block w-64 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pl-4 pb-10 border-l border-slate-100 dark:border-slate-800/50">
                 <h3 class="heading-font text-[10px] text-slate-400 mb-6 uppercase tracking-[0.2em] font-bold"><i class="fas fa-list-ul mr-2"></i> Содержание</h3>
-                <div id="right-sidebar-content" class="space-y-2"></div>
+                <div id="right-sidebar-content" class="space-y-1"></div>
             </aside>
 
         </div>
@@ -217,8 +260,6 @@
     <script>
         const CONFIG = { tracks: 'articles/tracks.json', cheats: 'articles/cheats.json', portfolio: 'articles/portfolio.json' };
         let lastPage = 'home', currentDir = ""; 
-        
-        // Глобальная база данных
         window.siteData = { tracks: null, cheats: null };
 
         if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
@@ -228,19 +269,52 @@
             });
         }
 
-        // --- МАГИЯ 1: Кастомные теги ---
+        // --- МАГИЯ: Роутинг (SPA Navigation) ---
+        window.addEventListener('hashchange', handleRouting);
+
+        function handleRouting() {
+            const hash = window.location.hash.substring(1) || 'home';
+            if (hash.startsWith('article:')) {
+                const path = hash.substring(8);
+                renderArticle(path);
+            } else if (['home', 'tracks', 'cheats', 'projects'].includes(hash)) {
+                renderPage(hash);
+            } else {
+                window.location.hash = 'home';
+            }
+        }
+
+        function renderPage(pId) {
+            document.getElementById('mobile-menu').classList.add('hidden-menu'); 
+            lastPage = pId; 
+            
+            document.querySelectorAll('.page-content').forEach(p => { 
+                p.classList.remove('active'); p.classList.add('hidden'); 
+                if(p.id === pId) { p.classList.remove('hidden'); p.classList.add('active'); } 
+            });
+            document.querySelectorAll('.nav-item').forEach(n => { 
+                n.classList.toggle('text-kvant', n.id === 'nav-' + pId); 
+            });
+            
+            if (pId === 'tracks') loadTracks(); 
+            if (pId === 'cheats') loadCheats(); 
+            if (pId === 'projects') loadProjectsFullPage();
+            window.scrollTo(0, 0);
+        }
+
+        function goBackSafe() {
+            if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
+                window.history.back();
+            } else {
+                window.location.hash = lastPage;
+            }
+        }
+
+        // --- МАГИЯ: Кастомные теги ---
         function processCustomTags(text) {
             const codeBlocks = [];
-
-            text = text.replace(/```[\s\S]*?```/g, match => {
-                codeBlocks.push(match);
-                return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
-            });
-
-            text = text.replace(/`[^`]*`/g, match => {
-                codeBlocks.push(match);
-                return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
-            });
+            text = text.replace(/```[\s\S]*?```/g, match => { codeBlocks.push(match); return `__CODE_BLOCK_${codeBlocks.length - 1}__`; });
+            text = text.replace(/`[^`]*`/g, match => { codeBlocks.push(match); return `__CODE_BLOCK_${codeBlocks.length - 1}__`; });
 
             text = text.replace(/\[gallery:\s*(.+?)\]/g, (match, imagesStr) => {
                 const images = imagesStr.split('|').map(s => s.trim());
@@ -263,10 +337,7 @@
                 return `<div class="relative w-fit max-w-full mx-auto overflow-hidden rounded-xl md:rounded-[1rem] my-6 md:my-8 shadow-lg md:shadow-xl border border-slate-200 dark:border-slate-800 select-none"><img src="${img2.trim()}" class="max-w-full max-h-[60vh] md:max-h-[75vh] w-auto block m-0 border-none rounded-none shadow-none pointer-events-none" alt="После"><img src="${img1.trim()}" class="compare-before absolute top-0 left-0 w-full h-full object-cover m-0 border-none rounded-none shadow-none pointer-events-none" style="clip-path: inset(0 50% 0 0);" alt="До"><input type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20 m-0" oninput="updateCompare(this)"><div class="compare-handle absolute top-0 bottom-0 w-1 bg-white pointer-events-none z-10 left-1/2 -translate-x-1/2 shadow-[0_0_10px_rgba(0,0,0,0.5)]"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md"><i class="fas fa-arrows-alt-h text-[10px] md:text-sm"></i></div></div></div>`;
             });
 
-            codeBlocks.forEach((block, i) => {
-                text = text.replace(`__CODE_BLOCK_${i}__`, block);
-            });
-
+            codeBlocks.forEach((block, i) => { text = text.replace(`__CODE_BLOCK_${i}__`, block); });
             return text;
         }
 
@@ -308,9 +379,12 @@
             const headers = Array.from(area.querySelectorAll('h2, h3'));
             headers.forEach(header => {
                 if (!header.parentNode) return;
-                header.classList.add('collapsible-header', 'active');
+                
+                // Убраны классы 'active' и 'show', чтобы всё было СЛОЖЕНО ПО УМОЛЧАНИЮ
+                header.classList.add('collapsible-header');
                 const contentWrapper = document.createElement('div');
-                contentWrapper.className = 'collapsible-content show';
+                contentWrapper.className = 'collapsible-content';
+                
                 const stopTags = header.tagName === 'H2' ? ['H1', 'H2'] : ['H1', 'H2', 'H3'];
                 let next = header.nextElementSibling;
                 while (next && !stopTags.includes(next.tagName)) {
@@ -325,7 +399,11 @@
             document.querySelectorAll('#article-content a').forEach(link => {
                 const href = link.getAttribute('href');
                 if (href && href.endsWith('.md') && !href.startsWith('http')) {
-                    link.onclick = (e) => { e.preventDefault(); loadArticle(href.startsWith('/') ? href.substring(1) : currentDir + href); };
+                    link.onclick = (e) => { 
+                        e.preventDefault(); 
+                        const targetPath = href.startsWith('/') ? href.substring(1) : currentDir + href;
+                        window.location.hash = 'article:' + targetPath; 
+                    };
                 }
             });
         }
@@ -345,7 +423,6 @@
             });
         }
 
-        // --- МАГИЯ 2: Подгрузка базы данных ---
         async function loadGlobalData() {
             try {
                 if(!window.siteData.tracks) {
@@ -356,10 +433,9 @@
                     const r2 = await fetch(CONFIG.cheats + '?t=' + new Date().getTime());
                     window.siteData.cheats = (await r2.json()).cheats;
                 }
-            } catch(e) { console.error("Ошибка загрузки манифестов", e); }
+            } catch(e) { console.error("Ошибка", e); }
         }
 
-        // --- МАГИЯ 3: Левое меню (Иерархия с аккордеоном) ---
         function buildLeftSidebar(currentPath) {
             const container = document.getElementById('left-sidebar-content');
             if(!container) return;
@@ -370,26 +446,19 @@
                 window.siteData.tracks.forEach((t, i) => {
                     const listId = `sidebar-track-list-${i}`;
                     const iconId = `sidebar-track-icon-${i}`;
-                    
                     html += `
                     <div class="mb-1">
                         <button onclick="toggleSidebarMenu('${listId}', '${iconId}')" class="w-full flex items-center justify-between text-left font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-2 hover:text-kvant transition-colors group">
-                            <span>${t.name}</span>
-                            <i id="${iconId}" class="fas fa-chevron-down text-[10px] transition-transform duration-300 group-hover:text-kvant"></i>
+                            <span>${t.name}</span><i id="${iconId}" class="fas fa-chevron-down text-[10px] transition-transform duration-300 group-hover:text-kvant"></i>
                         </button>
                         <div id="${listId}" class="overflow-hidden transition-all duration-500 max-h-[2000px] opacity-100">
-                            <!-- Увеличенные отступы: ml-1.5 и pl-4 создают красивую лесенку -->
                             <ul class="space-y-2 text-sm border-l-2 border-slate-100 dark:border-slate-800 ml-1.5 pl-4 pb-2 mb-2">`;
-                    
                     t.lessons.forEach(l => {
                         const path = `articles/${t.id}/${l.file}`;
                         const isActive = path === currentPath;
-                        html += `<li><button onclick="loadArticle('${path}')" class="text-left w-full transition-colors ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
+                        html += `<li><button onclick="window.location.hash='article:${path}'" class="text-left w-full transition-colors ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
                     });
-                    
-                    html += `       </ul>
-                        </div>
-                    </div>`;
+                    html += `</ul></div></div>`;
                 });
                 html += `</div>`;
             }
@@ -405,75 +474,126 @@
                 window.siteData.cheats.forEach(c => {
                     const path = `articles/cheats/${c.file}`;
                     const isActive = path === currentPath;
-                    html += `<li><button onclick="loadArticle('${path}')" class="text-left w-full transition-colors ${isActive ? 'text-amber-500 font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${c.title}</button></li>`;
+                    html += `<li><button onclick="window.location.hash='article:${path}'" class="text-left w-full transition-colors ${isActive ? 'text-amber-500 font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${c.title}</button></li>`;
                 });
-                html += `       </ul>
-                    </div>
-                </div>`;
+                html += `</ul></div></div>`;
             }
-
             container.innerHTML = html;
         }
 
-        // Функция плавной анимации сворачивания боковых меню
         function toggleSidebarMenu(listId, iconId) {
             const list = document.getElementById(listId);
             const icon = document.getElementById(iconId);
             if (!list || !icon) return;
-            
             if (list.classList.contains('max-h-0')) {
-                list.classList.remove('max-h-0', 'opacity-0');
-                list.classList.add('max-h-[2000px]', 'opacity-100');
-                icon.classList.remove('-rotate-90');
+                list.classList.remove('max-h-0', 'opacity-0'); list.classList.add('max-h-[2000px]', 'opacity-100'); icon.classList.remove('-rotate-90');
             } else {
-                list.classList.add('max-h-0', 'opacity-0');
-                list.classList.remove('max-h-[2000px]', 'opacity-100');
-                icon.classList.add('-rotate-90');
+                list.classList.add('max-h-0', 'opacity-0'); list.classList.remove('max-h-[2000px]', 'opacity-100'); icon.classList.add('-rotate-90');
             }
         }
 
-        // --- МАГИЯ 4: Правое боковое меню (Оглавление) ---
+        // --- НОВОЕ: Оглавление Бутербродного типа (Вложенное) ---
         function buildToC() {
             const container = document.getElementById('right-sidebar-content');
             if(!container) return;
             container.innerHTML = '';
             
             const headers = Array.from(document.querySelectorAll('#article-content h2, #article-content h3'));
-            
-            if(headers.length === 0) {
-                container.innerHTML = '<span class="text-slate-400 italic text-[11px]">Разделов нет</span>';
-                return;
-            }
+            if(headers.length === 0) { container.innerHTML = '<span class="text-slate-400 italic text-[11px]">Разделов нет</span>'; return; }
+
+            let currentH2Group = null;
 
             headers.forEach((h, i) => {
-                const id = 'heading-' + i;
-                h.id = id;
+                const id = 'heading-' + i; h.id = id;
                 const isH3 = h.tagName === 'H3';
                 
-                const link = document.createElement('button');
-                link.className = `block text-left w-full transition-colors ${isH3 ? 'pl-4 text-[11px] text-slate-400 hover:text-kvant py-1' : 'text-xs font-bold text-slate-600 dark:text-slate-300 mt-4 mb-2 hover:text-kvant'}`;
-                link.textContent = h.textContent;
-                
-                link.onclick = () => {
-                    const wrapper = h.closest('.collapsible-content');
-                    if (wrapper) {
-                        const parentH2 = wrapper.previousElementSibling;
-                        if (parentH2 && parentH2.tagName === 'H2' && !parentH2.classList.contains('active')) {
-                            parentH2.click(); 
+                if (!isH3) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'mb-1';
+                    
+                    const headerRow = document.createElement('div');
+                    headerRow.className = 'flex items-start justify-between group cursor-pointer';
+                    
+                    const link = document.createElement('button');
+                    link.className = `text-left text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-kvant py-1 flex-1 pr-2 leading-tight`;
+                    link.textContent = h.textContent;
+                    link.onclick = (e) => { e.stopPropagation(); scrollToHeader(h); };
+                    
+                    // Контейнер для вложенных H3 (По умолчанию скрыт)
+                    currentH2Group = document.createElement('div');
+                    currentH2Group.className = 'pl-2 border-l border-slate-200 dark:border-slate-800 ml-1 overflow-hidden transition-all duration-300 max-h-0 opacity-0';
+                    
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.innerHTML = `<i class="fas fa-chevron-down text-[8px] text-slate-400 transition-transform -rotate-90"></i>`;
+                    toggleBtn.className = 'mt-1 w-4 h-4 shrink-0 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 pointer-events-none';
+                    
+                    toggleBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        const icon = toggleBtn.querySelector('i');
+                        if (currentH2Group.classList.contains('max-h-0')) {
+                            currentH2Group.classList.remove('max-h-0', 'opacity-0');
+                            currentH2Group.classList.add('max-h-[1000px]', 'opacity-100');
+                            icon.classList.remove('-rotate-90');
+                        } else {
+                            currentH2Group.classList.add('max-h-0', 'opacity-0');
+                            currentH2Group.classList.remove('max-h-[1000px]', 'opacity-100');
+                            icon.classList.add('-rotate-90');
                         }
+                    };
+
+                    currentH2Group.toggleBtn = toggleBtn;
+                    
+                    // Клик по всей строке H2 в меню раскрывает или скроллит
+                    headerRow.onclick = () => { toggleBtn.click(); };
+                    
+                    headerRow.appendChild(link);
+                    headerRow.appendChild(toggleBtn);
+                    wrapper.appendChild(headerRow);
+                    wrapper.appendChild(currentH2Group);
+                    container.appendChild(wrapper);
+                } else {
+                    const link = document.createElement('button');
+                    link.className = `block text-left w-full transition-colors text-[10px] text-slate-500 hover:text-kvant py-1 mt-1`;
+                    link.textContent = h.textContent;
+                    link.onclick = () => scrollToHeader(h);
+                    
+                    if (currentH2Group) {
+                        currentH2Group.appendChild(link);
+                        // Как только у H2 появился ребенок H3, показываем кнопку-стрелочку
+                        if (currentH2Group.toggleBtn) {
+                            currentH2Group.toggleBtn.classList.remove('opacity-0', 'pointer-events-none');
+                        }
+                    } else {
+                        container.appendChild(link);
                     }
-                    if (!h.classList.contains('active')) {
-                        h.click();
-                    }
-                    setTimeout(() => { h.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
-                };
-                
-                container.appendChild(link);
+                }
             });
         }
 
-        async function loadArticle(path) {
-            showPage('article-viewer');
+        // Умный скролл, который сам раскрывает сложенные блоки статьи
+        function scrollToHeader(h) {
+            const wrapper = h.closest('.collapsible-content');
+            if (wrapper) {
+                const parentH2 = wrapper.previousElementSibling;
+                // Разворачиваем H2, если он был спрятан
+                if (parentH2 && parentH2.tagName === 'H2' && !parentH2.classList.contains('active')) { 
+                    parentH2.click(); 
+                }
+            }
+            // Разворачиваем сам элемент
+            if (!h.classList.contains('active')) { 
+                h.click(); 
+            }
+            setTimeout(() => { h.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
+        }
+
+        async function renderArticle(path) {
+            document.querySelectorAll('.page-content').forEach(p => { p.classList.remove('active'); p.classList.add('hidden'); });
+            document.getElementById('article-viewer').classList.remove('hidden');
+            document.getElementById('article-viewer').classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => { n.classList.toggle('text-kvant', n.id === 'nav-' + lastPage); });
+
             const area = document.getElementById('article-content');
             area.innerHTML = '<div class="flex justify-center p-12 md:p-20"><i class="fas fa-circle-notch fa-spin text-3xl md:text-4xl text-kvant"></i></div>';
             try {
@@ -493,17 +613,15 @@
                 await loadGlobalData();
                 buildLeftSidebar(path);
                 buildToC();
+                window.scrollTo(0, 0);
 
             } catch(e) { 
-                console.error(e);
                 area.innerHTML = `
                     <div class="text-center py-10 md:py-20 px-4 md:px-6 bg-slate-50 dark:bg-slate-900 rounded-2xl md:rounded-3xl border border-red-200 dark:border-red-900/30">
                         <i class="fas fa-exclamation-triangle text-4xl md:text-5xl text-red-500 mb-4 md:mb-6 drop-shadow-lg"></i>
                         <h2 class="heading-font text-xl md:text-2xl text-slate-800 dark:text-white mb-2 md:mb-4">Ошибка загрузки статьи</h2>
-                        <p class="text-sm md:text-base text-slate-500 mb-4 md:mb-6">Сайту не удалось найти или обработать файл. Пожалуйста, проверьте манифест.</p>
-                        <div class="bg-red-50 dark:bg-red-950/20 p-3 md:p-4 rounded-xl border border-red-200 dark:border-red-900/50 text-left overflow-x-auto">
-                            <code class="text-xs md:text-sm font-mono text-red-600 dark:text-red-400 block whitespace-pre-wrap">${e.message}</code>
-                        </div>
+                        <p class="text-sm md:text-base text-slate-500 mb-4 md:mb-6">Сайту не удалось найти или обработать файл.</p>
+                        <div class="bg-red-50 dark:bg-red-950/20 p-3 md:p-4 rounded-xl border border-red-200 dark:border-red-900/50 text-left overflow-x-auto"><code class="text-xs md:text-sm font-mono text-red-600 dark:text-red-400 block whitespace-pre-wrap">${e.message}</code></div>
                     </div>`; 
             }
         }
@@ -513,12 +631,20 @@
                 const res = await fetch(CONFIG.portfolio + '?t=' + new Date().getTime());
                 if(!res.ok) throw new Error();
                 const data = await res.json();
-                document.getElementById('portfolio-carousel').innerHTML = data.projects.map(p => `
-                    <div class="snap-center shrink-0 w-[85vw] md:w-[500px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer" onclick="loadArticle('articles/portfolio/${p.file}')">
-                        <div class="h-48 md:h-72 bg-slate-100 dark:bg-slate-800 relative overflow-hidden">${p.image ? `<img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">` : `<div class="w-full h-full flex items-center justify-center text-3xl md:text-4xl opacity-20"><i class="fas fa-image"></i></div>`}<div class="absolute top-4 md:top-6 left-4 md:left-6 flex gap-2">${p.tags.map(t => `<span class="bg-black/40 backdrop-blur-md text-white text-[8px] md:text-[9px] uppercase font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-white/20">${t}</span>`).join('')}</div></div>
-                        <div class="p-6 md:p-10"><h3 class="heading-font text-xl md:text-2xl mb-2 md:mb-4 group-hover:text-kvant transition">${p.title}</h3><p class="text-slate-500 text-xs md:text-sm mb-4 md:mb-6 line-clamp-2">${p.description}</p><div class="flex items-center text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest"><i class="fas fa-user-circle mr-2 text-kvant"></i> ${p.authors}</div></div>
+                
+                const html = data.projects.map(p => `
+                    <div class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform" onclick="window.location.hash='article:articles/portfolio/${p.file}'">
+                        <div class="h-48 md:h-60 bg-slate-100 dark:bg-slate-800 relative overflow-hidden">${p.image ? `<img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">` : `<div class="w-full h-full flex items-center justify-center text-3xl md:text-4xl opacity-20"><i class="fas fa-image"></i></div>`}<div class="absolute top-4 md:top-6 left-4 md:left-6 flex gap-2">${p.tags.map(t => `<span class="bg-black/40 backdrop-blur-md text-white text-[8px] md:text-[9px] uppercase font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-white/20">${t}</span>`).join('')}</div></div>
+                        <div class="p-6 md:p-8"><h3 class="heading-font text-xl mb-2 md:mb-4 group-hover:text-kvant transition">${p.title}</h3><p class="text-slate-500 text-xs md:text-sm mb-4 md:mb-6 line-clamp-2">${p.description}</p><div class="flex items-center text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest"><i class="fas fa-user-circle mr-2 text-kvant"></i> ${p.authors}</div></div>
                     </div>`).join('');
-            } catch(e) { document.getElementById('portfolio-carousel').innerHTML = '<div class="w-full text-center py-10 opacity-30 italic text-sm">Проекты появятся здесь в ближайшее время...</div>'; }
+                
+                // Рендерим и в карусель на главной, и на страницу "Проекты"
+                document.getElementById('portfolio-carousel').innerHTML = html;
+                document.getElementById('projects-container').innerHTML = html;
+            } catch(e) { 
+                document.getElementById('portfolio-carousel').innerHTML = '<div class="w-full text-center py-10 opacity-30 italic text-sm">Проекты появятся здесь в ближайшее время...</div>';
+                document.getElementById('projects-container').innerHTML = '<div class="w-full text-center py-10 opacity-30 italic text-sm">Проекты появятся здесь в ближайшее время...</div>';
+            }
         }
 
         async function loadTracks() {
@@ -526,9 +652,21 @@
                 const res = await fetch(CONFIG.tracks + '?t=' + new Date().getTime()); 
                 if(!res.ok) throw new Error();
                 const data = await res.json();
-                document.getElementById('tracks-container').innerHTML = data.tracks.map(t => `
-                    <div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800"><div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10"><div class="w-12 h-12 md:w-14 md:h-14 ${t.colorClass} rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg"><i class="${t.icon} text-lg md:text-xl"></i></div><h3 class="heading-font text-lg md:text-xl">${t.name}</h3></div><div class="space-y-3 md:space-y-4">${t.lessons.map(l => `<div onclick="loadArticle('articles/${t.id}/${l.file}')" class="p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group"><span class="font-bold text-xs md:text-sm group-hover:text-kvant transition">${l.title}</span><i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i></div>`).join('')}</div></div>`).join('');
+                document.getElementById('tracks-container').innerHTML = data.tracks.map(t => {
+                    const iconHtml = (t.icon && t.icon.includes('/')) 
+                        ? `<img src="${t.icon}" alt="icon" class="w-6 h-6 md:w-7 md:h-7 object-contain">` 
+                        : `<i class="${t.icon} text-lg md:text-xl"></i>`;
+
+                    return `<div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800"><div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10"><div class="w-12 h-12 md:w-14 md:h-14 ${t.colorClass} rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg">${iconHtml}</div><h3 class="heading-font text-lg md:text-xl">${t.name}</h3></div><div class="space-y-3 md:space-y-4">${t.lessons.map(l => `<div onclick="window.location.hash='article:articles/${t.id}/${l.file}'" class="p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group"><span class="font-bold text-xs md:text-sm group-hover:text-kvant transition">${l.title}</span><i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i></div>`).join('')}</div></div>`;
+                }).join('');
             } catch(e) {}
+        }
+
+        async function loadProjectsFullPage() {
+            // Если портфолио еще не загрузилось, вызываем функцию
+            if(document.getElementById('projects-container').innerHTML.trim() === '') {
+                loadPortfolio();
+            }
         }
 
         async function loadCheats() {
@@ -536,7 +674,7 @@
                 const res = await fetch(CONFIG.cheats + '?t=' + new Date().getTime()); 
                 if(!res.ok) throw new Error();
                 const data = await res.json();
-                document.getElementById('cheats-container').innerHTML = data.cheats.map(c => `<div onclick="loadArticle('articles/cheats/${c.file}')" class="p-5 md:p-8 bg-slate-50 dark:bg-slate-900 rounded-[1.25rem] md:rounded-[2rem] border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group"><span class="font-bold text-sm md:text-base tracking-tight italic">${c.title}</span><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center opacity-100 md:opacity-0 group-hover:opacity-100 transition"><i class="fas fa-arrow-right text-xs md:text-base"></i></div></div>`).join('');
+                document.getElementById('cheats-container').innerHTML = data.cheats.map(c => `<div onclick="window.location.hash='article:articles/cheats/${c.file}'" class="p-5 md:p-8 bg-slate-50 dark:bg-slate-900 rounded-[1.25rem] md:rounded-[2rem] border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group"><span class="font-bold text-sm md:text-base tracking-tight italic">${c.title}</span><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center opacity-100 md:opacity-0 group-hover:opacity-100 transition"><i class="fas fa-arrow-right text-xs md:text-base"></i></div></div>`).join('');
             } catch(e) {}
         }
 
@@ -553,20 +691,13 @@
             if (icon) icon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon'); 
             if (iconMobile) iconMobile.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon'); 
         }
-        
-        function showPage(pId) {
-            document.getElementById('mobile-menu').classList.add('hidden-menu'); 
-            if (pId !== 'article-viewer') lastPage = pId;
-            document.querySelectorAll('.page-content').forEach(p => { p.classList.remove('active'); p.classList.add('hidden'); if(p.id === pId) { p.classList.remove('hidden'); p.classList.add('active'); } });
-            document.querySelectorAll('.nav-item').forEach(n => { n.classList.toggle('text-kvant', n.id === 'nav-' + pId || (pId === 'article-viewer' && n.id === 'nav-' + lastPage)); });
-            if (pId === 'tracks') loadTracks(); if (pId === 'cheats') loadCheats(); window.scrollTo(0, 0);
-        }
-        function goBack() { showPage(lastPage); }
 
         window.onload = () => { 
             updateThemeIcons(document.documentElement.classList.contains('dark')); 
             loadPortfolio(); 
-            loadGlobalData(); 
+            loadGlobalData().then(() => {
+                handleRouting();
+            });
         };
     </script>
 </body>
