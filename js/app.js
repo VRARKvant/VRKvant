@@ -28,7 +28,7 @@ function handleRouting() {
     if (hash.startsWith('article:')) {
         const path = hash.substring(8);
         renderArticle(path);
-    } else if (['home', 'tracks', 'cheats', 'projects'].includes(hash)) {
+    } else if (['home', 'tracks', 'cheats', 'projects', 'editor'].includes(hash)) {
         renderPage(hash);
     } else {
         window.location.hash = 'home';
@@ -142,8 +142,9 @@ function updateCompare(input) {
     wrapper.querySelector('.compare-handle').style.left = `${val}%`;
 }
 
-function styleSpecialQuotes() {
-    const quotes = document.querySelectorAll('#article-content blockquote');
+function styleSpecialQuotes(container = document.getElementById('article-content')) {
+    if (!container) return;
+    const quotes = container.querySelectorAll('blockquote');
     quotes.forEach(q => {
         const text = q.innerText.toLowerCase();
         if (text.includes('важно:')) q.classList.add('quote-important');
@@ -153,22 +154,74 @@ function styleSpecialQuotes() {
     });
 }
 
-function makeHeadersCollapsible() {
-    const area = document.getElementById('article-content');
-    if (!area) return;
-    const headers = Array.from(area.querySelectorAll('h2, h3'));
+function makeHeadersCollapsible(container = document.getElementById('article-content')) {
+    if (!container) return;
+    const headers = Array.from(container.querySelectorAll('h2, h3'));
     headers.forEach(header => {
+        // Защита: чтобы в редакторе (при каждом нажатии клавиши) не плодились дубликаты спойлеров
+        if (header.classList.contains('collapsible-header')) return;
         if (!header.parentNode) return;
+        
         header.classList.add('collapsible-header');
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'collapsible-content';
+        
         const stopTags = header.tagName === 'H2' ? ['H1', 'H2'] : ['H1', 'H2', 'H3'];
         let next = header.nextElementSibling;
+        
+        // Собираем всё содержимое до следующего заголовка такого же или более высокого уровня
         while (next && !stopTags.includes(next.tagName)) {
-            const elementToMove = next; next = next.nextElementSibling; contentWrapper.appendChild(elementToMove);
+            const elementToMove = next; 
+            next = next.nextElementSibling; 
+            contentWrapper.appendChild(elementToMove);
         }
+        
         header.parentNode.insertBefore(contentWrapper, next);
-        header.onclick = () => { header.classList.toggle('active'); contentWrapper.classList.toggle('show'); };
+        
+        // Добавляем логику открытия/закрытия по клику на сам заголовок
+        header.onclick = () => { 
+            header.classList.toggle('active'); 
+            contentWrapper.classList.toggle('show'); 
+        };
+    });
+}
+
+function addCodeFeatures(container = document.getElementById('article-content')) {
+    if (!container) return;
+    container.querySelectorAll('pre').forEach((pre) => {
+        // Защита: не добавляем кнопку копирования дважды
+        if (pre.querySelector('.copy-code-btn')) return;
+        
+        const codeBlock = pre.querySelector('code');
+        if (!codeBlock) return; 
+        
+        let lang = "CODE";
+        if (codeBlock.className) { 
+            const match = codeBlock.className.match(/language-(\w+)/); 
+            if (match) lang = match[1]; 
+        }
+        
+        // Применяем подсветку синтаксиса
+        if (typeof hljs !== 'undefined') hljs.highlightElement(codeBlock);
+        
+        // Создаем бейдж с языком (например, CSHARP)
+        const badge = document.createElement('div'); 
+        badge.className = 'lang-badge'; 
+        badge.textContent = lang; 
+        pre.appendChild(badge);
+        
+        // Создаем стильную кнопку "Копировать"
+        const btn = document.createElement('button'); 
+        btn.className = 'copy-code-btn'; 
+        btn.innerHTML = '<i class="far fa-copy"></i> Copy';
+        
+        btn.onclick = () => { 
+            navigator.clipboard.writeText(codeBlock.innerText).then(() => { 
+                btn.innerHTML = '<i class="fas fa-check text-green-400"></i> Done'; 
+                setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000); 
+            }); 
+        };
+        pre.appendChild(btn);
     });
 }
 
@@ -182,21 +235,6 @@ function interceptInternalLinks() {
                 window.location.hash = 'article:' + targetPath; 
             };
         }
-    });
-}
-
-function addCodeFeatures() {
-    document.querySelectorAll('#article-content pre').forEach((pre) => {
-        if (pre.querySelector('.copy-code-btn')) return;
-        const codeBlock = pre.querySelector('code');
-        if (!codeBlock) return; 
-        let lang = "CODE";
-        if (codeBlock.className) { const match = codeBlock.className.match(/language-(\w+)/); if (match) lang = match[1]; }
-        if (typeof hljs !== 'undefined') hljs.highlightElement(codeBlock);
-        const badge = document.createElement('div'); badge.className = 'lang-badge'; badge.textContent = lang; pre.appendChild(badge);
-        const btn = document.createElement('button'); btn.className = 'copy-code-btn'; btn.innerHTML = '<i class="far fa-copy"></i> Copy';
-        btn.onclick = () => { navigator.clipboard.writeText(codeBlock.innerText).then(() => { btn.innerHTML = '<i class="fas fa-check text-green-400"></i> Done'; setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000); }); };
-        pre.appendChild(btn);
     });
 }
 
@@ -474,3 +512,91 @@ window.onload = () => {
         handleRouting(); // Вызываем роутер ТОЛЬКО после предзагрузки базы данных
     });
 };
+
+// ---------------------------------------------------
+// 7. СЕКРЕТНЫЙ РЕДАКТОР СТАТЕЙ (LIVE PREVIEW)
+// ---------------------------------------------------
+
+// Слушатель секретного сочетания клавиш (Ctrl + Shift + E)
+window.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.code === 'KeyE') {
+        e.preventDefault();
+        window.location.hash = 'editor';
+    }
+});
+
+const mdInput = document.getElementById('markdown-input');
+const mdPreview = document.getElementById('editor-preview');
+const mdPlaceholder = document.getElementById('editor-placeholder');
+
+if(mdInput) {
+    mdInput.addEventListener('input', updateEditorPreview);
+}
+
+function updateEditorPreview() {
+    const text = mdInput.value;
+    if(!text.trim()) {
+        mdPreview.innerHTML = '';
+        if(mdPlaceholder) mdPlaceholder.style.display = 'flex';
+        return;
+    }
+    if(mdPlaceholder) mdPlaceholder.style.display = 'none';
+    
+    // Превращаем текст в HTML и применяем виджеты
+    let htmlContent = marked.parse(text);
+    if (typeof processCustomWidgets !== 'undefined') {
+        htmlContent = processCustomWidgets(htmlContent);
+    } else if (typeof processCustomTags !== 'undefined') {
+        htmlContent = processCustomTags(htmlContent);
+    }
+    
+    mdPreview.innerHTML = htmlContent;
+    
+    // Применяем красоту конкретно к блоку предпросмотра
+    makeHeadersCollapsible(mdPreview);
+    styleSpecialQuotes(mdPreview);
+    addCodeFeatures(mdPreview);
+}
+
+function insertTemplate(type) {
+    const start = mdInput.selectionStart;
+    const end = mdInput.selectionEnd;
+    const text = mdInput.value;
+    let insertion = '';
+
+    switch(type) {
+        case 'h2': insertion = '\n## Новый раздел\n'; break;
+        case 'h3': insertion = '\n### Подраздел\n'; break;
+        case 'bold': insertion = '**Текст**'; break;
+        case 'code': insertion = '\n```csharp\n// Ваш код\n```\n'; break;
+        case 'quote-warn': insertion = '\n> **Внимание:** Важная информация!\n'; break;
+        case 'quote-tip': insertion = '\n> **Лайфхак:** Полезный совет!\n'; break;
+        case 'gallery': insertion = '\n[gallery: img/1.png | img/2.png]\n'; break;
+        case 'compare': insertion = '\n[compare: img/before.png | img/after.png]\n'; break;
+    }
+
+    mdInput.value = text.substring(0, start) + insertion + text.substring(end);
+    mdInput.focus();
+    updateEditorPreview();
+}
+
+function copyEditorCode() {
+    navigator.clipboard.writeText(mdInput.value).then(() => {
+        // Меняем текст кнопки для эффекта
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check text-green-500 mr-2"></i>Скопировано';
+        setTimeout(() => btn.innerHTML = originalText, 2000);
+    });
+}
+
+function downloadMarkdown() {
+    if(!mdInput.value.trim()) return alert("Статья пустая!");
+    const blob = new Blob([mdInput.value], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'new_article.md';
+    a.click();
+    URL.revokeObjectURL(url);
+}
