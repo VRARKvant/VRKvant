@@ -9,6 +9,7 @@
         {
           "title": "Введение в Unity",
           "file": "intro.md",
+          "module": "Основы",
           "order": 1
         }
       ]
@@ -22,6 +23,7 @@
         {
           "title": "Введение в Blender",
           "file": "intro.md",
+          "module": "Основы",
           "order": 1
         }
       ]
@@ -35,6 +37,7 @@
         {
           "title": "Введение в Unreal Engine",
           "file": "intro.md",
+          "module": "Основы",
           "order": 1
         }
       ]

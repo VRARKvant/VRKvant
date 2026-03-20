@@ -32,7 +32,8 @@ def generate_manifests(articles_dir="articles/"):
                 lessons_data.append({
                     "title": frontmatter.get("title", md_file.replace(".md", "")),
                     "file": md_file,
-                    "order": int(frontmatter.get("order", 9999)) # Порядок для сортировки
+                    "module": frontmatter.get("module", "Разное"), # Добавляем модуль
+                    "order": int(frontmatter.get("order", 9999))
                 })
         
         # Сортировка уроков: сначала по полю 'order', затем по имени файла

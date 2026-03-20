@@ -21,6 +21,15 @@ window.scrollPortfolio = function(v) {
     document.getElementById('portfolio-carousel').scrollBy({ left: v, behavior: 'smooth' }); 
 };
 
+function groupByModule(lessons) {
+    return lessons.reduce((acc, lesson) => {
+        const moduleName = lesson.module || 'Разное';
+        if (!acc[moduleName]) acc[moduleName] = [];
+        acc[moduleName].push(lesson);
+        return acc;
+    }, {});
+}
+
 export async function renderPortfolio() {
     const projects = await loadPortfolio();
     const containerCarousel = document.getElementById('portfolio-carousel');
@@ -53,7 +62,33 @@ export async function renderTracks() {
             ? `<img src="${t.icon}" alt="icon" class="w-6 h-6 md:w-7 md:h-7 object-contain">` 
             : `<i class="${t.icon} text-lg md:text-xl"></i>`;
 
-        return `<div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800"><div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10"><div class="w-12 h-12 md:w-14 md:h-14 ${t.colorClass} rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg">${iconHtml}</div><h3 class="heading-font text-lg md:text-xl">${t.name}</h3></div><div class="space-y-3 md:space-y-4">${t.lessons.map(l => `<div onclick="window.location.hash='article:articles/${t.id}/${l.file}'" class="p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group"><span class="font-bold text-xs md:text-sm group-hover:text-kvant transition">${l.title}</span><i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i></div>`).join('')}</div></div>`;
+        const modules = groupByModule(t.lessons);
+
+        return `
+            <div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10">
+                    <div class="w-12 h-12 md:w-14 md:h-14 ${t.colorClass} rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg">${iconHtml}</div>
+                    <h3 class="heading-font text-lg md:text-xl">${t.name}</h3>
+                </div>
+                <div class="space-y-6 md:space-y-8">
+                    ${Object.entries(modules).map(([moduleName, moduleLessons]) => `
+                        <div>
+                            <h4 class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-3 md:mb-4 px-1 flex items-center">
+                                <span class="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mr-2"></span>
+                                ${moduleName}
+                            </h4>
+                            <div class="space-y-2 md:space-y-3">
+                                ${moduleLessons.map(l => `
+                                    <div onclick="window.location.hash='article:articles/${t.id}/${l.file}'" class="p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group">
+                                        <span class="font-bold text-xs md:text-sm group-hover:text-kvant transition">${l.title}</span>
+                                        <i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
     }).join('');
 }
 
@@ -75,19 +110,30 @@ export function buildLeftSidebar(currentPath) {
         window.siteData.tracks.forEach((t, i) => {
             const listId = `sidebar-track-list-${i}`;
             const iconId = `sidebar-track-icon-${i}`;
+            const modules = groupByModule(t.lessons);
+
             html += `
             <div class="mb-1">
                 <button onclick="window.toggleSidebarMenu('${listId}', '${iconId}')" class="w-full flex items-center justify-between text-left font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-2 hover:text-kvant transition-colors group">
                     <span>${t.name}</span><i id="${iconId}" class="fas fa-chevron-down text-[10px] transition-transform duration-300 group-hover:text-kvant"></i>
                 </button>
                 <div id="${listId}" class="overflow-hidden transition-all duration-500 max-h-[2000px] opacity-100">
-                    <ul class="space-y-2 text-sm border-l-2 border-slate-100 dark:border-slate-800 ml-1.5 pl-4 pb-2 mb-2">`;
-            t.lessons.forEach(l => {
-                const path = `articles/${t.id}/${l.file}`;
-                const isActive = path === currentPath;
-                html += `<li><button onclick="window.location.hash='article:${path}'" class="text-left w-full transition-colors ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
-            });
-            html += `</ul></div></div>`;
+                    <div class="border-l-2 border-slate-100 dark:border-slate-800 ml-1.5 pl-4 pb-2 mb-2">
+                        ${Object.entries(modules).map(([moduleName, moduleLessons]) => `
+                            <div class="mb-4">
+                                <div class="text-[9px] font-black uppercase tracking-widest text-slate-300 dark:text-slate-600 mb-2">${moduleName}</div>
+                                <ul class="space-y-2 text-sm">
+                                    ${moduleLessons.map(l => {
+                                        const path = `articles/${t.id}/${l.file}`;
+                                        const isActive = path === currentPath;
+                                        return `<li><button onclick="window.location.hash='article:${path}'" class="text-left w-full transition-colors ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
+                                    }).join('')}
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>`;
         });
         html += `</div>`;
     }
@@ -108,6 +154,96 @@ export function buildLeftSidebar(currentPath) {
         html += `</ul></div></div>`;
     }
     container.innerHTML = html;
+}
+
+window.toggleSidebarMenu = function(listId, iconId) {
+    const list = document.getElementById(listId);
+    const icon = document.getElementById(iconId);
+    if (!list || !icon) return;
+    if (list.classList.contains('max-h-0')) {
+        list.classList.remove('max-h-0', 'opacity-0'); list.classList.add('max-h-[2000px]', 'opacity-100'); icon.classList.remove('-rotate-90');
+    } else {
+        list.classList.add('max-h-0', 'opacity-0'); list.classList.remove('max-h-[2000px]', 'opacity-100'); icon.classList.add('-rotate-90');
+    }
+};
+
+export function buildToC() {
+    const container = document.getElementById('right-sidebar-content');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    const headers = Array.from(document.querySelectorAll('#article-content h2, #article-content h3'));
+    if(headers.length === 0) { container.innerHTML = '<span class="text-slate-400 italic text-[11px]">Разделов нет</span>'; return; }
+
+    let currentH2Group = null;
+
+    headers.forEach((h, i) => {
+        const id = 'heading-' + i; h.id = id;
+        const isH3 = h.tagName === 'H3';
+        
+        if (!isH3) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'mb-2';
+            const headerRow = document.createElement('div');
+            headerRow.className = 'flex items-start justify-between group cursor-pointer';
+            const link = document.createElement('button');
+            link.className = `text-left text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-kvant py-1 flex-1 pr-2 leading-snug`;
+            link.textContent = h.textContent;
+            currentH2Group = document.createElement('div');
+            currentH2Group.className = 'pl-3 border-l-2 border-slate-200 dark:border-slate-800 ml-1.5 overflow-hidden transition-all duration-300 max-h-[2000px] opacity-100';
+            const targetGroup = currentH2Group; 
+            const toggleBtn = document.createElement('button');
+            toggleBtn.innerHTML = `<i class="fas fa-chevron-down text-xs text-slate-400 transition-transform"></i>`;
+            toggleBtn.className = 'mt-0.5 w-6 h-6 shrink-0 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors opacity-0 pointer-events-none';
+            toggleBtn.onclick = (e) => {
+                e.stopPropagation();
+                const icon = toggleBtn.querySelector('i');
+                if (targetGroup.classList.contains('max-h-0')) {
+                    targetGroup.classList.remove('max-h-0', 'opacity-0');
+                    targetGroup.classList.add('max-h-[2000px]', 'opacity-100');
+                    icon.classList.remove('-rotate-90');
+                } else {
+                    targetGroup.classList.add('max-h-0', 'opacity-0');
+                    targetGroup.classList.remove('max-h-[2000px]', 'opacity-100');
+                    icon.classList.add('-rotate-90');
+                }
+            };
+            targetGroup.toggleBtn = toggleBtn;
+            link.onclick = (e) => { e.stopPropagation(); scrollToHeader(h); };
+            headerRow.onclick = () => { toggleBtn.click(); };
+            headerRow.appendChild(link);
+            headerRow.appendChild(toggleBtn);
+            wrapper.appendChild(headerRow);
+            wrapper.appendChild(targetGroup);
+            container.appendChild(wrapper);
+        } else {
+            const link = document.createElement('button');
+            if (currentH2Group) {
+                link.className = `block text-left w-full transition-colors text-xs font-semibold text-slate-500 hover:text-kvant py-1.5 mt-1`;
+                link.textContent = h.textContent;
+                link.onclick = () => scrollToHeader(h);
+                currentH2Group.appendChild(link);
+                if (currentH2Group.toggleBtn) {
+                    currentH2Group.toggleBtn.classList.remove('opacity-0', 'pointer-events-none');
+                }
+            } else {
+                link.className = `block text-left w-full transition-colors text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-kvant py-1 mt-2`;
+                link.textContent = h.textContent;
+                link.onclick = () => scrollToHeader(h);
+                container.appendChild(link);
+            }
+        }
+    });
+}
+
+function scrollToHeader(h) {
+    const wrapper = h.closest('.collapsible-content');
+    if (wrapper) {
+        const parentH2 = wrapper.previousElementSibling;
+        if (parentH2 && parentH2.tagName === 'H2' && !parentH2.classList.contains('active')) { parentH2.click(); }
+    }
+    if (!h.classList.contains('active')) { h.click(); }
+    setTimeout(() => { h.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 50);
 }
 
 window.toggleSidebarMenu = function(listId, iconId) {
