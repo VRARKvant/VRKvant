@@ -1,10 +1,14 @@
 import { initRouter, updateEditorPreview, insertTemplate, copyEditorCode, downloadMarkdown, goBackSafe } from './router.js';
+import { initSearch, openSearch, closeSearch } from './search.js';
 
 // Инициализация роутера и других глобальных слушателей
 initRouter();
+initSearch();
 
 // Экспортируем функции для использования в HTML и editor.html
 window.goBackSafe = goBackSafe;
+window.openSearch = openSearch;
+window.closeSearch = closeSearch;
 window.updateEditorPreview = updateEditorPreview;
 window.insertTemplate = insertTemplate;
 window.copyEditorCode = copyEditorCode;

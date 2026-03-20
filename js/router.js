@@ -4,7 +4,7 @@ import { loadGlobalData } from './api.js';
 
 let lastPage = 'home';
 let currentDir = ""; 
-window.siteData = { tracks: null, cheats: null };
+window.siteData = { tracks: null, cheats: null, portfolio: null };
 window.galleryData = {};
 
 export function initRouter() {

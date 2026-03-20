@@ -14,6 +14,10 @@ export async function loadGlobalData() {
             const r2 = await fetch(CONFIG.cheats + '?t=' + new Date().getTime());
             window.siteData.cheats = (await r2.json()).cheats;
         }
+        if(!window.siteData.portfolio) {
+            const r3 = await fetch(CONFIG.portfolio + '?t=' + new Date().getTime());
+            window.siteData.portfolio = (await r3.json()).projects;
+        }
     } catch(e) { 
         console.error("Ошибка загрузки манифестов", e); 
     }
