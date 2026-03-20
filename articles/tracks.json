@@ -1,30 +1,42 @@
 {
   "tracks": [
     {
-      "id": "blender",
-      "name": "Blender Track",
-      "icon": "https://cdn.simpleicons.org/blender/ffffff",
-      "colorClass": "bg-orange-500",
+      "id": "unity",
+      "name": "Unity Track",
+      "icon": "img/unity/unity_logo.jpg",
+      "colorClass": "bg-gray-500",
       "lessons": [
-        { "title": "Вступление", "file": "intro.md" }
+        {
+          "title": "intro",
+          "file": "intro.md",
+          "order": 9999
+        }
       ]
     },
     {
-      "id": "unity",
-      "name": "Unity Track",
-      "icon": "fab fa-unity",
-      "colorClass": "bg-indigo-600",
+      "id": "blender",
+      "name": "Blender Track",
+      "icon": "img/blender/blender_logo.jpg",
+      "colorClass": "bg-gray-500",
       "lessons": [
-        { "title": "Вступление", "file": "intro.md" }
+        {
+          "title": "intro",
+          "file": "intro.md",
+          "order": 9999
+        }
       ]
     },
     {
       "id": "unreal",
-      "name": "Unreal Engine",
-      "icon": "https://cdn.simpleicons.org/unrealengine/ffffff",
-      "colorClass": "bg-slate-700",
+      "name": "Unreal Track",
+      "icon": "img/unreal/unreal_logo.jpg",
+      "colorClass": "bg-gray-500",
       "lessons": [
-        { "title": "Вступление", "file": "intro.md" }
+        {
+          "title": "intro",
+          "file": "intro.md",
+          "order": 9999
+        }
       ]
     }
   ]

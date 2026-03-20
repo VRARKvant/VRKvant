@@ -1,20 +1,20 @@
 {
   "cheats": [
     {
-      "title": "Подключение Oculus Quest",
-      "file": "quest_setup.md"
-    },
-    {
-      "title": "Горячие клавиши Blender",
+      "title": "blender_keys",
       "file": "blender_keys.md"
     },
     {
-      "title": "Как писать статьи/уроки",
-      "file": "writing_articles.md"
+      "title": "quest_setup",
+      "file": "quest_setup.md"
     },
     {
-      "title": "Правила работы в команде",
+      "title": "teamwork",
       "file": "teamwork.md"
+    },
+    {
+      "title": "writing_articles",
+      "file": "writing_articles.md"
     }
   ]
 }
