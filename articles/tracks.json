@@ -2,40 +2,40 @@
   "tracks": [
     {
       "id": "unity",
-      "name": "Unity Track",
-      "icon": "img/unity/unity_logo.jpg",
-      "colorClass": "bg-gray-500",
+      "name": "Unity",
+      "icon": "img/unity/unity_logo.jpeg",
+      "colorClass": "bg-zinc-800",
       "lessons": [
         {
-          "title": "intro",
+          "title": "Введение в Unity",
           "file": "intro.md",
-          "order": 9999
+          "order": 1
         }
       ]
     },
     {
       "id": "blender",
-      "name": "Blender Track",
+      "name": "Blender",
       "icon": "img/blender/blender_logo.jpg",
-      "colorClass": "bg-gray-500",
+      "colorClass": "bg-orange-600",
       "lessons": [
         {
-          "title": "intro",
+          "title": "Введение в Blender",
           "file": "intro.md",
-          "order": 9999
+          "order": 1
         }
       ]
     },
     {
       "id": "unreal",
-      "name": "Unreal Track",
+      "name": "Unreal Engine",
       "icon": "img/unreal/unreal_logo.jpg",
-      "colorClass": "bg-gray-500",
+      "colorClass": "bg-blue-700",
       "lessons": [
         {
-          "title": "intro",
+          "title": "Введение в Unreal Engine",
           "file": "intro.md",
-          "order": 9999
+          "order": 1
         }
       ]
     }

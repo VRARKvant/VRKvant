@@ -1,3 +1,11 @@
+---
+title: Введение в Blender
+module: Основы
+order: 1
+name: Blender
+icon: img/blender/blender_logo.jpg
+colorClass: bg-orange-600
+---
 # Blender
 
 Добро пожаловать в трек по изучению Blender!

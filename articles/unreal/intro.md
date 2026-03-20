@@ -1,3 +1,11 @@
+---
+title: Введение в Unreal Engine
+module: Основы
+order: 1
+name: Unreal Engine
+icon: img/unreal/unreal_logo.jpg
+colorClass: bg-blue-700
+---
 # Unreal Engine
 
 Добро пожаловать в трек по изучению **Unreal Engine**! Эта программа построена по модульной системе: от освоения базовых типов данных до создания сложных систем взаимодействия в виртуальной реальности.

@@ -1,19 +1,19 @@
 {
   "cheats": [
     {
-      "title": "blender_keys",
+      "title": "Горячие клавиши Blender",
       "file": "blender_keys.md"
     },
     {
-      "title": "quest_setup",
+      "title": "Настройка Meta Quest",
       "file": "quest_setup.md"
     },
     {
-      "title": "teamwork",
+      "title": "Командная работа",
       "file": "teamwork.md"
     },
     {
-      "title": "writing_articles",
+      "title": "Как писать статьи",
       "file": "writing_articles.md"
     }
   ]
