@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: NekrasovLE/VRKvant
+  repo: VRARKvant/VRKvant
   branch: main
 
 media_folder: "img"
