@@ -203,13 +203,80 @@
                 </div>
                 <div class="flex gap-3">
                     <button onclick="copyEditorCode()" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-kvant hover:text-white transition shadow-sm"><i class="fas fa-copy mr-2"></i>Копировать Markdown</button>
-                    <button onclick="downloadMarkdown()" class="bg-kvant text-white px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-purple-500 transition shadow-lg shadow-kvant/30"><i class="fas fa-download mr-2"></i>Скачать .md</button>
+                    <button onclick="togglePublishPanel()" class="bg-kvant text-white px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-purple-500 transition shadow-lg shadow-kvant/30"><i class="fab fa-github mr-2"></i>Опубликовать</button>
                 </div>
             </div>
             
-            <div class="flex-1 grid grid-cols-2 gap-6 h-full pb-6">
+            <div class="flex-1 flex gap-6 h-full pb-6 relative">
+                
+                <!-- Панель настроек публикации (скрыта по умолчанию) -->
+                <div id="publish-panel" class="hidden absolute right-0 top-0 bottom-6 w-80 bg-white dark:bg-slate-900 rounded-[1.5rem] shadow-2xl border border-slate-200 dark:border-slate-800 z-50 flex-col overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                        <h3 class="font-bold text-sm uppercase tracking-widest text-slate-700 dark:text-slate-200">Публикация</h3>
+                        <button onclick="togglePublishPanel()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="p-5 flex-1 overflow-y-auto space-y-4 text-sm">
+                        
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Токен GitHub (PAT)</label>
+                            <input type="password" id="gh-token" placeholder="ghp_..." class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 ring-kvant/50">
+                            <div class="text-[9px] text-slate-400 mt-1 leading-tight">Сохраняется локально. Нужен токен с правами 'repo'.</div>
+                        </div>
+
+                        <div class="w-full h-px bg-slate-100 dark:bg-slate-800 my-2"></div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Тип контента</label>
+                            <select id="meta-type" onchange="updateMetaFields()" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-xs outline-none">
+                                <option value="lesson">Урок (Треки)</option>
+                                <option value="cheat">Шпаргалка</option>
+                                <option value="project">Проект (Портфолио)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Название (Title)</label>
+                            <input type="text" id="meta-title" placeholder="Введите название..." class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-xs outline-none">
+                        </div>
+
+                        <div id="field-track">
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Трек</label>
+                            <select id="meta-track" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-xs outline-none">
+                                <option value="blender">Blender</option>
+                                <option value="unity">Unity</option>
+                                <option value="unreal">Unreal Engine</option>
+                            </select>
+                        </div>
+
+                        <div id="field-module">
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Модуль (Раздел)</label>
+                            <input type="text" id="meta-module" placeholder="Например: Основы" list="module-list" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-xs outline-none">
+                            <datalist id="module-list"></datalist>
+                        </div>
+
+                        <div id="field-order">
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Порядковый номер</label>
+                            <input type="number" id="meta-order" value="10" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-xs outline-none">
+                        </div>
+
+                        <div id="field-filename">
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Имя файла (a-z, 0-9, _)</label>
+                            <div class="flex items-center">
+                                <input type="text" id="meta-filename" placeholder="my_article" class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-l-lg px-3 py-2 text-xs outline-none text-right">
+                                <span class="bg-slate-200 dark:bg-slate-700 px-3 py-2 rounded-r-lg text-xs text-slate-500 font-mono">.md</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="p-4 border-t border-slate-100 dark:border-slate-800">
+                        <button onclick="publishToGitHub()" id="publish-btn" class="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-3 rounded-xl text-xs uppercase tracking-widest hover:bg-kvant dark:hover:bg-kvant hover:text-white transition flex justify-center items-center">
+                            <span>Отправить</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Панель ввода -->
-                <div class="flex flex-col bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner h-full">
+                <div class="flex-1 flex flex-col bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner h-full min-w-0">
                     <div class="bg-slate-200 dark:bg-slate-800 px-4 py-3 flex gap-2 overflow-x-auto hide-scrollbar text-xs font-bold text-slate-600 dark:text-slate-300 whitespace-nowrap shrink-0 border-b border-slate-300 dark:border-slate-700">
                         <button onclick="insertTemplate('h2')" class="hover:text-kvant transition px-2">H2</button>
                         <button onclick="insertTemplate('h3')" class="hover:text-kvant transition px-2">H3</button>
@@ -227,7 +294,7 @@
                 </div>
                 
                 <!-- Панель предпросмотра -->
-                <div class="bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-y-auto p-8 shadow-xl prose max-w-none h-full relative" id="editor-preview">
+                <div class="flex-1 bg-white dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-y-auto p-8 shadow-xl prose max-w-none h-full relative min-w-0" id="editor-preview">
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30 italic text-sm" id="editor-placeholder">Живой предпросмотр...</div>
                 </div>
             </div>
