@@ -125,16 +125,82 @@ function initEvents() {
         updateMetaFields();
         updateCardPreview();
     });
+    document.getElementById('meta-track')?.addEventListener('change', populateModulesList);
+    
     document.getElementById('meta-title')?.addEventListener('input', () => {
         autoTransliterate();
         updateCardPreview();
     });
+    
+    document.getElementById('btn-auto-order')?.addEventListener('click', async () => {
+        const type = document.getElementById('meta-type')?.value;
+        const track = document.getElementById('meta-track')?.value;
+        if (type === 'lesson' && track) {
+            const { loadTracks } = await import('./api.js');
+            const { calculateNextOrder } = await import('./ui.js');
+            const tracks = await loadTracks();
+            const currentTrack = tracks.find(t => t.id === track);
+            if (currentTrack) {
+                const nextOrder = calculateNextOrder(currentTrack.lessons);
+                document.getElementById('meta-order').value = nextOrder;
+            }
+        }
+    });
+
+    document.getElementById('color-picker-ui')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-color]');
+        if (btn) {
+            const color = btn.getAttribute('data-color');
+            document.getElementById('meta-color').value = color;
+            document.querySelectorAll('#color-picker-ui button').forEach(b => b.classList.remove('ring-kvant', 'ring-offset-2', 'ring-2'));
+            btn.classList.add('ring-kvant', 'ring-offset-2', 'ring-2');
+            updateCardPreview();
+        }
+    });
+
     document.getElementById('meta-desc')?.addEventListener('input', updateCardPreview);
     document.getElementById('meta-authors')?.addEventListener('input', updateCardPreview);
     document.getElementById('meta-tags')?.addEventListener('input', updateCardPreview);
     document.getElementById('meta-image')?.addEventListener('input', updateCardPreview);
     document.getElementById('meta-icon')?.addEventListener('input', updateCardPreview);
     document.getElementById('meta-color')?.addEventListener('change', updateCardPreview);
+
+    // Авто-закрытие скобок и горячие клавиши в Markdown-редакторе
+    const mdInput = document.getElementById('markdown-input');
+    if (mdInput) {
+        mdInput.addEventListener('keydown', (e) => {
+            const pairs = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'", '`': '`' };
+            const start = mdInput.selectionStart;
+            const end = mdInput.selectionEnd;
+
+            // Горячие клавиши Ctrl+B / Ctrl+I
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'b') {
+                    e.preventDefault();
+                    handleTemplate('bold');
+                } else if (e.key === 'i') {
+                    e.preventDefault();
+                    // Реализуем курсив вручную, если его нет в handleTemplate
+                    const text = mdInput.value;
+                    const selected = text.substring(start, end);
+                    mdInput.setRangeText(`*${selected}*`, start, end, 'select');
+                    mdInput.dispatchEvent(new Event('input'));
+                }
+            }
+
+            // Авто-закрытие скобок
+            if (pairs[e.key]) {
+                e.preventDefault();
+                const text = mdInput.value;
+                const selected = text.substring(start, end);
+                const closing = pairs[e.key];
+                mdInput.setRangeText(`${e.key}${selected}${closing}`, start, end, 'select');
+                mdInput.selectionStart = start + 1;
+                mdInput.selectionEnd = end + 1;
+                mdInput.dispatchEvent(new Event('input'));
+            }
+        });
+    }
 
     // Тулбар редактора
     const handleTemplate = (type) => {
@@ -187,6 +253,26 @@ function updateMetaFields() {
     }
     
     autoTransliterate();
+    populateModulesList();
+}
+
+/**
+ * Заполнение списка модулей для datalist в редакторе
+ */
+export async function populateModulesList() {
+    const track = document.getElementById('meta-track')?.value;
+    const datalist = document.getElementById('modules-list');
+    if (!track || !datalist) return;
+
+    const { loadTracks } = await import('./api.js');
+    const { getUniqueModules } = await import('./ui.js');
+    const tracks = await loadTracks();
+    const currentTrack = tracks.find(t => t.id === track);
+    
+    if (currentTrack) {
+        const modules = getUniqueModules(currentTrack.lessons);
+        datalist.innerHTML = modules.map(m => `<option value="${m}">`).join('');
+    }
 }
 
 export const cyrillicToLatinMap = {

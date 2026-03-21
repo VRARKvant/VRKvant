@@ -310,93 +310,134 @@
             <div class="flex-1 flex gap-4 h-full pb-4 relative">
                 
                 <!-- Левая колонка: Настройки публикации -->
-                <div class="w-72 shrink-0 flex flex-col bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner">
+                <div class="w-80 shrink-0 flex flex-col bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-inner">
                     <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-800/50 flex justify-between items-center">
-                        <h3 class="font-bold text-xs uppercase tracking-widest text-slate-500"><i class="fas fa-sliders-h mr-2"></i>Метаданные</h3>
+                        <h3 class="font-bold text-[10px] uppercase tracking-widest text-slate-500"><i class="fas fa-sliders-h mr-2"></i>Настройки публикации</h3>
                     </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-4 text-sm sidebar-scroll">
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Токен GitHub (PAT)</label>
-                            <input type="password" id="gh-token" placeholder="ghp_..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-kvant">
-                        </div>
-                        <div class="w-full h-px bg-slate-200 dark:bg-slate-800 my-1"></div>
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Тип контента</label>
-                            <select id="meta-type" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-bold text-kvant">
-                                <option value="lesson">📘 Урок</option>
-                                <option value="cheat">⚡ Шпаргалка</option>
-                                <option value="project">🏆 Проект</option>
-                                <option value="intro">🚀 Трек (Intro)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1" id="label-title">Название</label>
-                            <input type="text" id="meta-title" placeholder="Введите название..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-bold">
-                        </div>
+                    
+                    <div class="p-4 flex-1 overflow-y-auto space-y-6 text-sm sidebar-scroll">
                         
-                        <!-- Поля для Урока -->
-                        <div id="field-track" class="meta-group">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Трек</label>
-                            <select id="meta-track" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
-                                <option value="blender">Blender</option>
-                                <option value="unity">Unity</option>
-                                <option value="unreal">Unreal Engine</option>
-                            </select>
-                        </div>
-                        <div id="field-module" class="meta-group">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Модуль</label>
-                            <input type="text" id="meta-module" placeholder="Например: Основы" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
-                        </div>
-                        <div id="field-order" class="meta-group">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Порядок</label>
-                            <input type="number" id="meta-order" value="10" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
-                        </div>
+                        <!-- Секция 1: Доступ -->
+                        <details class="group open" open>
+                            <summary class="flex items-center justify-between cursor-pointer list-none text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-kvant transition">
+                                <span>🔐 Авторизация</span>
+                                <i class="fas fa-chevron-down text-[8px] group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <div class="pt-4 space-y-3">
+                                <div>
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Токен GitHub (PAT)</label>
+                                    <input type="password" id="gh-token" placeholder="ghp_..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-kvant transition-all">
+                                </div>
+                            </div>
+                        </details>
 
-                        <!-- Поля для Проекта -->
-                        <div id="field-project-desc" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Краткое описание</label>
-                            <textarea id="meta-desc" rows="3" placeholder="О чем проект..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none resize-none"></textarea>
-                        </div>
-                        <div id="field-project-authors" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Авторы</label>
-                            <input type="text" id="meta-authors" placeholder="Иванов И." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
-                        </div>
-                        <div id="field-project-tags" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Теги</label>
-                            <input type="text" id="meta-tags" placeholder="VR, Unity" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
-                        </div>
-                        <div id="field-project-image" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Обложка (путь)</label>
-                            <input type="text" id="meta-image" placeholder="img/uploads/..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-mono">
-                        </div>
+                        <div class="h-px bg-slate-200 dark:bg-slate-800"></div>
 
-                        <!-- Поля для Нового Трека -->
-                        <div id="field-track-id" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">ID Трека (Папка)</label>
-                            <input type="text" id="meta-track-id" placeholder="my_new_track" class="w-full bg-slate-100 dark:bg-slate-900 border-none rounded-lg px-3 py-2 text-xs outline-none font-mono text-slate-400" readonly>
-                        </div>
-                        <div id="field-track-icon" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Иконка (FA класс/URL)</label>
-                            <input type="text" id="meta-icon" placeholder="fas fa-gamepad" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
-                        </div>
-                        <div id="field-track-color" class="meta-group hidden">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Цвет карточки</label>
-                            <select id="meta-color" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-mono">
-                                <option value="bg-kvant">bg-kvant (Фиолетовый)</option>
-                                <option value="bg-blue-600">bg-blue-600</option>
-                                <option value="bg-green-600">bg-green-600</option>
-                                <option value="bg-red-600">bg-red-600</option>
-                                <option value="bg-orange-600">bg-orange-600</option>
-                                <option value="bg-zinc-800">bg-zinc-800</option>
-                            </select>
-                        </div>
+                        <!-- Секция 2: Основные метаданные -->
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between cursor-pointer list-none text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-kvant transition">
+                                <span>📝 Основное</span>
+                                <i class="fas fa-chevron-down text-[8px] group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <div class="pt-4 space-y-4">
+                                <div>
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Тип контента</label>
+                                    <select id="meta-type" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-bold text-kvant appearance-none">
+                                        <option value="lesson">📘 Урок</option>
+                                        <option value="cheat">⚡ Шпаргалка</option>
+                                        <option value="project">🏆 Проект</option>
+                                        <option value="intro">🚀 Трек (Intro)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1" id="label-title">Название</label>
+                                    <input type="text" id="meta-title" placeholder="Введите заголовок..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-bold focus:ring-2 ring-kvant/10">
+                                </div>
+                            </div>
+                        </details>
 
-                        <div class="w-full h-px bg-slate-200 dark:bg-slate-800 my-1"></div>
-                        <div id="field-filename">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Имя файла</label>
+                        <div class="h-px bg-slate-200 dark:bg-slate-800"></div>
+
+                        <!-- Секция 3: Специфические поля -->
+                        <details class="group" open>
+                            <summary class="flex items-center justify-between cursor-pointer list-none text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-kvant transition">
+                                <span>🛠 Параметры</span>
+                                <i class="fas fa-chevron-down text-[8px] group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <div class="pt-4 space-y-4">
+                                <!-- Поля для Урока -->
+                                <div id="field-track" class="meta-group">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Трек</label>
+                                    <select id="meta-track" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none transition-all">
+                                        <option value="blender">Blender</option>
+                                        <option value="unity">Unity</option>
+                                        <option value="unreal">Unreal Engine</option>
+                                    </select>
+                                </div>
+                                <div id="field-module" class="meta-group">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Модуль</label>
+                                    <input type="text" id="meta-module" list="modules-list" placeholder="Например: Основы" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-kvant">
+                                    <datalist id="modules-list"></datalist>
+                                </div>
+                                <div id="field-order" class="meta-group">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label class="block text-[9px] font-bold uppercase text-slate-500">Порядок</label>
+                                        <button id="btn-auto-order" title="Авто-нумерация" class="text-[8px] font-black uppercase text-kvant hover:underline">Авто +10</button>
+                                    </div>
+                                    <input type="number" id="meta-order" value="10" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
+                                </div>
+
+                                <!-- Поля для Проекта -->
+                                <div id="field-project-desc" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Краткое описание</label>
+                                    <textarea id="meta-desc" rows="3" placeholder="О чем проект..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none resize-none"></textarea>
+                                </div>
+                                <div id="field-project-authors" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Авторы</label>
+                                    <input type="text" id="meta-authors" placeholder="Иванов И." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
+                                </div>
+                                <div id="field-project-tags" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Теги</label>
+                                    <input type="text" id="meta-tags" placeholder="VR, Unity" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
+                                </div>
+                                <div id="field-project-image" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Обложка (путь)</label>
+                                    <input type="text" id="meta-image" placeholder="img/uploads/..." class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none font-mono">
+                                </div>
+
+                                <!-- Поля для Нового Трека -->
+                                <div id="field-track-id" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">ID Трека (Папка)</label>
+                                    <input type="text" id="meta-track-id" placeholder="my_new_track" class="w-full bg-slate-100 dark:bg-slate-900 border-none rounded-lg px-3 py-2 text-xs outline-none font-mono text-slate-400" readonly>
+                                </div>
+                                <div id="field-track-icon" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Иконка (FA класс/URL)</label>
+                                    <input type="text" id="meta-icon" placeholder="fas fa-gamepad" class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs outline-none">
+                                </div>
+                                <div id="field-track-color" class="meta-group hidden">
+                                    <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Цвет карточки</label>
+                                    <div id="color-picker-ui" class="flex flex-wrap gap-2 mt-2">
+                                        <!-- Цвета будут добавлены через JS или Tailwind напрямую -->
+                                        <button data-color="bg-kvant" class="w-6 h-6 rounded-full bg-kvant ring-2 ring-offset-2 ring-transparent hover:ring-kvant transition-all" title="Фиолетовый"></button>
+                                        <button data-color="bg-blue-600" class="w-6 h-6 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-transparent hover:ring-blue-600 transition-all" title="Синий"></button>
+                                        <button data-color="bg-green-600" class="w-6 h-6 rounded-full bg-green-600 ring-2 ring-offset-2 ring-transparent hover:ring-green-600 transition-all" title="Зеленый"></button>
+                                        <button data-color="bg-red-600" class="w-6 h-6 rounded-full bg-red-600 ring-2 ring-offset-2 ring-transparent hover:ring-red-600 transition-all" title="Красный"></button>
+                                        <button data-color="bg-orange-600" class="w-6 h-6 rounded-full bg-orange-600 ring-2 ring-offset-2 ring-transparent hover:ring-orange-600 transition-all" title="Оранжевый"></button>
+                                        <button data-color="bg-zinc-800" class="w-6 h-6 rounded-full bg-zinc-800 ring-2 ring-offset-2 ring-transparent hover:ring-zinc-800 transition-all" title="Темный"></button>
+                                    </div>
+                                    <input type="hidden" id="meta-color" value="bg-kvant">
+                                </div>
+                            </div>
+                        </details>
+
+                        <div class="h-px bg-slate-200 dark:bg-slate-800"></div>
+
+                        <!-- Секция 4: Файл -->
+                        <div>
+                            <label class="block text-[9px] font-bold uppercase text-slate-500 mb-1">Имя файла (авто)</label>
                             <div class="flex items-center">
-                                <input type="text" id="meta-filename" placeholder="auto" class="w-full bg-slate-100 dark:bg-slate-900 border-none rounded-l-lg px-3 py-2 text-xs outline-none text-right font-mono text-slate-400" readonly>
-                                <span class="bg-slate-200 dark:bg-slate-800 px-3 py-2 rounded-r-lg text-xs text-slate-500 font-mono font-bold">.md</span>
+                                <input type="text" id="meta-filename" placeholder="auto" class="w-full bg-slate-100 dark:bg-slate-900 border-none rounded-l-lg px-3 py-2 text-[10px] outline-none text-right font-mono text-slate-400" readonly>
+                                <span class="bg-slate-200 dark:bg-slate-800 px-3 py-2 rounded-r-lg text-[10px] text-slate-500 font-mono font-bold">.md</span>
                             </div>
                         </div>
                     </div>
