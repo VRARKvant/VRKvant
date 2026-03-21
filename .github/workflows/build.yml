@@ -53,6 +53,29 @@ jobs:
       run: npm run test
       continue-on-error: true
 
+    - name: Vitest Summary to Job Summary
+      if: always()
+      run: |
+        echo "### 🧪 Vitest Results" >> $GITHUB_STEP_SUMMARY
+        echo "| Status | Tests | Time |" >> $GITHUB_STEP_SUMMARY
+        echo "| --- | --- | --- |" >> $GITHUB_STEP_SUMMARY
+        if [ -f test-results/vitest-results.xml ]; then
+          PASSED=$(grep -o 'tests="[^"]*"' test-results/vitest-results.xml | head -1 | cut -d'"' -f2)
+          ERRORS=$(grep -o 'errors="[^"]*"' test-results/vitest-results.xml | head -1 | cut -d'"' -f2)
+          FAILURES=$(grep -o 'failures="[^"]*"' test-results/vitest-results.xml | head -1 | cut -d'"' -f2)
+          TIME=$(grep -o 'time="[^"]*"' test-results/vitest-results.xml | head -1 | cut -d'"' -f2)
+          TOTAL=$PASSED
+          FAILED=$((ERRORS + FAILURES))
+          SUCCESS=$((TOTAL - FAILED))
+          if [ $FAILED -eq 0 ]; then
+            echo "| ✅ Success | $SUCCESS / $TOTAL | ${TIME}s |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ❌ Failed | $FAILED / $TOTAL | ${TIME}s |" >> $GITHUB_STEP_SUMMARY
+          fi
+        else
+          echo "| ⚠️ Error | No results file found | - |" >> $GITHUB_STEP_SUMMARY
+        fi
+
     - name: Publish Vitest Test Report
       uses: dorny/test-reporter@v1
       if: always()
@@ -76,6 +99,25 @@ jobs:
     - name: Run E2E Tests
       run: npm run test:e2e
       continue-on-error: true
+
+    - name: Playwright Summary to Job Summary
+      if: always()
+      run: |
+        echo "### 🎭 Playwright Results" >> $GITHUB_STEP_SUMMARY
+        echo "| Status | Tests | Time |" >> $GITHUB_STEP_SUMMARY
+        echo "| --- | --- | --- |" >> $GITHUB_STEP_SUMMARY
+        if [ -f test-results/playwright-results.xml ]; then
+          TOTAL=$(grep -o 'tests="[^"]*"' test-results/playwright-results.xml | head -1 | cut -d'"' -f2)
+          FAILURES=$(grep -o 'failures="[^"]*"' test-results/playwright-results.xml | head -1 | cut -d'"' -f2)
+          TIME=$(grep -o 'time="[^"]*"' test-results/playwright-results.xml | head -1 | cut -d'"' -f2)
+          if [ $FAILURES -eq 0 ]; then
+            echo "| ✅ Success | $TOTAL | ${TIME}s |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ❌ Failed | $FAILURES / $TOTAL | ${TIME}s |" >> $GITHUB_STEP_SUMMARY
+          fi
+        else
+          echo "| ⚠️ Error | No results file found | - |" >> $GITHUB_STEP_SUMMARY
+        fi
 
     - name: Publish Playwright Test Report
       uses: dorny/test-reporter@v1
