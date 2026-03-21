@@ -1,6 +1,7 @@
 import { renderCheats, renderPortfolio, renderTracks, buildLeftSidebar, buildToC, updateThemeIcons } from './ui.js';
 import { processCustomTags, initMarkdown, styleSpecialQuotes, makeHeadersCollapsible, addCodeFeatures } from './markdown.js';
 import { loadGlobalData } from './api.js';
+import { isLessonRead } from './progress.js';
 
 let lastPage = 'home';
 let currentDir = ""; 
@@ -156,6 +157,7 @@ async function renderArticle(path) {
                 </div>
             ` : '';
 
+            const isRead = isLessonRead(targetPath);
             const authorInfo = data.authors ? `
                 <div class="flex items-center text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">
                     <i class="fas fa-user-circle mr-2 text-kvant"></i> ${data.authors}
@@ -168,7 +170,10 @@ async function renderArticle(path) {
             ` : '');
 
             metadataHtml = `
-                <div class="mb-8 md:mb-12 border-b border-slate-100 dark:border-slate-800 pb-8 md:pb-10">
+                <div class="mb-8 md:mb-12 border-b border-slate-100 dark:border-slate-800 pb-8 md:pb-10 relative group/meta">
+                    <button id="btn-toggle-read" data-path="${targetPath}" title="${isRead ? 'Отметить как непрочитанное' : 'Отметить как пройденное'}" class="absolute -top-2 -right-2 md:top-0 md:right-0 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:scale-110 transition-all shadow-sm group ${isRead ? 'is-read' : ''}">
+                        <i class="fas fa-check text-slate-300 group-[.is-read]:text-emerald-500 transition-colors"></i>
+                    </button>
                     ${data.module ? `<div class="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-kvant mb-3 md:mb-4 flex items-center"><span class="w-1.5 h-1.5 bg-kvant rounded-full mr-2"></span>${data.module}</div>` : ''}
                     <h1 class="heading-font text-3xl md:text-5xl font-bold leading-tight !mt-0 !mb-4">${data.title || "Без названия"}</h1>
                     ${authorInfo}

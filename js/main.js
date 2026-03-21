@@ -1,13 +1,14 @@
 import { initRouter, updateEditorPreview, insertTemplate, copyEditorCode, downloadMarkdown, goBackSafe } from './router.js';
 import { initSearch, openSearch, closeSearch } from './search.js';
 import { initGithubAuth, publishToGitHub, uploadImage } from './github.js';
-import { toggleTheme, toggleMobileMenu, scrollPortfolio, initSidebarTabs } from './ui.js';
+import { toggleTheme, toggleMobileMenu, scrollPortfolio, initSidebarTabs, renderHomeTracks } from './ui.js';
 
 /**
  * Инициализация всех слушателей событий (Stage 5: Eliminate Scope Pollution)
  */
 function initEvents() {
     initSidebarTabs();
+    renderHomeTracks();
     // Навигация
     document.getElementById('nav-logo')?.addEventListener('click', () => window.location.hash = 'home');
     document.getElementById('nav-home')?.addEventListener('click', () => window.location.hash = 'home');
@@ -67,6 +68,22 @@ function initEvents() {
 
     // Делегирование для карточек и ссылок (динамический контент)
     document.addEventListener('click', (e) => {
+        const btnRead = e.target.closest('#btn-toggle-read');
+        if (btnRead) {
+            const path = btnRead.getAttribute('data-path');
+            import('./progress.js').then(m => {
+                const isRead = m.toggleLessonRead(path);
+                btnRead.classList.toggle('is-read', isRead);
+                btnRead.title = isRead ? 'Отметить как непрочитанное' : 'Отметить как пройденное';
+                // Обновляем сайдбар, чтобы галочка появилась/исчезла
+                import('./ui.js').then(ui => {
+                    const currentPath = window.location.hash.startsWith('#article:') ? window.location.hash.substring(9) : '';
+                    ui.buildLeftSidebar(currentPath);
+                    ui.renderHomeTracks();
+                });
+            });
+        }
+
         const card = e.target.closest('.card-link');
         if (card) {
             const path = card.getAttribute('data-path');

@@ -1,4 +1,5 @@
 import { loadPortfolio, loadTracks, loadCheats } from './api.js';
+import { isLessonRead, getTrackProgress } from './progress.js';
 
 export function updateThemeIcons(isDark) { 
     const icon = document.getElementById('theme-icon'); 
@@ -55,6 +56,37 @@ export async function renderPortfolio() {
     if (containerGrid) containerGrid.innerHTML = html;
 }
 
+export async function renderHomeTracks() {
+    const tracks = await loadTracks();
+    const container = document.getElementById('home-tracks-container');
+    if (!container || !tracks) return;
+
+    // Берем первые 3 трека для главной
+    container.innerHTML = tracks.slice(0, 3).map(t => {
+        const iconHtml = (t.icon && t.icon.includes('/')) 
+            ? `<img src="${t.icon}" alt="icon" class="w-10 h-10 md:w-12 md:h-12 mb-4 md:mb-6 group-hover:scale-110 transition-transform object-contain">` 
+            : `<i class="${t.icon} text-4xl md:text-[3rem] mb-4 md:mb-6 text-indigo-500 leading-none h-10 md:h-12 flex items-center group-hover:scale-110 transition-transform"></i>`;
+
+        const lessonsWithPaths = t.lessons.map(l => ({ ...l, trackPath: `articles/${t.id}` }));
+        const progress = getTrackProgress(lessonsWithPaths);
+
+        return `
+            <div data-path="article:articles/${t.id}/intro.md" class="card-link p-6 md:p-10 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] border-2 border-transparent hover:border-kvant cursor-pointer transition-all hover:-translate-y-3 hover:shadow-xl flex flex-col items-center group">
+                ${iconHtml}
+                <h3 class="heading-font text-lg md:text-xl mb-2 w-full text-center">${t.name}</h3>
+                <div class="w-full mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[9px] text-slate-400 uppercase font-black tracking-widest">Прогресс</span>
+                        <span class="text-[9px] text-kvant font-black">${progress}%</span>
+                    </div>
+                    <div class="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-kvant transition-all duration-1000" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+}
+
 export async function renderTracks() {
     const tracks = await loadTracks();
     const container = document.getElementById('tracks-container');
@@ -66,12 +98,24 @@ export async function renderTracks() {
             : `<i class="${t.icon} text-lg md:text-xl"></i>`;
 
         const modules = groupLessonsByModule(t.lessons);
+        
+        // Расчет прогресса трека
+        const lessonsWithPaths = t.lessons.map(l => ({ ...l, trackPath: `articles/${t.id}` }));
+        const progress = getTrackProgress(lessonsWithPaths);
 
         return `
             <div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800">
                 <div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10">
                     <div class="w-12 h-12 md:w-14 md:h-14 ${t.colorClass} rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg">${iconHtml}</div>
-                    <h3 class="heading-font text-lg md:text-xl">${t.name}</h3>
+                    <div class="flex-1">
+                        <h3 class="heading-font text-lg md:text-xl mb-1">${t.name}</h3>
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-kvant transition-all duration-1000" style="width: ${progress}%"></div>
+                            </div>
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${progress}%</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="space-y-6 md:space-y-8">
                     ${Object.entries(modules).map(([moduleName, moduleLessons]) => `
@@ -129,7 +173,13 @@ export function buildLeftSidebar(currentPath) {
                                     ${moduleLessons.map(l => {
                                         const path = `articles/${t.id}/${l.file}`;
                                         const isActive = path === currentPath;
-                                        return `<li><button data-path="article:${path}" class="card-link text-left w-full transition-colors ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${l.title}</button></li>`;
+                                        const isRead = isLessonRead(path);
+                                        return `<li>
+                                            <button data-path="article:${path}" class="card-link text-left w-full transition-colors flex items-center justify-between group/item ${isActive ? 'text-kvant font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">
+                                                <span class="line-clamp-1">${l.title}</span>
+                                                ${isRead ? '<i class="fas fa-check-circle text-emerald-500 text-[10px] ml-2 shrink-0"></i>' : ''}
+                                            </button>
+                                        </li>`;
                                     }).join('')}
                                 </ul>
                             </div>
@@ -152,7 +202,13 @@ export function buildLeftSidebar(currentPath) {
         window.siteData.cheats.forEach(c => {
             const path = `articles/cheats/${c.file}`;
             const isActive = path === currentPath;
-            html += `<li><button data-path="article:${path}" class="card-link text-left w-full transition-colors ${isActive ? 'text-amber-500 font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">${c.title}</button></li>`;
+            const isRead = isLessonRead(path);
+            html += `<li>
+                <button data-path="article:${path}" class="card-link text-left w-full transition-colors flex items-center justify-between group/item ${isActive ? 'text-amber-500 font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}">
+                    <span class="line-clamp-1">${c.title}</span>
+                    ${isRead ? '<i class="fas fa-check-circle text-emerald-500 text-[10px] ml-2 shrink-0"></i>' : ''}
+                </button>
+            </li>`;
         });
         html += `</ul></div></div>`;
     }
