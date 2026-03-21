@@ -2,6 +2,8 @@ backend:
   name: github
   repo: VRARKvant/VRKvant
   branch: main
+  base_url: https://vrkvant.vercel.app # Замените на ваш актуальный домен Vercel
+  auth_endpoint: api/auth
 
 site_url: https://vrarkvant.github.io/VRKvant/
 display_url: https://vrarkvant.github.io/VRKvant/
@@ -10,6 +12,16 @@ media_folder: "img/uploads"
 public_folder: "img/uploads"
 
 collections:
+  - name: "blog"
+    label: "Блог / Новости"
+    folder: "articles/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Дата", name: "date", widget: "datetime" }
+      - { label: "Текст", name: "body", widget: "markdown" }
+
   - name: "blender"
     label: "Трек: Blender"
     folder: "articles/blender"
