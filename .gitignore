@@ -2,3 +2,15 @@ node_modules/
 .npm-cache/
 .DS_Store
 dist/
+
+# Testing
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+.vitest/
+
+# Environment
+.env
+.env.*
+
