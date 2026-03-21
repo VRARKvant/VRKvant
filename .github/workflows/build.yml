@@ -8,6 +8,12 @@ on:
       - 'articles/**/*.md'
       - 'scripts/build.js'
       - 'js/**'
+      - 'tests/**'
+      - 'e2e/**'
+      - 'package.json'
+      - 'ROADMAP.md'
+      - 'GEMINI.md'
+      - '.github/workflows/build.yml'
 
 jobs:
   build:
@@ -29,6 +35,15 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+
+    - name: Run Unit & Integration Tests
+      run: npm run test
+
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps chromium
+
+    - name: Run E2E Tests
+      run: npm run test:e2e
 
     - name: Build CSS
       run: npm run build:css
