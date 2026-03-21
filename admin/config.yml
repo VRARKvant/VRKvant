@@ -2,169 +2,20 @@ backend:
   name: github
   repo: VRARKvant/VRKvant
   branch: main
-  base_url: https://vr-kvant.vercel.app # Замените на ваш актуальный домен Vercel
+  base_url: https://vr-kvant.vercel.app
   auth_endpoint: api/auth
 
-site_url: https://vrarkvant.github.io/VRKvant/
-display_url: https://vrarkvant.github.io/VRKvant/
-
-media_folder: "img/uploads"
-public_folder: "img/uploads"
+media_folder: "img/other"
+public_folder: "img/other"
 
 collections:
-  - name: "blog"
-    label: "Блог / Новости"
-    folder: "articles/blog"
-    create: true
+  - name: "articles"
+    label: "Все статьи"
+    folder: "articles"
     extension: "md"
     format: "yaml-frontmatter"
-    slug: "{{slug}}"
-    summary: "[{{order}}] {{title}} ({{module}})"
-    sortable_fields: ["order", "title"]
-    view_groups:
-      - label: "Модуль"
-        field: "module"
-    view_filters:
-      - label: "Только уроки"
-        field: "type"
-        pattern: "lesson"
+    create: true
+    recursive: true
     fields:
       - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Дата", name: "date", widget: "datetime" }
       - { label: "Текст", name: "body", widget: "markdown" }
-
-  - name: "blender"
-    label: "Трек: Blender"
-    folder: "articles/blender"
-    create: true
-    extension: "md"
-    format: "yaml-frontmatter"
-    slug: "{{slug}}"
-    summary: "[{{order}}] {{title}} ({{module}})"
-    sortable_fields: ["order", "title"]
-    view_groups:
-      - label: "Модуль"
-        field: "module"
-    view_filters:
-      - label: "Только уроки"
-        field: "type"
-        pattern: "lesson"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Модуль", name: "module", widget: "string" }
-      - { label: "Порядок", name: "order", widget: "number", default: 10 }
-      - { label: "Авторы", name: "authors", widget: "string", required: false }
-      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD", required: false }
-      - { label: "Теги", name: "tags", widget: "list", required: false }
-      - { label: "Тип", name: "type", widget: "select", options: ["lesson", "intro"], default: "lesson" }
-      - { label: "Название трека (только для Intro)", name: "name", widget: "string", required: false }
-      - { label: "Иконка (только для Intro)", name: "icon", widget: "string", required: false }
-      - { label: "Цвет фона (только для Intro)", name: "colorClass", widget: "string", required: false }
-      - { label: "Текст статьи", name: "body", widget: "markdown" }
-
-  - name: "unity"
-    label: "Трек: Unity"
-    folder: "articles/unity"
-    create: true
-    extension: "md"
-    format: "yaml-frontmatter"
-    slug: "{{slug}}"
-    summary: "[{{order}}] {{title}} ({{module}})"
-    sortable_fields: ["order", "title"]
-    view_groups:
-      - label: "Модуль"
-        field: "module"
-    view_filters:
-      - label: "Только уроки"
-        field: "type"
-        pattern: "lesson"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Модуль", name: "module", widget: "string" }
-      - { label: "Порядок", name: "order", widget: "number", default: 10 }
-      - { label: "Авторы", name: "authors", widget: "string", required: false }
-      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD", required: false }
-      - { label: "Теги", name: "tags", widget: "list", required: false }
-      - { label: "Тип", name: "type", widget: "select", options: ["lesson", "intro"], default: "lesson" }
-      - { label: "Название трека (только для Intro)", name: "name", widget: "string", required: false }
-      - { label: "Иконка (только для Intro)", name: "icon", widget: "string", required: false }
-      - { label: "Цвет фона (только для Intro)", name: "colorClass", widget: "string", required: false }
-      - { label: "Текст статьи", name: "body", widget: "markdown" }
-
-  - name: "unreal"
-    label: "Трек: Unreal Engine"
-    folder: "articles/unreal"
-    create: true
-    extension: "md"
-    format: "yaml-frontmatter"
-    slug: "{{slug}}"
-    summary: "[{{order}}] {{title}} ({{module}})"
-    sortable_fields: ["order", "title"]
-    view_groups:
-      - label: "Модуль"
-        field: "module"
-    view_filters:
-      - label: "Только уроки"
-        field: "type"
-        pattern: "lesson"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Модуль", name: "module", widget: "string" }
-      - { label: "Порядок", name: "order", widget: "number", default: 10 }
-      - { label: "Авторы", name: "authors", widget: "string", required: false }
-      - { label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD", required: false }
-      - { label: "Теги", name: "tags", widget: "list", required: false }
-      - { label: "Тип", name: "type", widget: "select", options: ["lesson", "intro"], default: "lesson" }
-      - { label: "Название трека (только для Intro)", name: "name", widget: "string", required: false }
-      - { label: "Иконка (только для Intro)", name: "icon", widget: "string", required: false }
-      - { label: "Цвет фона (только для Intro)", name: "colorClass", widget: "string", required: false }
-      - { label: "Текст статьи", name: "body", widget: "markdown" }
-
-  - name: "cheats"
-    label: "Шпаргалки"
-    folder: "articles/cheats"
-    create: true
-    extension: "md"
-    format: "yaml-frontmatter"
-    slug: "{{slug}}"
-    summary: "[{{order}}] {{title}} ({{module}})"
-    sortable_fields: ["order", "title"]
-    view_groups:
-      - label: "Модуль"
-        field: "module"
-    view_filters:
-      - label: "Только уроки"
-        field: "type"
-        pattern: "lesson"
-    fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Модуль", name: "module", widget: "string" }
-      - { label: "Порядок", name: "order", widget: "number", default: 10 }
-      - { label: "Тип", name: "type", widget: "hidden", default: "cheat" }
-      - { label: "Текст шпаргалки", name: "body", widget: "markdown" }
-
-  - name: "portfolio"
-    label: "Портфолио"
-    folder: "articles/portfolio"
-    create: true
-    extension: "md"
-    format: "yaml-frontmatter"
-    slug: "{{slug}}"
-    summary: "[{{order}}] {{title}} ({{module}})"
-    sortable_fields: ["order", "title"]
-    view_groups:
-      - label: "Модуль"
-        field: "module"
-    view_filters:
-      - label: "Только уроки"
-        field: "type"
-        pattern: "lesson"
-    fields:
-      - { label: "Название проекта", name: "title", widget: "string" }
-      - { label: "Краткое описание", name: "description", widget: "text" }
-      - { label: "Авторы", name: "authors", widget: "string" }
-      - { label: "Обложка (URL)", name: "image", widget: "string" }
-      - { label: "Порядок", name: "order", widget: "number", default: 10 }
-      - { label: "Теги", name: "tags", widget: "list" }
-      - { label: "Тип", name: "type", widget: "hidden", default: "project" }
-      - { label: "Полное описание (Markdown)", name: "body", widget: "markdown" }

@@ -1,47 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Управление контентом — VR Kvant</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+  <title>Admin</title>
 </head>
 <body>
-  <!-- Sveltia CMS -->
   <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
-  
-  <script>
-    // Настройка превью в CMS
-    const CMS = window.CMS || {};
-    
-    // Подключаем стили сайта в превью админки
-    CMS.registerPreviewStyle("../css/style.css");
-    CMS.registerPreviewStyle("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Unbounded:wght@400;700;900&display=swap");
-    CMS.registerPreviewStyle("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
-    
-    // Регистрация кастомных компонентов для редактора
-    CMS.registerEditorComponent({
-      id: "gallery",
-      label: "📸 Галерея",
-      fields: [{ name: "images", label: "Пути к картинкам (через |)", widget: "string" }],
-      pattern: /^\[gallery:\s*(.*?)\]$/,
-      fromBlock: (match) => ({ images: match[1] }),
-      toBlock: (obj) => `[gallery: ${obj.images}]`,
-      toPreview: (obj) => `<div style="padding:10px; border:2px dashed #8b5cf6; border-radius:10px; text-align:center">📸 Галерея: ${obj.images}</div>`
-    });
-
-    CMS.registerEditorComponent({
-      id: "compare",
-      label: "↔️ До/После",
-      fields: [
-        { name: "before", label: "Картинка ДО", widget: "string" },
-        { name: "after", label: "Картинка ПОСЛЕ", widget: "string" }
-      ],
-      pattern: /^\[compare:\s*(.*?)\s*\|\s*(.*?)\]$/,
-      fromBlock: (match) => ({ before: match[1], after: match[2] }),
-      toBlock: (obj) => `[compare: ${obj.before} | ${obj.after}]`,
-      toPreview: (obj) => `<div style="padding:10px; border:2px dashed #10b981; border-radius:10px; text-align:center">↔️ Сравнение: ${obj.before} / ${obj.after}</div>`
-    });
-  </script>
 </body>
 </html>
