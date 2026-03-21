@@ -6,18 +6,20 @@ on:
       - main
     paths:
       - 'articles/**/*.md'
-      - 'scripts/build_manifests.py'
+      - 'scripts/build.js'
+      - 'js/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -30,5 +32,14 @@ jobs:
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "auto: обновление JSON-манифестов [skip ci]"
+        commit_message: "auto: обновление манифестов и индексов [skip ci]"
         file_pattern: 'articles/*.json'
+        disable_globbing: true
+
+    # Триггер для перезапуска GitHub Pages после коммита
+    - name: Trigger GitHub Pages deploy
+      run: |
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/pages/builds
