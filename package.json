@@ -5,10 +5,17 @@
   "scripts": {
     "build:css": "tailwindcss -i ./css/input.css -o ./css/style.css --minify",
     "watch:css": "tailwindcss -i ./css/input.css -o ./css/style.css --watch",
-    "build:manifests": "node scripts/build.js"
+    "build:manifests": "node scripts/build.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.42.0",
+    "@tailwindcss/typography": "^0.5.10",
+    "http-server": "^14.1.1",
+    "jsdom": "^24.0.0",
     "tailwindcss": "^3.4.1",
-    "@tailwindcss/typography": "^0.5.10"
+    "vitest": "^1.4.0"
   }
 }
