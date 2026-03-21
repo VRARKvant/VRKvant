@@ -33,7 +33,7 @@ export function scrollPortfolio(v) {
     if (el) el.scrollBy({ left: v, behavior: 'smooth' }); 
 }
 
-function groupLessonsByModule(lessons) {
+export function groupLessonsByModule(lessons) {
     if (!lessons || !Array.isArray(lessons)) return {};
     return lessons.reduce((acc, lesson) => {
         const moduleName = lesson.module || 'Разное';

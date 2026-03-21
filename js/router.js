@@ -98,12 +98,12 @@ export function goBackSafe() {
     }
 }
 
-function parseFrontmatter(content) {
+export function parseFrontmatter(content) {
     // Удаляем BOM и лишние пробелы в начале
     const cleanContent = content.replace(/^\uFEFF/, '').trimStart();
     
     // Регулярное выражение, которое ищет блок между --- и --- в начале файла
-    const match = cleanContent.match(/^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+/);
+    const match = cleanContent.match(/^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*([\r\n]|$)/);
     
     if (match) {
         const frontmatterStr = match[1];
@@ -113,7 +113,9 @@ function parseFrontmatter(content) {
             if (separatorIndex !== -1) {
                 const key = line.substring(0, separatorIndex).trim();
                 const value = line.substring(separatorIndex + 1).trim();
-                data[key] = value.replace(/^["']|["']$/g, '');
+                if (key) {
+                    data[key] = value.replace(/^["']|["']$/g, '');
+                }
             }
         });
         // Возвращаем данные и контент БЕЗ фронтматтера

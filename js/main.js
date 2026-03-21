@@ -137,14 +137,22 @@ function initEvents() {
     document.getElementById('meta-color')?.addEventListener('change', updateCardPreview);
 
     // Тулбар редактора
-    document.getElementById('toolbar-h2')?.addEventListener('click', () => insertTemplate('h2'));
-    document.getElementById('toolbar-h3')?.addEventListener('click', () => insertTemplate('h3'));
-    document.getElementById('toolbar-bold')?.addEventListener('click', () => insertTemplate('bold'));
-    document.getElementById('toolbar-code')?.addEventListener('click', () => insertTemplate('code'));
-    document.getElementById('toolbar-warn')?.addEventListener('click', () => insertTemplate('quote-warn'));
-    document.getElementById('toolbar-tip')?.addEventListener('click', () => insertTemplate('quote-tip'));
-    document.getElementById('toolbar-compare')?.addEventListener('click', () => insertTemplate('compare'));
-    document.getElementById('toolbar-gallery')?.addEventListener('click', () => insertTemplate('gallery'));
+    const handleTemplate = (type) => {
+        const input = document.getElementById('markdown-input');
+        if (input) {
+            insertTemplate(input, type);
+            input.dispatchEvent(new Event('input'));
+        }
+    };
+
+    document.getElementById('toolbar-h2')?.addEventListener('click', () => handleTemplate('h2'));
+    document.getElementById('toolbar-h3')?.addEventListener('click', () => handleTemplate('h3'));
+    document.getElementById('toolbar-bold')?.addEventListener('click', () => handleTemplate('bold'));
+    document.getElementById('toolbar-code')?.addEventListener('click', () => handleTemplate('code'));
+    document.getElementById('toolbar-warn')?.addEventListener('click', () => handleTemplate('quote-warn'));
+    document.getElementById('toolbar-tip')?.addEventListener('click', () => handleTemplate('quote-tip'));
+    document.getElementById('toolbar-compare')?.addEventListener('click', () => handleTemplate('compare'));
+    document.getElementById('toolbar-gallery')?.addEventListener('click', () => handleTemplate('gallery'));
     document.getElementById('upload-img-btn')?.addEventListener('click', () => document.getElementById('image-upload-input').click());
     document.getElementById('image-upload-input')?.addEventListener('change', uploadImage);
 }
@@ -181,7 +189,7 @@ function updateMetaFields() {
     autoTransliterate();
 }
 
-const cyrillicToLatinMap = {
+export const cyrillicToLatinMap = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
     'з': 'zh', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
     'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
@@ -189,7 +197,7 @@ const cyrillicToLatinMap = {
     'я': 'ya', 'ь': '', 'ъ': ''
 };
 
-function autoTransliterate() {
+export function autoTransliterate() {
     const titleInput = document.getElementById('meta-title');
     const typeInput = document.getElementById('meta-type');
     if (!titleInput || !typeInput) return;
@@ -308,11 +316,13 @@ function updateCardPreview() {
     }
 }
 
-// Инициализация роутера и других глобальных слушателей
-initRouter();
-initSearch();
-initGithubAuth();
-initEvents();
+// Инициализация роутера и других глобальных слушателей только если не в тестовой среде
+if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    initRouter();
+    initSearch();
+    initGithubAuth();
+    initEvents();
+}
 
 // Слушатель секретного сочетания клавиш (Ctrl + Shift + E)
 window.addEventListener("keydown", function(e) {
