@@ -8,6 +8,7 @@ on:
       - 'articles/**/*.md'
       - 'scripts/build.js'
       - 'js/**'
+      - 'css/**'
       - 'tests/**'
       - 'e2e/**'
       - 'package.json'
