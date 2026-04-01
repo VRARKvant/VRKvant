@@ -37,7 +37,7 @@
         {
           "title": "Введение в Unreal Engine",
           "file": "intro.md",
-          "module": "Основы",
+          "module": "Введение",
           "order": 1
         }
       ]

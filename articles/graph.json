@@ -65,24 +65,6 @@
       "title": "скачать Unity Hub",
       "path": "https://unity.com/download",
       "type": "external"
-    },
-    {
-      "id": 12,
-      "title": "Основы переменных и интерфейса",
-      "path": "articles/unreal/module_1.md",
-      "type": "missing"
-    },
-    {
-      "id": 13,
-      "title": "Логика и ветвление в Blueprints",
-      "path": "articles/unreal/module_2.md",
-      "type": "missing"
-    },
-    {
-      "id": 14,
-      "title": "Создание VR-взаимодействий",
-      "path": "articles/unreal/module_7.md",
-      "type": "missing"
     }
   ],
   "links": [
@@ -113,18 +95,6 @@
     {
       "source": 7,
       "target": 11
-    },
-    {
-      "source": 9,
-      "target": 12
-    },
-    {
-      "source": 9,
-      "target": 13
-    },
-    {
-      "source": 9,
-      "target": 14
     }
   ]
 }
