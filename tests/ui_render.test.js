@@ -22,6 +22,26 @@ describe('UI Generators (js/ui.js)', () => {
             <div id="projects-container"></div>
             <div id="home-tracks-container"></div>
             <div id="tracks-container"></div>
+            <template id="tpl-portfolio-card">
+                <div class="card-link"><div class="card-img-container"><div class="card-tags-container"></div></div><h3 class="card-title"></h3><p class="card-desc"></p><span class="card-authors"></span></div>
+            </template>
+            <template id="tpl-home-track-card">
+                <div class="card-link"><div class="track-icon-container bg-white dark:bg-slate-900 card-icon"></div><h3 class="card-title"></h3></div>
+            </template>
+            <template id="tpl-track-page-card">
+                <div class="wrapper">
+                    <div class="track-icon-container bg-white dark:bg-slate-900 card-icon"></div>
+                    <h3 class="card-title"></h3>
+                    <div class="card-progress-bar"></div><span class="card-progress-txt"></span>
+                    <div class="card-modules-container"></div>
+                </div>
+            </template>
+            <template id="tpl-track-module">
+                <div><span class="module-title"></span><div class="module-lessons-container"></div></div>
+            </template>
+            <template id="tpl-track-lesson">
+                <div class="card-link"><span class="lesson-title"></span></div>
+            </template>
         `;
         vi.clearAllMocks();
     });

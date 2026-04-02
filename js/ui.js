@@ -55,14 +55,47 @@ export async function renderPortfolio() {
         return;
     }
 
-    const html = projects.map(p => `
-        <div data-path="article:articles/portfolio/${p.file}" class="card-link snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform">
-            <div class="h-48 md:h-60 bg-slate-100 dark:bg-slate-800 relative overflow-hidden">${p.image ? `<img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">` : `<div class="w-full h-full flex items-center justify-center text-3xl md:text-4xl opacity-20"><i class="fas fa-image"></i></div>`}<div class="absolute top-4 md:top-6 left-4 md:left-6 flex gap-2">${p.tags ? p.tags.map(t => `<span class="bg-black/40 backdrop-blur-md text-white text-[8px] md:text-[9px] uppercase font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-white/20">${t}</span>`).join('') : ''}</div></div>
-            <div class="p-6 md:p-8"><h3 class="heading-font text-xl mb-2 md:mb-4 group-hover:text-kvant transition">${p.title}</h3><p class="text-slate-500 text-xs md:text-sm mb-4 md:mb-6 line-clamp-2">${p.description}</p><div class="flex items-center text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest"><i class="fas fa-user-circle mr-2 text-kvant"></i> ${p.authors}</div></div>
-        </div>`).join('');
+    const tplCard = document.getElementById('tpl-portfolio-card');
+    const fragmentGrid = document.createDocumentFragment();
+    const fragmentCarousel = document.createDocumentFragment();
     
-    if (containerCarousel) containerCarousel.innerHTML = html;
-    if (containerGrid) containerGrid.innerHTML = html;
+    projects.forEach(p => {
+        const clone = tplCard.content.cloneNode(true);
+        clone.querySelector('.card-link').setAttribute('data-path', `article:articles/portfolio/${p.file}`);
+        
+        const imgContainer = clone.querySelector('.card-img-container');
+        if (p.image) {
+            imgContainer.insertAdjacentHTML('afterbegin', `<img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">`);
+        } else {
+            imgContainer.insertAdjacentHTML('afterbegin', `<div class="w-full h-full flex items-center justify-center text-3xl md:text-4xl opacity-20"><i class="fas fa-image"></i></div>`);
+        }
+        
+        const tagsContainer = clone.querySelector('.card-tags-container');
+        if (p.tags && tagsContainer) {
+            p.tags.forEach(t => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'bg-black/40 backdrop-blur-md text-white text-[8px] md:text-[9px] uppercase font-black px-3 md:px-4 py-1 md:py-1.5 rounded-full border border-white/20';
+                tagSpan.textContent = t;
+                tagsContainer.appendChild(tagSpan);
+            });
+        }
+        
+        clone.querySelector('.card-title').textContent = p.title;
+        clone.querySelector('.card-desc').textContent = p.description;
+        clone.querySelector('.card-authors').textContent = p.authors;
+        
+        fragmentCarousel.appendChild(clone.cloneNode(true));
+        fragmentGrid.appendChild(clone);
+    });
+    
+    if (containerCarousel) {
+        containerCarousel.innerHTML = '';
+        containerCarousel.appendChild(fragmentCarousel);
+    }
+    if (containerGrid) {
+        containerGrid.innerHTML = '';
+        containerGrid.appendChild(fragmentGrid);
+    }
 }
 
 export async function renderHomeTracks() {
@@ -70,20 +103,26 @@ export async function renderHomeTracks() {
     const container = document.getElementById('home-tracks-container');
     if (!container || !tracks) return;
 
-    // Берем первые 3 трека для главной
-    container.innerHTML = tracks.slice(0, 3).map(t => {
-        const iconHtml = (t.icon && t.icon.includes('/')) 
-            ? `<img src="${t.icon}" alt="icon" class="w-10 h-10 md:w-12 md:h-12 object-contain transition-transform">` 
-            : `<i class="${t.icon} text-3xl md:text-[2.5rem] leading-none transition-transform"></i>`;
+    const tpl = document.getElementById('tpl-home-track-card');
+    const fragment = document.createDocumentFragment();
 
-        return `
-            <div data-path="article:articles/${t.id}/intro.md" class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] cursor-pointer transition-all hover:-translate-y-3 flex flex-col items-center group relative overflow-hidden">
-                <div class="w-16 h-16 md:w-20 md:h-20 track-icon-container bg-white dark:bg-slate-900 mb-6 md:mb-8">
-                    ${iconHtml}
-                </div>
-                <h3 class="heading-font text-lg md:text-xl font-bold mb-4 w-full text-center group-hover:text-kvant transition-colors">${t.name}</h3>
-            </div>`;
-    }).join('');
+    tracks.slice(0, 3).forEach(t => {
+        const clone = tpl.content.cloneNode(true);
+        clone.querySelector('.card-link').setAttribute('data-path', `article:articles/${t.id}/intro.md`);
+        
+        const iconContainer = clone.querySelector('.card-icon');
+        if (t.icon && t.icon.includes('/')) {
+            iconContainer.innerHTML = `<img src="${t.icon}" alt="icon" class="w-10 h-10 md:w-12 md:h-12 object-contain transition-transform">`;
+        } else {
+            iconContainer.innerHTML = `<i class="${t.icon} text-3xl md:text-[2.5rem] leading-none transition-transform"></i>`;
+        }
+        
+        clone.querySelector('.card-title').textContent = t.name;
+        fragment.appendChild(clone);
+    });
+    
+    container.innerHTML = '';
+    container.appendChild(fragment);
 }
 
 export async function renderTracks() {
@@ -91,51 +130,51 @@ export async function renderTracks() {
     const container = document.getElementById('tracks-container');
     if (!container || !tracks) return;
 
-    container.innerHTML = tracks.map(t => {
-        const iconHtml = (t.icon && t.icon.includes('/')) 
-            ? `<img src="${t.icon}" alt="icon" class="w-8 h-8 md:w-9 md:h-9 object-contain">` 
-            : `<i class="${t.icon} text-2xl md:text-3xl"></i>`;
+    const tplTrack = document.getElementById('tpl-track-page-card');
+    const tplModule = document.getElementById('tpl-track-module');
+    const tplLesson = document.getElementById('tpl-track-lesson');
+    const fragment = document.createDocumentFragment();
 
-        const modules = groupLessonsByModule(t.lessons);
+    tracks.forEach(t => {
+        const cloneTrack = tplTrack.content.cloneNode(true);
         
-        // Расчет прогресса трека
+        const iconContainer = cloneTrack.querySelector('.card-icon');
+        if (t.icon && t.icon.includes('/')) {
+            iconContainer.innerHTML = `<img src="${t.icon}" alt="icon" class="w-8 h-8 md:w-9 md:h-9 object-contain">`;
+        } else {
+            iconContainer.innerHTML = `<i class="${t.icon} text-2xl md:text-3xl"></i>`;
+        }
+        
+        cloneTrack.querySelector('.card-title').textContent = t.name;
+        
         const lessonsWithPaths = t.lessons.map(l => ({ ...l, trackPath: `articles/${t.id}` }));
         const progress = getTrackProgress(lessonsWithPaths);
+        cloneTrack.querySelector('.card-progress-bar').style.width = `${progress}%`;
+        cloneTrack.querySelector('.card-progress-txt').textContent = `${progress}%`;
+        
+        const modulesContainer = cloneTrack.querySelector('.card-modules-container');
+        const modules = groupLessonsByModule(t.lessons);
+        
+        Object.entries(modules).forEach(([moduleName, moduleLessons]) => {
+            const cloneModule = tplModule.content.cloneNode(true);
+            cloneModule.querySelector('.module-title').textContent = moduleName;
+            
+            const lessonsContainer = cloneModule.querySelector('.module-lessons-container');
+            moduleLessons.forEach(l => {
+                const cloneLesson = tplLesson.content.cloneNode(true);
+                cloneLesson.querySelector('.card-link').setAttribute('data-path', `article:articles/${t.id}/${l.file}`);
+                cloneLesson.querySelector('.lesson-title').textContent = l.title;
+                lessonsContainer.appendChild(cloneLesson);
+            });
+            
+            modulesContainer.appendChild(cloneModule);
+        });
+        
+        fragment.appendChild(cloneTrack);
+    });
 
-        return `
-            <div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800">
-                <div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10">
-                    <div class="w-14 h-14 md:w-16 md:h-16 track-icon-container bg-white dark:bg-slate-900">${iconHtml}</div>
-                    <div class="flex-1">
-                        <h3 class="heading-font text-lg md:text-xl mb-1">${t.name}</h3>
-                        <div class="flex items-center gap-3">
-                            <div class="flex-1 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-kvant transition-all duration-1000" style="width: ${progress}%"></div>
-                            </div>
-                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${progress}%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-6 md:space-y-8">
-                    ${Object.entries(modules).map(([moduleName, moduleLessons]) => `
-                        <div>
-                            <h4 class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-3 md:mb-4 px-1 flex items-center">
-                                <span class="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mr-2"></span>
-                                ${moduleName}
-                            </h4>
-                            <div class="space-y-2 md:space-y-3">
-                                ${moduleLessons.map(l => `
-                                    <div data-path="article:articles/${t.id}/${l.file}" class="card-link p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group">
-                                        <span class="font-bold text-xs md:text-sm group-hover:text-kvant transition">${l.title}</span>
-                                        <i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`;
-    }).join('');
+    container.innerHTML = '';
+    container.appendChild(fragment);
 }
 
 export async function renderCheats() {
@@ -143,7 +182,18 @@ export async function renderCheats() {
     const container = document.getElementById('cheats-container');
     if (!container || !cheats) return;
 
-    container.innerHTML = cheats.map(c => `<div data-path="article:articles/cheats/${c.file}" class="card-link p-5 md:p-8 bg-slate-50 dark:bg-slate-900 rounded-[1.25rem] md:rounded-[2rem] border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group"><span class="font-bold text-sm md:text-base tracking-tight italic">${c.title}</span><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center opacity-100 md:opacity-0 group-hover:opacity-100 transition"><i class="fas fa-arrow-right text-xs md:text-base"></i></div></div>`).join('');
+    const tpl = document.getElementById('tpl-cheat-card');
+    const fragment = document.createDocumentFragment();
+
+    cheats.forEach(c => {
+        const clone = tpl.content.cloneNode(true);
+        clone.querySelector('.card-link').setAttribute('data-path', `article:articles/cheats/${c.file}`);
+        clone.querySelector('.card-title').textContent = c.title;
+        fragment.appendChild(clone);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(fragment);
 }
 
 export function buildLeftSidebar(currentPath) {
