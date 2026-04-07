@@ -25,6 +25,12 @@
           "file": "intro.md",
           "module": "Основы",
           "order": 1
+        },
+        {
+          "title": "Интерфейс",
+          "file": "interface.md",
+          "module": "Основы",
+          "order": 2
         }
       ]
     },
