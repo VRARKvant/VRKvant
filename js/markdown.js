@@ -193,3 +193,30 @@ export function addCodeFeatures(container = document.getElementById('article-con
         };
     });
 }
+
+// Глобальные обработчики для кастомных тегов [compare] и [gallery]
+window.updateCompare = function(slider) {
+    const container = slider.parentElement;
+    const handle = container.querySelector('.compare-handle');
+    const beforeImage = container.querySelector('.compare-before');
+    
+    if (handle) handle.style.left = slider.value + '%';
+    if (beforeImage) beforeImage.style.clipPath = `inset(0 ${100 - slider.value}% 0 0)`;
+};
+
+window.moveGallery = function(id, direction) {
+    const track = document.getElementById(`${id}-track`);
+    if (!track) return;
+    
+    // Получаем текущий индекс из dataset или 0
+    let currentIndex = parseInt(track.dataset.currentIndex || '0', 10);
+    const itemsCount = track.children.length;
+    
+    // Вычисляем новый индекс с зацикливанием
+    currentIndex = (currentIndex + direction + itemsCount) % itemsCount;
+    track.dataset.currentIndex = currentIndex.toString();
+    
+    // Сдвигаем трек. Ширина элемента равна 100% контейнера.
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+};
+
