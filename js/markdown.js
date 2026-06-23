@@ -1,18 +1,28 @@
 // Настройка Markdown парсера (Highlight.js)
 export function initMarkdown() {
     if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
-        const renderer = new marked.Renderer();
-        
-        // Кастомный рендеринг изображений для центрирования и скругления
-        renderer.image = (href, title, text) => {
-            return `<img src="${href}" alt="${text}" title="${title || ''}" class="rounded-none shadow-lg mx-auto block my-6 border border-slate-100 dark:border-slate-800 max-w-full">`;
+        const renderer = {
+            image(token) {
+                // Поддержка как нового API (token), так и старого (href, title, text)
+                const href = typeof token === 'object' && token !== null ? token.href : arguments[0];
+                const title = typeof token === 'object' && token !== null ? token.title : arguments[1];
+                const text = typeof token === 'object' && token !== null ? token.text : arguments[2];
+                return `<img src="${href}" alt="${text || ''}" title="${title || ''}" class="rounded-none shadow-lg mx-auto block my-6 border border-slate-100 dark:border-slate-800 max-w-full">`;
+            }
         };
 
-        marked.setOptions({
-            renderer: renderer,
+        const highlightConfig = {
             highlight: (code, lang) => hljs.getLanguage(lang) ? hljs.highlight(code, { language: lang }).value : hljs.highlightAuto(code).value,
             langPrefix: 'hljs language-'
-        });
+        };
+
+        if (typeof marked.use === 'function') {
+            marked.use({ renderer, ...highlightConfig });
+        } else if (typeof marked.setOptions === 'function') {
+            const oldRenderer = new marked.Renderer();
+            oldRenderer.image = renderer.image;
+            marked.setOptions({ renderer: oldRenderer, ...highlightConfig });
+        }
     }
 }
 

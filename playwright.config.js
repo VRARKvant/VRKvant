@@ -10,16 +10,15 @@ export default defineConfig({
     ? [['list'], ['html'], ['junit', { outputFile: './test-results/playwright-results.xml' }]] 
     : 'html',
   use: {
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: 'http://localhost:3000',
     trace: 'on',
     video: 'on-first-retry',
   },
   webServer: {
-    command: 'python3 -m http.server 3000',
-    url: 'http://127.0.0.1:3000',
+    command: 'npx http-server -p 3000 -c-1',
+    url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
+    timeout: 120 * 1000,
   },
   projects: [
     {
