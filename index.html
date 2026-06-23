@@ -64,6 +64,7 @@
                 <button class="nav-item hover:text-kvant transition" id="nav-tracks">Треки</button>
                 <button class="nav-item hover:text-kvant transition" id="nav-cheats">Шпаргалки</button>
                 <button class="nav-item hover:text-kvant transition" id="nav-projects">Проекты</button>
+                <button class="nav-item hover:text-kvant transition" id="nav-games">Игры</button>
                 <button id="btn-open-search" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 transition-transform hover:scale-110"><i class="fas fa-search"></i></button>
                 <button id="btn-toggle-theme" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 transition-transform hover:scale-110"><i id="theme-icon" class="fas fa-moon"></i></button>
             </div>
@@ -87,6 +88,7 @@
             <button id="mobile-nav-tracks" class="text-left py-2 border-b dark:border-slate-800">Треки</button>
             <button id="mobile-nav-cheats" class="text-left py-2 border-b dark:border-slate-800">Шпаргалки</button>
             <button id="mobile-nav-projects" class="text-left py-2 border-b dark:border-slate-800">Проекты</button>
+            <button id="mobile-nav-games" class="text-left py-2 border-b dark:border-slate-800">Игры</button>
         </nav>
     </div>
 
@@ -158,7 +160,36 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Карусель Фотографий (за последний год) -->
+        <div class="w-full bg-white dark:bg-slate-950 py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 md:px-6">
+                <div class="flex justify-between items-end mb-8 md:mb-12">
+                    <div><h2 class="heading-font text-2xl md:text-5xl uppercase tracking-tighter">Наш <span class="text-kvant">год</span></h2><p class="text-xs md:text-base text-slate-500 mt-2 md:mt-4">Фотографии с мероприятий и занятий</p></div>
+                    <div class="hidden md:flex space-x-3">
+                        <button id="btn-gallery-prev" class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-900 shadow-sm flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-left"></i></button>
+                        <button id="btn-gallery-next" class="w-12 h-12 rounded-full bg-slate-50 dark:bg-slate-900 shadow-sm flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <div id="gallery-carousel" class="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 pt-4 pb-6 md:pb-10 hide-scrollbar scroll-smooth px-2 -mx-2">
+                    <!-- Skeletons -->
+                    <div class="snap-center shrink-0 w-[80vw] md:w-[350px] aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse"></div>
+                    <div class="snap-center shrink-0 w-[80vw] md:w-[350px] aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse"></div>
+                    <div class="snap-center shrink-0 w-[80vw] md:w-[350px] aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse hidden md:block"></div>
+                    <div class="snap-center shrink-0 w-[80vw] md:w-[350px] aspect-[4/3] bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse hidden lg:block"></div>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <!-- ИГРЫ -->
+    <section id="games" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center">Наши <span class="text-kvant">Игры</span></h2>
+            <div id="games-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
+        </div>
+    </section>
 
     <!-- 2. СТРАНИЦА ПРОЕКТОВ -->
     <section id="projects" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
@@ -320,6 +351,27 @@
 
     <!-- ТАМПЛЕЙТЫ ДЛЯ РЕНДЕРЕРА -->
     <div id="templates" style="display: none;">
+        <!-- Фото галереи -->
+        <template id="tpl-gallery-photo">
+            <div class="snap-center shrink-0 w-[80vw] md:w-[350px] aspect-[4/3] rounded-3xl overflow-hidden shadow-md bg-slate-100 dark:bg-slate-800 relative group">
+                <img src="" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 photo-img">
+            </div>
+        </template>
+        
+        <!-- Карточка Игры -->
+        <template id="tpl-game-card">
+            <div data-path="" class="card-link snap-center shrink-0 w-full bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform relative">
+                <div class="h-48 md:h-56 bg-slate-100 dark:bg-slate-800 relative overflow-hidden card-img-container flex items-center justify-center">
+                    <i class="fas fa-gamepad text-5xl text-slate-300 dark:text-slate-700"></i>
+                </div>
+                <div class="absolute top-4 right-4 bg-kvant text-white text-[9px] uppercase font-black px-3 py-1.5 rounded-full z-10 shadow-lg">Play</div>
+                <div class="p-6">
+                    <h3 class="heading-font text-xl mb-2 group-hover:text-kvant transition card-title"></h3>
+                    <p class="text-slate-500 text-xs md:text-sm line-clamp-2 card-desc"></p>
+                </div>
+            </div>
+        </template>
+
         <!-- Карточка Проекта -->
         <template id="tpl-portfolio-card">
             <div data-path="" class="card-link snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform">

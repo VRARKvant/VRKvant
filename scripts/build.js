@@ -39,6 +39,7 @@ function generateManifests(articlesDir = 'articles/') {
     const tracks = [];
     const cheats = [];
     const projects = [];
+    const games = [];
     const searchIndex = [];
     const graph = { nodes: [], links: [] };
 
@@ -95,6 +96,24 @@ function generateManifests(articlesDir = 'articles/') {
                     graph.links.push({ source: nodeId, target: portfolioCatId });
                 });
                 projects.sort((a, b) => a.order - b.order);
+            } else if (item === 'games') {
+                const files = fs.readdirSync(itemPath).filter(f => f.endsWith('.md'));
+                files.forEach(file => {
+                    const content = fs.readFileSync(path.join(itemPath, file), 'utf-8');
+                    const { data, cleanText } = parseMD(content);
+                    const title = data.title || file.replace('.md', '');
+                    const articlePath = `articles/games/${file}`;
+                    games.push({
+                        title, description: data.description || '', icon: data.icon || '', file, order: parseInt(data.order || 9999)
+                    });
+                    searchIndex.push({
+                        title, content: cleanText, type: 'Игра', category: 'Игры',
+                        path: `article:${articlePath}`, icon: 'fas fa-gamepad'
+                    });
+                    const nodeId = addNode(title, articlePath, 'project');
+                    graph.links.push({ source: nodeId, target: portfolioCatId }); // Привязываем к той же категории для простоты
+                });
+                games.sort((a, b) => a.order - b.order);
             } else {
                 const trackId = item;
                 const lessonsData = [];
@@ -206,10 +225,22 @@ function generateManifests(articlesDir = 'articles/') {
     fs.writeFileSync(path.join(articlesDir, 'tracks.json'), JSON.stringify({ tracks }, null, 2));
     fs.writeFileSync(path.join(articlesDir, 'cheats.json'), JSON.stringify({ cheats }, null, 2));
     fs.writeFileSync(path.join(articlesDir, 'portfolio.json'), JSON.stringify({ projects }, null, 2));
+    fs.writeFileSync(path.join(articlesDir, 'games.json'), JSON.stringify({ games }, null, 2));
     fs.writeFileSync(path.join(articlesDir, 'search_index.json'), JSON.stringify(searchIndex, null, 2));
     fs.writeFileSync(path.join(articlesDir, 'graph.json'), JSON.stringify(graph, null, 2));
 
-    console.log('Манифесты (tracks, cheats, portfolio, search_index, graph) успешно сгенерированы.');
+    // Сборка галереи фотографий
+    const photos = [];
+    const galleryDir = path.join(__dirname, '../img/gallery');
+    if (fs.existsSync(galleryDir)) {
+        const imgFiles = fs.readdirSync(galleryDir).filter(f => f.match(/\.(jpg|jpeg|png|gif|webp)$/i));
+        imgFiles.forEach(file => {
+            photos.push(`img/gallery/${file}`);
+        });
+    }
+    fs.writeFileSync(path.join(articlesDir, 'gallery.json'), JSON.stringify({ photos }, null, 2));
+
+    console.log('Манифесты (tracks, cheats, portfolio, games, gallery, search_index, graph) успешно сгенерированы.');
 }
 
 generateManifests();

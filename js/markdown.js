@@ -76,6 +76,20 @@ export function processCustomTags(text) {
         return `<div class="w-full h-[400px] md:h-[600px] max-h-[70vh] my-6 shadow-xl rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 bg-slate-900 mx-auto block max-w-full"><iframe src="${embedUrl}" class="w-full h-full border-none" scrolling="no" allowfullscreen></iframe></div>`;
     });
 
+    // Кастомный тег: [html: ...] для вставок интерактивных виджетов и игр
+    text = text.replace(/\[html:\s*(.+?)\]/g, (match, param) => {
+        let url = param;
+        let height = "600px";
+        if (param.includes('|')) {
+            const parts = param.split('|');
+            url = parts[0].trim();
+            height = parts[1].trim();
+        } else {
+            url = url.trim();
+        }
+        return `<div class="w-full my-6 shadow-xl rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 mx-auto block max-w-full" style="height: ${height};"><iframe src="${url}" class="w-full h-full border-none" allow="autoplay; fullscreen; xr-spatial-tracking; clipboard-read; clipboard-write" allowfullscreen></iframe></div>`;
+    });
+
     // Возвращаем код
     codeBlocks.forEach((block, i) => { text = text.replace(`__CODE_BLOCK_${i}__`, block); });
     return text;

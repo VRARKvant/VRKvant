@@ -3,7 +3,9 @@ import { store } from './store.js';
 export const CONFIG = { 
     tracks: 'articles/tracks.json', 
     cheats: 'articles/cheats.json', 
-    portfolio: 'articles/portfolio.json' 
+    portfolio: 'articles/portfolio.json',
+    games: 'articles/games.json',
+    gallery: 'articles/gallery.json'
 };
 
 /**
@@ -37,6 +39,10 @@ export async function loadGlobalData() {
             const data = await fetchJSON(CONFIG.portfolio);
             store.portfolio = data.projects;
         }
+        if(!store.games) {
+            const data = await fetchJSON(CONFIG.games).catch(() => ({games: []}));
+            store.games = data.games;
+        }
     } catch(e) { 
         console.error("Ошибка загрузки манифестов:", e); 
     }
@@ -68,6 +74,26 @@ export async function loadCheats() {
         return data.cheats || [];
     } catch(e) {
         console.error("Ошибка загрузки шпаргалок:", e);
+        return [];
+    }
+}
+
+export async function loadGames() {
+    try {
+        const data = await fetchJSON(CONFIG.games);
+        return data.games || [];
+    } catch(e) {
+        console.error("Ошибка загрузки игр:", e);
+        return [];
+    }
+}
+
+export async function loadGallery() {
+    try {
+        const data = await fetchJSON(CONFIG.gallery);
+        return data.photos || [];
+    } catch(e) {
+        console.error("Ошибка загрузки фото галереи:", e);
         return [];
     }
 }

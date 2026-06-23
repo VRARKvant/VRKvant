@@ -44,37 +44,43 @@
     },
     {
       "id": 8,
+      "title": "Демонстрационная игра",
+      "path": "articles/games/demo.md",
+      "type": "project"
+    },
+    {
+      "id": 9,
       "title": "Unity",
       "path": "articles/unity/intro.md",
       "type": "track"
     },
     {
-      "id": 9,
+      "id": 10,
       "title": "Интерфейс",
       "path": "articles/unity/interface.md",
       "type": "lesson"
     },
     {
-      "id": 10,
+      "id": 11,
       "title": "Основы",
       "path": "module:unity:Основы",
       "type": "module",
       "url": "articles/unity/interface.md"
     },
     {
-      "id": 11,
+      "id": 12,
       "title": "Unreal Engine",
       "path": "articles/unreal/intro.md",
       "type": "track"
     },
     {
-      "id": 12,
+      "id": 13,
       "title": "сайта]([url",
       "path": "https://blueprintue.com",
       "type": "external"
     },
     {
-      "id": 13,
+      "id": 14,
       "title": "скачать Unity Hub",
       "path": "https://unity.com/download",
       "type": "external"
@@ -98,16 +104,16 @@
       "target": 1
     },
     {
+      "source": 8,
+      "target": 2
+    },
+    {
+      "source": 11,
+      "target": 9
+    },
+    {
       "source": 10,
-      "target": 8
-    },
-    {
-      "source": 9,
-      "target": 10
-    },
-    {
-      "source": 7,
-      "target": 12
+      "target": 11
     },
     {
       "source": 7,
@@ -115,7 +121,11 @@
     },
     {
       "source": 7,
-      "target": 13
+      "target": 14
+    },
+    {
+      "source": 7,
+      "target": 14
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { renderCheats, renderPortfolio, renderTracks, buildLeftSidebar, buildToC, updateThemeIcons } from './ui.js';
+import { renderCheats, renderPortfolio, renderTracks, renderGames, renderGallery, buildLeftSidebar, buildToC, updateThemeIcons } from './ui.js';
 import { processCustomTags, initMarkdown, styleSpecialQuotes, makeHeadersCollapsible, addCodeFeatures } from './markdown.js';
 import { loadGlobalData } from './api.js';
 import { isLessonRead } from './progress.js';
@@ -17,6 +17,7 @@ export function initRouter() {
     const initApp = () => { 
         updateThemeIcons(document.documentElement.classList.contains("dark")); 
         renderPortfolio(); 
+        renderGallery();
         loadGlobalData().then(() => {
             handleRouting(); 
         });
@@ -43,7 +44,7 @@ export async function handleRouting() {
     if (cleanHash.startsWith('article:')) {
         const path = cleanHash.substring(8);
         await renderArticle(path);
-    } else if (['home', 'tracks', 'cheats', 'projects', 'graph'].includes(cleanHash)) {
+    } else if (['home', 'tracks', 'cheats', 'projects', 'games', 'graph'].includes(cleanHash)) {
         renderPage(cleanHash);
     } else {
         window.location.hash = 'home';
@@ -76,6 +77,7 @@ export function renderPage(pId) {
     if (pId === 'tracks') renderTracks(); 
     if (pId === 'cheats') renderCheats(); 
     if (pId === 'projects') renderPortfolio();
+    if (pId === 'games') renderGames();
     if (pId === 'graph') import('./ui.js').then(m => m.renderGlobalGraph());
     
     window.scrollTo(0, 0);

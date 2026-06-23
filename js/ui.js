@@ -1,4 +1,4 @@
-import { loadPortfolio, loadTracks, loadCheats } from './api.js';
+import { loadPortfolio, loadTracks, loadCheats, loadGames, loadGallery } from './api.js';
 import { isLessonRead, getTrackProgress } from './progress.js';
 import { store } from './store.js';
 
@@ -96,6 +96,66 @@ export async function renderPortfolio() {
         containerGrid.innerHTML = '';
         containerGrid.appendChild(fragmentGrid);
     }
+}
+
+export async function renderGallery() {
+    const photos = await loadGallery();
+    const container = document.getElementById('gallery-carousel');
+    if (!container) return;
+    
+    if (!photos || photos.length === 0) {
+        container.innerHTML = '<div class="w-full text-center py-10 opacity-30 italic text-sm px-4">Фотографии скоро появятся...</div>';
+        return;
+    }
+
+    const tplCard = document.getElementById('tpl-gallery-photo');
+    const fragment = document.createDocumentFragment();
+    
+    photos.forEach(url => {
+        const clone = tplCard.content.cloneNode(true);
+        clone.querySelector('.photo-img').src = url;
+        fragment.appendChild(clone);
+    });
+    
+    container.innerHTML = '';
+    container.appendChild(fragment);
+
+    const prevBtn = document.getElementById('btn-gallery-prev');
+    const nextBtn = document.getElementById('btn-gallery-next');
+    if (prevBtn) prevBtn.onclick = () => container.scrollBy({ left: -window.innerWidth * 0.8, behavior: 'smooth' });
+    if (nextBtn) nextBtn.onclick = () => container.scrollBy({ left: window.innerWidth * 0.8, behavior: 'smooth' });
+}
+
+export async function renderGames() {
+    const games = await loadGames();
+    const containerGrid = document.getElementById('games-container');
+    if (!containerGrid) return;
+    
+    if (!games || games.length === 0) {
+        containerGrid.innerHTML = '<div class="w-full md:col-span-2 lg:col-span-3 text-center py-10 opacity-30 italic text-sm">Игры скоро появятся...</div>';
+        return;
+    }
+
+    const tplCard = document.getElementById('tpl-game-card');
+    const fragmentGrid = document.createDocumentFragment();
+    
+    games.forEach(g => {
+        const clone = tplCard.content.cloneNode(true);
+        clone.querySelector('.card-link').setAttribute('data-path', `article:articles/games/${g.file}`);
+        
+        clone.querySelector('.card-title').textContent = g.title;
+        clone.querySelector('.card-desc').textContent = g.description || '';
+        
+        if (g.icon) {
+             const iconContainer = clone.querySelector('.card-img-container');
+             iconContainer.innerHTML = `<img src="${g.icon}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">`;
+        }
+
+        fragmentGrid.appendChild(clone);
+    });
+    
+    containerGrid.innerHTML = '';
+    containerGrid.appendChild(fragmentGrid);
 }
 
 export async function renderHomeTracks() {
