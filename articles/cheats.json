@@ -15,6 +15,10 @@
     {
       "title": "Как писать статьи",
       "file": "writing_articles.md"
+    },
+    {
+      "title": "Оформление статей 2.0",
+      "file": "writing_articles_2.md"
     }
   ]
 }

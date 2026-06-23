@@ -4,7 +4,8 @@ module.exports = {
     "./index.html",
     "./js/**/*.js",
     "./articles/**/*.md",
-    "./articles/*.json"
+    "./articles/*.json",
+    "./games/**/*.html"
   ],
   safelist: [
     'bg-kvant',

@@ -104,7 +104,7 @@ function generateManifests(articlesDir = 'articles/') {
                     const title = data.title || file.replace('.md', '');
                     const articlePath = `articles/games/${file}`;
                     games.push({
-                        title, description: data.description || '', icon: data.icon || '', file, order: parseInt(data.order || 9999)
+                        title, description: data.description || '', icon: data.icon || '', file, url: data.url || data.path || '', order: parseInt(data.order || 9999)
                     });
                     searchIndex.push({
                         title, content: cleanText, type: 'Игра', category: 'Игры',

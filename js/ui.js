@@ -111,19 +111,61 @@ export async function renderGallery() {
     const tplCard = document.getElementById('tpl-gallery-photo');
     const fragment = document.createDocumentFragment();
     
-    photos.forEach(url => {
+    photos.forEach((url, index) => {
         const clone = tplCard.content.cloneNode(true);
+        const item = clone.querySelector('.gallery-item');
         clone.querySelector('.photo-img').src = url;
+        
+        item.onclick = () => openLightbox(index, photos);
+        
         fragment.appendChild(clone);
     });
     
     container.innerHTML = '';
     container.appendChild(fragment);
 
-    const prevBtn = document.getElementById('btn-gallery-prev');
-    const nextBtn = document.getElementById('btn-gallery-next');
-    if (prevBtn) prevBtn.onclick = () => container.scrollBy({ left: -window.innerWidth * 0.8, behavior: 'smooth' });
-    if (nextBtn) nextBtn.onclick = () => container.scrollBy({ left: window.innerWidth * 0.8, behavior: 'smooth' });
+    if (!window.lightboxInitialized) {
+        document.getElementById('btn-lightbox-close').onclick = closeLightbox;
+        document.getElementById('btn-lightbox-prev').onclick = () => moveLightbox(-1);
+        document.getElementById('btn-lightbox-next').onclick = () => moveLightbox(1);
+        window.lightboxInitialized = true;
+    }
+}
+
+let currentLightboxPhotos = [];
+let currentLightboxIndex = 0;
+
+function openLightbox(index, photos) {
+    currentLightboxPhotos = photos;
+    currentLightboxIndex = index;
+    const lightbox = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    
+    img.src = photos[index];
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    setTimeout(() => {
+        lightbox.classList.remove('opacity-0');
+        img.classList.remove('scale-95');
+        img.classList.add('scale-100');
+    }, 10);
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    lightbox.classList.add('opacity-0');
+    img.classList.remove('scale-100');
+    img.classList.add('scale-95');
+    setTimeout(() => {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+    }, 300);
+}
+
+function moveLightbox(dir) {
+    currentLightboxIndex = (currentLightboxIndex + dir + currentLightboxPhotos.length) % currentLightboxPhotos.length;
+    document.getElementById('lightbox-img').src = currentLightboxPhotos[currentLightboxIndex];
 }
 
 export async function renderGames() {
@@ -141,7 +183,16 @@ export async function renderGames() {
     
     games.forEach(g => {
         const clone = tplCard.content.cloneNode(true);
-        clone.querySelector('.card-link').setAttribute('data-path', `article:articles/games/${g.file}`);
+        const cardLink = clone.querySelector('.card-link');
+        if (g.url) {
+            cardLink.removeAttribute('data-path');
+            cardLink.onclick = (e) => {
+                e.preventDefault();
+                window.location.href = g.url;
+            };
+        } else {
+            cardLink.setAttribute('data-path', `article:articles/games/${g.file}`);
+        }
         
         clone.querySelector('.card-title').textContent = g.title;
         clone.querySelector('.card-desc').textContent = g.description || '';

@@ -44,43 +44,55 @@
     },
     {
       "id": 8,
+      "title": "Оформление статей 2.0",
+      "path": "articles/cheats/writing_articles_2.md",
+      "type": "cheat"
+    },
+    {
+      "id": 9,
       "title": "Демонстрационная игра",
       "path": "articles/games/demo.md",
       "type": "project"
     },
     {
-      "id": 9,
+      "id": 10,
+      "title": "Pixel Art",
+      "path": "articles/games/pixelart.md",
+      "type": "project"
+    },
+    {
+      "id": 11,
       "title": "Unity",
       "path": "articles/unity/intro.md",
       "type": "track"
     },
     {
-      "id": 10,
+      "id": 12,
       "title": "Интерфейс",
       "path": "articles/unity/interface.md",
       "type": "lesson"
     },
     {
-      "id": 11,
+      "id": 13,
       "title": "Основы",
       "path": "module:unity:Основы",
       "type": "module",
       "url": "articles/unity/interface.md"
     },
     {
-      "id": 12,
+      "id": 14,
       "title": "Unreal Engine",
       "path": "articles/unreal/intro.md",
       "type": "track"
     },
     {
-      "id": 13,
+      "id": 15,
       "title": "сайта]([url",
       "path": "https://blueprintue.com",
       "type": "external"
     },
     {
-      "id": 14,
+      "id": 16,
       "title": "скачать Unity Hub",
       "path": "https://unity.com/download",
       "type": "external"
@@ -105,27 +117,35 @@
     },
     {
       "source": 8,
+      "target": 1
+    },
+    {
+      "source": 9,
       "target": 2
     },
     {
-      "source": 11,
-      "target": 9
+      "source": 10,
+      "target": 2
     },
     {
-      "source": 10,
+      "source": 13,
       "target": 11
     },
     {
-      "source": 7,
+      "source": 12,
       "target": 13
     },
     {
       "source": 7,
-      "target": 14
+      "target": 15
     },
     {
       "source": 7,
-      "target": 14
+      "target": 16
+    },
+    {
+      "source": 7,
+      "target": 16
     }
   ]
 }

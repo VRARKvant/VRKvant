@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art — VR/AR Kvant</title>
+    <!-- Подключаем стили основного сайта -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else { document.documentElement.classList.remove('dark'); }
+    </script>
+    <style>
+        .canvas-container {
+            border: 2px solid #e2e8f0;
+            background-color: #fff;
+            /* Шахматный фон для прозрачности */
+            background-image: linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+                              linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+                              linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+            cursor: crosshair;
+            border-radius: 8px;
+            overflow: hidden;
+            display: inline-block;
+            touch-action: none;
+        }
+        .dark .canvas-container { border-color: #334155; }
+        canvas { display: block; max-width: 100%; height: auto; }
+        .tool-btn.active { background-color: #8b5cf6; color: white; border-color: #8b5cf6; box-shadow: 0 4px 10px -2px rgba(139,92,246,0.5); }
+        .color-swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s, border-color 0.1s; }
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.active { border-color: #1e293b; transform: scale(1.15); box-shadow: 0 0 0 2px white inset; }
+        .dark .color-swatch.active { border-color: #fff; box-shadow: 0 0 0 2px #0f172a inset; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col">
+    
+    <!-- Шапка в стиле основного сайта -->
+    <nav class="w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-900 sticky top-0 z-50">
+        <div class="max-w-[90rem] mx-auto px-4 h-16 md:h-20 flex justify-between items-center">
+            <button onclick="window.history.back()" class="flex items-center space-x-3 cursor-pointer group">
+                <div class="bg-slate-100 dark:bg-slate-900 p-2 md:p-2.5 rounded-xl text-slate-400 group-hover:text-kvant transition-colors shadow-sm"><i class="fas fa-arrow-left"></i></div>
+                <span class="heading-font font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] text-slate-400 group-hover:text-kvant transition-colors hidden md:inline">В Центр Знаний</span>
+            </button>
+            <div class="heading-font font-bold text-lg md:text-2xl uppercase tracking-tighter">Pixel <span class="text-kvant italic">Art</span></div>
+            <div class="w-10 md:w-32"></div><!-- Spacer для выравнивания по центру -->
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="flex-1 w-full max-w-[90rem] mx-auto p-4 md:p-8 flex flex-col lg:flex-row gap-4 md:gap-8 justify-center items-center lg:items-start">
+        
+        <!-- ЛЕВАЯ ПАНЕЛЬ: Инструменты и Палитры -->
+        <div class="w-full lg:w-64 flex flex-col gap-6 shrink-0 order-2 lg:order-1">
+            <!-- Инструменты -->
+            <div class="bg-white dark:bg-slate-900 rounded-[1.5rem] p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center"><i class="fas fa-tools mr-2 text-kvant"></i> Инструменты</h3>
+                <div class="grid grid-cols-4 gap-2 md:gap-3">
+                    <button class="tool-btn active aspect-square rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center justify-center text-lg md:text-xl" data-tool="pencil" title="Карандаш"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="tool-btn aspect-square rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center justify-center text-lg md:text-xl" data-tool="eraser" title="Ластик"><i class="fas fa-eraser"></i></button>
+                    <button class="tool-btn aspect-square rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center justify-center text-lg md:text-xl" data-tool="fill" title="Заливка"><i class="fas fa-fill-drip"></i></button>
+                    <button class="aspect-square rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition flex items-center justify-center text-lg md:text-xl" id="btn-clear" title="Очистить холст"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            
+            <!-- Палитры -->
+            <div class="bg-white dark:bg-slate-900 rounded-[1.5rem] p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center"><i class="fas fa-palette mr-2 text-kvant"></i> Палитры</h3>
+                
+                <h4 class="text-[9px] font-bold text-slate-400 uppercase mt-4 mb-3 border-b border-slate-100 dark:border-slate-800 pb-1">Базовая</h4>
+                <div class="flex flex-wrap gap-2.5" id="palette-basic"></div>
+                
+                <h4 class="text-[9px] font-bold text-slate-400 uppercase mt-5 mb-3 border-b border-slate-100 dark:border-slate-800 pb-1">Неон</h4>
+                <div class="flex flex-wrap gap-2.5" id="palette-neon"></div>
+
+                <h4 class="text-[9px] font-bold text-slate-400 uppercase mt-5 mb-3 border-b border-slate-100 dark:border-slate-800 pb-1">Пастель</h4>
+                <div class="flex flex-wrap gap-2.5" id="palette-pastel"></div>
+                
+                <div class="flex items-center justify-between gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">Свой цвет</span>
+                    <input type="color" id="color-picker" class="w-12 h-8 p-0 border-0 rounded cursor-pointer bg-transparent" value="#000000">
+                </div>
+            </div>
+        </div>
+
+        <!-- ЦЕНТР: Холст -->
+        <div class="flex-1 flex items-center justify-center bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[3rem] border border-slate-100 dark:border-slate-800 p-4 md:p-10 shadow-xl shadow-slate-200/50 dark:shadow-none w-full max-w-[800px] order-1 lg:order-2">
+            <div class="canvas-container relative w-full aspect-square max-w-[600px]">
+                <canvas id="canvas" width="600" height="600" class="w-full h-full object-contain"></canvas>
+            </div>
+        </div>
+
+        <!-- ПРАВАЯ ПАНЕЛЬ: Настройки сетки и Сохранение -->
+        <div class="w-full lg:w-64 flex flex-col gap-6 shrink-0 order-3">
+            <!-- Сетка -->
+            <div class="bg-white dark:bg-slate-900 rounded-[1.5rem] p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center"><i class="fas fa-border-all mr-2 text-kvant"></i> Настройки сетки</h3>
+                <div class="mb-6">
+                    <select id="grid-size" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 dark:text-white rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-kvant focus:ring-2 focus:ring-kvant/20 transition-all appearance-none cursor-pointer">
+                        <option value="10">10 x 10 (Малышам)</option>
+                        <option value="16" selected>16 x 16 (Стандарт)</option>
+                        <option value="32">32 x 32 (Детализация)</option>
+                        <option value="64">64 x 64 (Про)</option>
+                    </select>
+                </div>
+                <button id="btn-save" class="w-full py-4 bg-kvant hover:bg-kvant/90 text-white font-black uppercase tracking-widest text-[10px] rounded-xl shadow-[0_10px_20px_-10px_rgba(139,92,246,0.6)] transition-all hover:-translate-y-1">
+                    <i class="fas fa-download text-sm mr-2"></i> Сохранить PNG
+                </button>
+            </div>
+            
+            <!-- Подсказки -->
+            <div class="bg-slate-100 dark:bg-slate-800/50 rounded-[1.5rem] p-5 border border-slate-200 dark:border-slate-800">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3"><i class="fas fa-info-circle mr-2"></i> Подсказки</h3>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Смена размера сетки приведет к очистке холста.<br><br>
+                    Используйте инструмент "Заливка", чтобы быстро закрасить область одного цвета.<br><br>
+                    Вы можете рисовать линии, не отрывая мышь (или палец) от экрана холста.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let size = parseInt(document.getElementById('grid-size').value);
+    const canvasSize = 600;
+    let cellSize = canvasSize / size;
+    let grid = Array(size).fill().map(() => Array(size).fill(null));
+    let currentColor = '#000000';
+    let currentTool = 'pencil';
+    let isDrawing = false;
+
+    const colorPicker = document.getElementById('color-picker');
+    const tools = document.querySelectorAll('.tool-btn[data-tool]');
+    const btnClear = document.getElementById('btn-clear');
+    const btnSave = document.getElementById('btn-save');
+    const selectSize = document.getElementById('grid-size');
+
+    // Палитры
+    const palettes = {
+        basic: [
+            '#000000', '#475569', '#94a3b8', '#ffffff',
+            '#ef4444', '#f97316', '#f59e0b', '#22c55e',
+            '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'
+        ],
+        neon: [
+            '#ff00ff', '#00ffff', '#00ff00', '#ffff00',
+            '#ff003c', '#7b00ff', '#00ff9d', '#ff9d00'
+        ],
+        pastel: [
+            '#fecaca', '#fed7aa', '#fef08a', '#d9f99d',
+            '#a7f3d0', '#bae6fd', '#c7d2fe', '#fbcfe8'
+        ]
+    };
+
+    function initPalettes() {
+        for (const [key, colors] of Object.entries(palettes)) {
+            const container = document.getElementById('palette-' + key);
+            colors.forEach(c => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch shadow-sm';
+                swatch.style.backgroundColor = c;
+                if (c === '#000000') swatch.classList.add('active');
+                swatch.onclick = () => {
+                    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+                    swatch.classList.add('active');
+                    currentColor = c;
+                    colorPicker.value = c; // Синхронизируем пипетку
+                };
+                container.appendChild(swatch);
+            });
+        }
+    }
+
+    colorPicker.addEventListener('input', (e) => {
+        currentColor = e.target.value;
+        document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+    });
+
+    tools.forEach(btn => {
+        btn.onclick = () => {
+            tools.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTool = btn.dataset.tool;
+        };
+    });
+
+    function drawGridLines() {
+        ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+        ctx.lineWidth = 1;
+        for(let i=0; i<=size; i++) {
+            ctx.beginPath();
+            ctx.moveTo(i * cellSize, 0);
+            ctx.lineTo(i * cellSize, canvasSize);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, i * cellSize);
+            ctx.lineTo(canvasSize, i * cellSize);
+            ctx.stroke();
+        }
+    }
+
+    function render() {
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+        for(let y=0; y<size; y++) {
+            for(let x=0; x<size; x++) {
+                if(grid[y][x]) {
+                    ctx.fillStyle = grid[y][x];
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+        drawGridLines();
+    }
+
+    function resizeGrid() {
+        if(confirm('Смена размера очистит текущий рисунок. Продолжить?')) {
+            size = parseInt(selectSize.value);
+            cellSize = canvasSize / size;
+            grid = Array(size).fill().map(() => Array(size).fill(null));
+            render();
+        } else {
+            selectSize.value = size;
+        }
+    }
+
+    selectSize.onchange = resizeGrid;
+
+    btnClear.onclick = () => {
+        if(confirm('Очистить холст?')) {
+            grid = Array(size).fill().map(() => Array(size).fill(null));
+            render();
+        }
+    };
+
+    btnSave.onclick = () => {
+        // Redraw without grid lines for saving clean image
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+        for(let y=0; y<size; y++) {
+            for(let x=0; x<size; x++) {
+                if(grid[y][x]) {
+                    ctx.fillStyle = grid[y][x];
+                    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                }
+            }
+        }
+        const link = document.createElement('a');
+        link.download = 'pixel-art-kvant.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        render(); // Restore lines
+    };
+
+    function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        
+        // Touch support
+        if(e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        }
+        
+        const x = Math.floor((clientX - rect.left) * scaleX / cellSize);
+        const y = Math.floor((clientY - rect.top) * scaleY / cellSize);
+        return {x, y};
+    }
+
+    function floodFill(x, y, targetColor, replacementColor) {
+        if (targetColor === replacementColor) return;
+        if (x < 0 || x >= size || y < 0 || y >= size) return;
+        if (grid[y][x] !== targetColor) return;
+        
+        let stack = [[x, y]];
+        while(stack.length > 0) {
+            let [cx, cy] = stack.pop();
+            if (cx >= 0 && cx < size && cy >= 0 && cy < size && grid[cy][cx] === targetColor) {
+                grid[cy][cx] = replacementColor;
+                stack.push([cx + 1, cy]);
+                stack.push([cx - 1, cy]);
+                stack.push([cx, cy + 1]);
+                stack.push([cx, cy - 1]);
+            }
+        }
+    }
+
+    function interact(e) {
+        const {x, y} = getCoords(e);
+        if(x < 0 || x >= size || y < 0 || y >= size) return;
+
+        if (currentTool === 'pencil') {
+            grid[y][x] = currentColor;
+        } else if (currentTool === 'eraser') {
+            grid[y][x] = null;
+        } else if (currentTool === 'fill') {
+            const targetColor = grid[y][x];
+            floodFill(x, y, targetColor, currentColor);
+        }
+        render();
+    }
+
+    canvas.addEventListener('mousedown', (e) => { isDrawing = true; interact(e); });
+    window.addEventListener('mouseup', () => { isDrawing = false; });
+    canvas.addEventListener('mousemove', (e) => { if(isDrawing && currentTool !== 'fill') interact(e); });
+
+    canvas.addEventListener('touchstart', (e) => { isDrawing = true; interact(e); }, {passive: false});
+    canvas.addEventListener('touchmove', (e) => { 
+        if(e.cancelable) e.preventDefault(); 
+        if(isDrawing && currentTool !== 'fill') interact(e); 
+    }, {passive: false});
+    window.addEventListener('touchend', () => { isDrawing = false; });
+
+    initPalettes();
+    render();
+</script>
+</body>
+</html>

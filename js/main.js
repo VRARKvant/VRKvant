@@ -23,6 +23,7 @@ function initEvents() {
     document.getElementById('nav-tracks')?.addEventListener('click', () => window.location.hash = 'tracks');
     document.getElementById('nav-cheats')?.addEventListener('click', () => window.location.hash = 'cheats');
     document.getElementById('nav-projects')?.addEventListener('click', () => window.location.hash = 'projects');
+    document.getElementById('nav-games')?.addEventListener('click', () => window.location.hash = 'games');
     
     // Тема и Мобильное меню
     document.getElementById('btn-toggle-theme')?.addEventListener('click', toggleTheme);
@@ -35,6 +36,7 @@ function initEvents() {
     document.getElementById('mobile-nav-tracks')?.addEventListener('click', () => { window.location.hash = 'tracks'; toggleMobileMenu(); });
     document.getElementById('mobile-nav-cheats')?.addEventListener('click', () => { window.location.hash = 'cheats'; toggleMobileMenu(); });
     document.getElementById('mobile-nav-projects')?.addEventListener('click', () => { window.location.hash = 'projects'; toggleMobileMenu(); });
+    document.getElementById('mobile-nav-games')?.addEventListener('click', () => { window.location.hash = 'games'; toggleMobileMenu(); });
 
     // Поиск
     document.getElementById('btn-open-search')?.addEventListener('click', openSearch);
