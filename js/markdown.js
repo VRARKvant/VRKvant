@@ -37,8 +37,8 @@ export function processCustomTags(text) {
     text = text.replace(/\[gallery:\s*(.+?)\]/g, (match, imagesStr) => {
         const images = imagesStr.split('|').map(s => s.trim());
         const id = 'gallery-' + Math.random().toString(36).substr(2, 9);
-        let html = `<div class="relative w-full overflow-hidden my-6 shadow-lg md:shadow-xl group bg-slate-50 dark:bg-slate-900 rounded-none" id="${id}"><div class="flex transition-transform duration-500 ease-out" id="${id}-track">`;
-        images.forEach(img => { html += `<div class="w-full shrink-0 flex items-center justify-center"><img src="${img}" class="max-w-full max-h-[60vh] md:max-h-[75vh] w-auto m-0 border-none rounded-none shadow-none pointer-events-none" style="display:block;"></div>`; });
+        let html = `<div class="relative w-full overflow-hidden my-6 shadow-xl group bg-slate-50 dark:bg-slate-900 rounded-xl" id="${id}"><div class="flex transition-transform duration-500 ease-out" id="${id}-track">`;
+        images.forEach(img => { html += `<div class="w-full shrink-0 flex items-center justify-center"><img src="${img}" class="max-w-full max-h-[60vh] md:max-h-[75vh] w-auto m-0 pointer-events-none" style="display:block;"></div>`; });
         html += `</div>`;
         if (images.length > 1) {
             html += `<button onclick="window.moveGallery('${id}', -1)" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-black/60 text-white rounded-full flex items-center justify-center opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-kvant z-10"><i class="fas fa-chevron-left text-sm md:text-base"></i></button>`;
@@ -53,7 +53,7 @@ export function processCustomTags(text) {
 
     // Кастомный тег: [compare: ...]
     text = text.replace(/\[compare:\s*(.+?)\s*\|\s*(.+?)\]/g, (match, img1, img2) => {
-        return `<div class="relative w-fit max-w-full mx-auto overflow-hidden my-6 shadow-lg md:shadow-xl select-none flex items-end"><img src="${img2.trim()}" class="max-w-full max-h-[60vh] md:max-h-[75vh] w-auto block m-0 border-none rounded-none shadow-none pointer-events-none" alt="После"><img src="${img1.trim()}" class="compare-before absolute bottom-0 left-0 max-w-full max-h-[60vh] md:max-h-[75vh] w-auto block m-0 border-none rounded-none shadow-none pointer-events-none" style="clip-path: inset(0 50% 0 0);" alt="До"><input type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20 m-0" oninput="window.updateCompare(this)"><div class="compare-handle absolute top-0 bottom-0 w-1 bg-white pointer-events-none z-10 left-1/2 -translate-x-1/2 shadow-[0_0_10px_rgba(0,0,0,0.5)]"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md"><i class="fas fa-arrows-alt-h text-[10px] md:text-sm"></i></div></div></div>`;
+        return `<div class="relative w-fit max-w-full mx-auto overflow-hidden my-6 shadow-xl rounded-xl select-none"><img src="${img2.trim()}" class="max-w-full max-h-[60vh] md:max-h-[75vh] w-auto block m-0 pointer-events-none" alt="После"><img src="${img1.trim()}" class="compare-before absolute top-0 left-0 w-full h-full object-cover m-0 pointer-events-none" style="clip-path: inset(0 50% 0 0);" alt="До"><input type="range" min="0" max="100" value="50" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20 m-0" oninput="window.updateCompare(this)"><div class="compare-handle absolute top-0 bottom-0 w-1 bg-white pointer-events-none z-10 left-1/2 -translate-x-1/2 shadow-[0_0_10px_rgba(0,0,0,0.5)]"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center text-slate-800 shadow-md"><i class="fas fa-arrows-alt-h text-sm"></i></div></div></div>`;
     });
 
     // Кастомный тег: [video: ...]
