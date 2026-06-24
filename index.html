@@ -42,24 +42,27 @@
         }
         
         .gallery-item {
-            flex: 1 1 100px;
+            flex-grow: var(--aspect, 1);
+            flex-shrink: 1;
+            flex-basis: calc(var(--aspect, 1) * 150px);
             height: 150px;
             transition: flex 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         @media (min-width: 768px) {
             .gallery-item {
-                flex: 1 1 200px;
+                flex-basis: calc(var(--aspect, 1) * 250px);
                 height: 250px;
             }
         }
         @media (min-width: 1024px) {
             .gallery-item {
-                flex: 1 1 250px;
+                flex-basis: calc(var(--aspect, 1) * 350px);
                 height: 350px;
             }
         }
         .gallery-item:hover {
-            flex: 4 1 300px;
+            flex-grow: calc(var(--aspect, 1) * 4);
+            flex-basis: calc(var(--aspect, 1) * 400px);
         }
     </style>
     <script type="module" src="js/main.js" defer></script>

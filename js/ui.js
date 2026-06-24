@@ -114,7 +114,12 @@ export async function renderGallery() {
     photos.forEach((url, index) => {
         const clone = tplCard.content.cloneNode(true);
         const item = clone.querySelector('.gallery-item');
-        clone.querySelector('.photo-img').src = url;
+        const img = clone.querySelector('.photo-img');
+        img.src = url;
+        img.onload = () => {
+            const aspect = img.naturalWidth / img.naturalHeight;
+            item.style.setProperty('--aspect', aspect);
+        };
         
         item.onclick = () => openLightbox(index, photos);
         
