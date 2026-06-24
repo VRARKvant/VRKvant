@@ -54,9 +54,9 @@
             flex-shrink: 1;
             flex-basis: calc(var(--aspect, 1) * 150px);
             height: 150px;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.5s ease-in-out;
             transform-origin: center;
-            will-change: transform, opacity;
+            z-index: 1;
         }
         @media (min-width: 768px) {
             .gallery-item {
@@ -198,7 +198,7 @@
         </div>
         
         <!-- Карусель Фотографий (за последний год) -->
-        <div class="w-full bg-white dark:bg-slate-950 py-16 md:py-24">
+        <div class="w-full bg-white dark:bg-slate-950 py-16 md:py-24 overflow-x-hidden">
             <div class="max-w-[90rem] mx-auto px-4 md:px-6">
                 <div class="mb-8 md:mb-12 text-center">
                     <h2 class="heading-font text-2xl md:text-5xl uppercase tracking-tighter">Наш <span class="text-kvant">год</span></h2>
