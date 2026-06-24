@@ -5,7 +5,10 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/**'
       - 'articles/**/*.md'
+      - 'articles/*.json'
+      - 'img/**'
       - 'scripts/build.js'
       - 'js/**'
       - 'css/**'
