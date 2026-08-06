@@ -53,7 +53,8 @@ export async function initSearch() {
                 { name: 'title', weight: 0.7 },
                 { name: 'content', weight: 0.3 }
             ],
-            threshold: 0.4, // Баланс между точностью и прощением опечаток
+            threshold: 0.3, // Сделаем чуть строже, раз ищем по всему тексту
+            ignoreLocation: true, // КРИТИЧЕСКИ ВАЖНО: искать по всему длинному тексту, а не только в начале!
             includeMatches: true,
             minMatchCharLength: 2
         });
@@ -72,7 +73,7 @@ export function openSearch() {
             input.focus();
         }
         document.body.style.overflow = 'hidden';
-        renderResults([]);
+        renderResults({});
     }
 }
 
@@ -84,26 +85,77 @@ export function closeSearch() {
     }
 }
 
+function extractSnippet(matches) {
+    if (!matches) return '';
+    const contentMatch = matches.find((m) => m.key === 'content');
+    if (!contentMatch || !contentMatch.indices || contentMatch.indices.length === 0) return '';
+
+    const text = contentMatch.value;
+    
+    // Ищем самое длинное непрерывное совпадение (чтобы избежать одиночных букв от fuzzy-поиска)
+    let bestIndex = contentMatch.indices[0];
+    let maxLen = bestIndex[1] - bestIndex[0];
+    for (let i = 1; i < contentMatch.indices.length; i++) {
+        const [s, e] = contentMatch.indices[i];
+        if (e - s > maxLen) {
+            maxLen = e - s;
+            bestIndex = contentMatch.indices[i];
+        }
+    }
+    
+    const [mStart, mEnd] = bestIndex;
+
+    const contextLength = 60;
+    const start = Math.max(0, mStart - contextLength);
+    const end = Math.min(text.length, mEnd + contextLength + 1);
+
+    let snippetPrefix = text.substring(start, mStart);
+    let snippetMatch = text.substring(mStart, mEnd + 1);
+    let snippetSuffix = text.substring(mEnd + 1, end);
+
+    if (start > 0) snippetPrefix = '...' + snippetPrefix;
+    if (end < text.length) snippetSuffix = snippetSuffix + '...';
+
+    return (
+        snippetPrefix +
+        `<span class="text-kvant font-bold bg-kvant/10 px-1 rounded">` +
+        snippetMatch +
+        `</span>` +
+        snippetSuffix
+    );
+}
+
 function performSearch(query) {
     if (!query.trim() || !fuse) {
-        renderResults([]);
+        renderResults({});
         return;
     }
 
     const fuseResults = fuse.search(query);
-    const results = fuseResults.map((r) => ({
-        ...r.item,
-        score: r.score
-    }));
+    const topResults = fuseResults.slice(0, 15); // Топ-15 для группировки
 
-    renderResults(results.slice(0, 10)); // Топ-10 результатов
+    // Группировка по категориям (трекам)
+    const grouped = {};
+    topResults.forEach((r) => {
+        const cat = r.item.category || 'Разное';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({
+            ...r.item,
+            score: r.score,
+            snippet: extractSnippet(r.matches)
+        });
+    });
+
+    renderResults(grouped);
 }
 
-function renderResults(results) {
+function renderResults(grouped) {
     const container = document.getElementById('search-results');
     if (!container) return;
 
-    if (results.length === 0) {
+    const categories = Object.keys(grouped);
+
+    if (categories.length === 0) {
         const input = document.getElementById('search-input');
         const text =
             input && input.value ? 'Ничего не найдено...' : 'Начните вводить текст для поиска...';
@@ -111,22 +163,41 @@ function renderResults(results) {
         return;
     }
 
-    container.innerHTML = results
-        .map(
-            (r) => `
-        <div data-path="${r.path}" class="search-result-item p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-kvant hover:text-white rounded-2xl cursor-pointer transition group flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-kvant group-hover:bg-white/20 group-hover:text-white transition">
-                    <i class="${r.icon}"></i>
-                </div>
-                <div>
-                    <div class="font-bold text-sm md:text-base">${r.title}</div>
-                    <div class="text-[10px] uppercase font-black tracking-widest opacity-50">${r.type} • ${r.category}</div>
-                </div>
+    let html = '';
+    for (const cat of categories) {
+        html += `
+        <div class="mb-6">
+            <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 px-2">${cat}</div>
+            <div class="space-y-2">
+                ${grouped[cat]
+                    .map(
+                        (r) => `
+                    <div data-path="${r.path}" class="search-result-item p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl cursor-pointer transition group border border-transparent hover:border-kvant/20">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 shrink-0 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center text-kvant shadow-sm mt-1">
+                                <i class="${r.icon}"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-bold text-sm md:text-base truncate group-hover:text-kvant transition-colors">${r.title}</div>
+                                <div class="text-[10px] uppercase font-black tracking-widest opacity-50 mb-1">${r.type}</div>
+                                ${
+                                    r.snippet
+                                        ? `<div class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed italic">${r.snippet}</div>`
+                                        : ''
+                                }
+                            </div>
+                            <div class="shrink-0 flex items-center h-12">
+                                <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition text-kvant"></i>
+                            </div>
+                        </div>
+                    </div>
+                `
+                    )
+                    .join('')}
             </div>
-            <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition mr-2"></i>
         </div>
-    `
-        )
-        .join('');
+        `;
+    }
+
+    container.innerHTML = html;
 }

@@ -21,14 +21,21 @@ describe('Search Module', () => {
             return {
                 search: vi.fn().mockReturnValue([
                     {
-                        item: {
-                            title: 'Test Article',
-                            path: '/test-article',
-                            icon: 'fa-file',
-                            type: 'article',
-                            category: 'test'
+                        item: { 
+                            title: 'Test Article', 
+                            path: '/test-article', 
+                            icon: 'fa-file', 
+                            type: 'Урок', 
+                            category: 'Unity' 
                         },
-                        score: 0.1
+                        score: 0.1,
+                        matches: [
+                            {
+                                key: 'content',
+                                value: 'This is a snippet test string.',
+                                indices: [[10, 16]]
+                            }
+                        ]
                     }
                 ])
             };
