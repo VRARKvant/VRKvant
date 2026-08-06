@@ -2,40 +2,40 @@
  * Обработка Callback от GitHub и обмен кода на токен
  */
 export default async function handler(req, res) {
-  const { code } = req.query;
+    const { code } = req.query;
 
-  if (!code) {
-    return res.status(400).send('Missing code parameter');
-  }
-
-  try {
-    const response = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      return res.status(400).send(`GitHub Error: ${data.error_description || data.error}`);
+    if (!code) {
+        return res.status(400).send('Missing code parameter');
     }
 
-    // Разрешенные домены (Whitelist)
-    const allowedOrigins = [
-      'https://vrarkvant.github.io',
-      'http://localhost:3000',
-      'https://levdob.github.io' // На случай кастомного домена
-    ];
+    try {
+        const response = await fetch('https://github.com/login/oauth/access_token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            },
+            body: JSON.stringify({
+                client_id: process.env.GITHUB_CLIENT_ID,
+                client_secret: process.env.GITHUB_CLIENT_SECRET,
+                code
+            })
+        });
 
-    const content = `
+        const data = await response.json();
+
+        if (data.error) {
+            return res.status(400).send(`GitHub Error: ${data.error_description || data.error}`);
+        }
+
+        // Разрешенные домены (Whitelist)
+        const allowedOrigins = [
+            'https://vrarkvant.github.io',
+            'http://localhost:3000',
+            'https://levdob.github.io' // На случай кастомного домена
+        ];
+
+        const content = `
       <!DOCTYPE html>
       <html>
       <head><title>Авторизация...</title></head>
@@ -72,11 +72,10 @@ export default async function handler(req, res) {
       </html>
     `;
 
-    res.setHeader('Content-Type', 'text/html');
-    res.status(200).send(content);
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
+        res.setHeader('Content-Type', 'text/html');
+        res.status(200).send(content);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
 }

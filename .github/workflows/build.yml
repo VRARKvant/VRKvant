@@ -115,6 +115,15 @@ jobs:
           path: test-results/vitest-results.xml
           reporter: java-junit
 
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        if: needs.changes.outputs.e2e == 'true'
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            playwright-browsers-${{ runner.os }}-
+
       - name: 🎭 Install Playwright Browsers
         if: needs.changes.outputs.e2e == 'true'
         run: npx playwright install --with-deps chromium

@@ -1,495 +1,979 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VR/AR Квантум — База знаний</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#8b5cf6">
-    
-    <!-- Иконка вкладки -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥽</text></svg>">
-    
-    <!-- FontAwesome для иконок -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Библиотека для Markdown -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>VR/AR Квантум — База знаний</title>
 
-    <!-- Умный поиск Fuse.js -->
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+        <!-- PWA Manifest -->
+        <link rel="manifest" href="manifest.json" />
+        <meta name="theme-color" content="#8b5cf6" />
 
-    <!-- Граф знаний ForceGraph + D3 -->
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="https://unpkg.com/force-graph"></script>
-    
-    <!-- Подсветка синтаксиса Highlight.js -->
-    <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    
-    <!-- НАШИ ЛОКАЛЬНЫЕ ФАЙЛЫ -->
-    <link rel="stylesheet" href="css/style.css">
-    
-    <style>
-        @media print {
-            nav, aside, footer, #btn-toggle-read, .flex.bg-slate-100.dark\:bg-slate-800 { display: none !important; }
-            body { background: white !important; color: black !important; }
-            .page-content { padding-top: 0 !important; }
-            #article-viewer { display: block !important; }
-            #article-content { box-shadow: none !important; border: none !important; padding: 0 !important; }
-        }
-        
-        #gallery-carousel::after {
-            content: '';
-            flex-grow: 999;
-        }
-        #gallery-carousel:hover .gallery-item {
-            transform: scale(0.95);
-            opacity: 0.6;
-        }
-        .gallery-item {
-            flex-grow: var(--aspect, 1);
-            flex-shrink: 1;
-            flex-basis: calc(var(--aspect, 1) * 150px);
-            height: 150px;
-            transition: all 0.5s ease-in-out;
-            transform-origin: center;
-            z-index: 1;
-        }
-        @media (min-width: 768px) {
-            .gallery-item {
-                flex-basis: calc(var(--aspect, 1) * 250px);
-                height: 250px;
+        <!-- Иконка вкладки -->
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥽</text></svg>"
+        />
+
+        <!-- FontAwesome для иконок -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+
+        <!-- Библиотека для Markdown -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+        <!-- Умный поиск Fuse.js -->
+        <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+
+        <!-- Граф знаний ForceGraph + D3 -->
+        <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+        <script src="https://unpkg.com/force-graph"></script>
+
+        <!-- Подсветка синтаксиса Highlight.js -->
+        <link
+            id="hljs-theme"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+        <!-- НАШИ ЛОКАЛЬНЫЕ ФАЙЛЫ -->
+        <link rel="stylesheet" href="css/style.css" />
+
+        <style>
+            @media print {
+                nav,
+                aside,
+                footer,
+                #btn-toggle-read,
+                .flex.bg-slate-100.dark\:bg-slate-800 {
+                    display: none !important;
+                }
+                body {
+                    background: white !important;
+                    color: black !important;
+                }
+                .page-content {
+                    padding-top: 0 !important;
+                }
+                #article-viewer {
+                    display: block !important;
+                }
+                #article-content {
+                    box-shadow: none !important;
+                    border: none !important;
+                    padding: 0 !important;
+                }
             }
-        }
-        @media (min-width: 1024px) {
-            .gallery-item {
-                flex-basis: calc(var(--aspect, 1) * 350px);
-                height: 350px;
+
+            #gallery-carousel::after {
+                content: '';
+                flex-grow: 999;
             }
-        }
-        #gallery-carousel .gallery-item:hover {
-            transform: scale(1.1);
-            opacity: 1;
-            z-index: 20;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
-        }
-    </style>
-    <script type="module" src="js/main.js" defer></script>
-    
-    <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else { document.documentElement.classList.remove('dark'); }
-    </script>
-</head>
-<body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
+            #gallery-carousel:hover .gallery-item {
+                transform: scale(0.95);
+                opacity: 0.6;
+            }
+            .gallery-item {
+                flex-grow: var(--aspect, 1);
+                flex-shrink: 1;
+                flex-basis: calc(var(--aspect, 1) * 150px);
+                height: 150px;
+                transition: all 0.5s ease-in-out;
+                transform-origin: center;
+                z-index: 1;
+            }
+            @media (min-width: 768px) {
+                .gallery-item {
+                    flex-basis: calc(var(--aspect, 1) * 250px);
+                    height: 250px;
+                }
+            }
+            @media (min-width: 1024px) {
+                .gallery-item {
+                    flex-basis: calc(var(--aspect, 1) * 350px);
+                    height: 350px;
+                }
+            }
+            #gallery-carousel .gallery-item:hover {
+                transform: scale(1.1);
+                opacity: 1;
+                z-index: 20;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            }
+        </style>
+        <script type="module" src="js/main.js" defer></script>
 
-    <!-- НАВИГАЦИЯ -->
-    <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-900">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
-            <div class="flex items-center space-x-3 cursor-pointer" id="nav-logo">
-                <div class="bg-kvant p-2 rounded-xl text-white shadow-lg shadow-kvant/30"><i class="fas fa-vr-cardboard text-lg md:text-xl"></i></div>
-                <span class="heading-font font-bold text-base md:text-lg tracking-tighter uppercase">VR/AR <span class="text-kvant">Квантум</span></span>
-            </div>
-            
-            <div class="hidden md:flex items-center space-x-8 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                <button class="nav-item active hover:text-kvant transition" id="nav-home">Главная</button>
-                <button class="nav-item hover:text-kvant transition" id="nav-tracks">Треки</button>
-                <button class="nav-item hover:text-kvant transition" id="nav-cheats">Шпаргалки</button>
-                <button class="nav-item hover:text-kvant transition" id="nav-projects">Проекты</button>
-                <button class="nav-item hover:text-kvant transition" id="nav-games">Игры</button>
-                <button id="btn-open-search" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 transition-transform hover:scale-110"><i class="fas fa-search"></i></button>
-                <button id="btn-toggle-theme" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 transition-transform hover:scale-110"><i id="theme-icon" class="fas fa-moon"></i></button>
-            </div>
-            
-            <div class="md:hidden flex items-center gap-4">
-                <button id="btn-open-search-mobile" class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300"><i class="fas fa-search"></i></button>
-                <button id="btn-toggle-theme-mobile" class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400"><i id="theme-icon-mobile" class="fas fa-moon"></i></button>
-                <button id="btn-toggle-mobile-menu" class="text-slate-600 dark:text-slate-300 text-2xl"><i class="fas fa-bars"></i></button>
-            </div>
-        </div>
-    </nav>
+        <script>
+            if (
+                localStorage.getItem('theme') === 'dark' ||
+                (!('theme' in localStorage) &&
+                    window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
+    </head>
+    <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
+        <!-- НАВИГАЦИЯ -->
+        <nav
+            class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-900"
+        >
+            <div
+                class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center"
+            >
+                <div class="flex items-center space-x-3 cursor-pointer" id="nav-logo">
+                    <div class="bg-kvant p-2 rounded-xl text-white shadow-lg shadow-kvant/30">
+                        <i class="fas fa-vr-cardboard text-lg md:text-xl"></i>
+                    </div>
+                    <span
+                        class="heading-font font-bold text-base md:text-lg tracking-tighter uppercase"
+                        >VR/AR <span class="text-kvant">Квантум</span></span
+                    >
+                </div>
 
-    <!-- МОБИЛЬНОЕ МЕНЮ -->
-    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white dark:bg-slate-950 hidden-menu md:hidden flex flex-col p-6">
-        <div class="flex justify-between items-center mb-10">
-            <span class="heading-font font-bold text-lg uppercase">Меню</span>
-            <button id="btn-close-mobile-menu" class="text-3xl">&times;</button>
-        </div>
-        <nav class="flex flex-col space-y-6 text-xl font-bold">
-            <button id="mobile-nav-home" class="text-left py-2 border-b dark:border-slate-800">Главная</button>
-            <button id="mobile-nav-tracks" class="text-left py-2 border-b dark:border-slate-800">Треки</button>
-            <button id="mobile-nav-cheats" class="text-left py-2 border-b dark:border-slate-800">Шпаргалки</button>
-            <button id="mobile-nav-projects" class="text-left py-2 border-b dark:border-slate-800">Проекты</button>
-            <button id="mobile-nav-games" class="text-left py-2 border-b dark:border-slate-800">Игры</button>
+                <div
+                    class="hidden md:flex items-center space-x-8 font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400"
+                >
+                    <button class="nav-item active hover:text-kvant transition" id="nav-home">
+                        Главная
+                    </button>
+                    <button class="nav-item hover:text-kvant transition" id="nav-tracks">
+                        Треки
+                    </button>
+                    <button class="nav-item hover:text-kvant transition" id="nav-cheats">
+                        Шпаргалки
+                    </button>
+                    <button class="nav-item hover:text-kvant transition" id="nav-projects">
+                        Проекты
+                    </button>
+                    <button class="nav-item hover:text-kvant transition" id="nav-games">
+                        Игры
+                    </button>
+                    <button
+                        id="btn-open-search"
+                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 transition-transform hover:scale-110"
+                    >
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                        id="btn-toggle-theme"
+                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400 transition-transform hover:scale-110"
+                    >
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                </div>
+
+                <div class="md:hidden flex items-center gap-4">
+                    <button
+                        id="btn-open-search-mobile"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300"
+                    >
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                        id="btn-toggle-theme-mobile"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-amber-400"
+                    >
+                        <i id="theme-icon-mobile" class="fas fa-moon"></i>
+                    </button>
+                    <button
+                        id="btn-toggle-mobile-menu"
+                        class="text-slate-600 dark:text-slate-300 text-2xl"
+                    >
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
         </nav>
-    </div>
 
-    <!-- 1. ГЛАВНАЯ СТРАНИЦА -->
-    <main id="home" class="page-content pt-20 md:pt-32 active">
-        <div class="max-w-6xl mx-auto px-4 md:px-6 text-center mb-12 md:mb-16">
-            <h1 class="heading-font text-2xl md:text-6xl mb-6 md:mb-8 leading-tight uppercase tracking-tighter mt-4">Центр Знаний <br><span class="text-kvant italic">VR Kvant</span></h1>
-            <p class="text-sm md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 md:mb-16 px-2">Все учебные материалы, инструкции по оборудованию и гайды по разработке в одном месте.</p>
-        </div>
-
-        <!-- ТРЕКИ (3 карточки по центру, без карусели) -->
-        <div class="max-w-5xl mx-auto px-4 md:px-6 mb-20 md:mb-24">
-            <div class="text-center mb-10 md:mb-14">
-                <h2 class="heading-font text-2xl md:text-4xl uppercase tracking-tighter">Наши <span class="text-kvant">треки</span></h2>
-                <p class="text-xs md:text-base text-slate-500 mt-2 md:mt-3">Выбери направление для изучения</p>
+        <!-- МОБИЛЬНОЕ МЕНЮ -->
+        <div
+            id="mobile-menu"
+            class="fixed inset-0 z-[60] bg-white dark:bg-slate-950 hidden-menu md:hidden flex flex-col p-6"
+        >
+            <div class="flex justify-between items-center mb-10">
+                <span class="heading-font font-bold text-lg uppercase">Меню</span>
+                <button id="btn-close-mobile-menu" class="text-3xl">&times;</button>
             </div>
-            
-            <div id="home-tracks-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 pt-4">
-                <!-- Skeletons -->
-                <div class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-slate-50 dark:bg-slate-900/50 animate-pulse flex flex-col items-center border border-slate-100 dark:border-slate-800/50">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-200 dark:bg-slate-800 rounded-[1.5rem] mb-6 md:mb-8"></div>
-                    <div class="h-6 bg-slate-200 dark:bg-slate-800 rounded w-1/2"></div>
-                </div>
-                <div class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-slate-50 dark:bg-slate-900/50 animate-pulse flex flex-col items-center border border-slate-100 dark:border-slate-800/50 hidden md:flex">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-200 dark:bg-slate-800 rounded-[1.5rem] mb-6 md:mb-8"></div>
-                    <div class="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4"></div>
-                </div>
-                <div class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-slate-50 dark:bg-slate-900/50 animate-pulse flex flex-col items-center border border-slate-100 dark:border-slate-800/50 hidden md:flex">
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-slate-200 dark:bg-slate-800 rounded-[1.5rem] mb-6 md:mb-8"></div>
-                    <div class="h-6 bg-slate-200 dark:bg-slate-800 rounded w-2/3"></div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-8">
-                <button id="btn-show-all-tracks" class="text-kvant text-xs md:text-sm font-bold uppercase tracking-widest hover:opacity-70 transition group">Показать все треки <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i></button>
-            </div>
-        </div>
-        
-        <!-- Карусель Проектов -->
-        <div class="w-full bg-slate-50 dark:bg-slate-900/50 py-16 md:py-24 border-y border-slate-100 dark:border-slate-800">
-            <div class="max-w-7xl mx-auto px-4 md:px-6">
-                <div class="flex justify-between items-end mb-8 md:mb-12">
-                    <div><h2 class="heading-font text-2xl md:text-5xl uppercase tracking-tighter">Наши <span class="text-kvant">проекты</span></h2><p class="text-xs md:text-base text-slate-500 mt-2 md:mt-4">Результаты работы команд в текущем учебном году</p></div>
-                    <div class="hidden md:flex space-x-3">
-                        <button id="btn-portfolio-prev" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-left"></i></button>
-                        <button id="btn-portfolio-next" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-                
-                <!-- pt-4 и px-2 спасают от обрезания анимации в карусели -->
-                <div id="portfolio-carousel" class="flex overflow-x-auto snap-x snap-mandatory gap-6 md:gap-8 pt-4 pb-6 md:pb-10 hide-scrollbar scroll-smooth px-2 -mx-2">
-                    <!-- Skeletons (3 штуки) -->
-                    <div class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 animate-pulse">
-                        <div class="h-48 md:h-60 bg-slate-200 dark:bg-slate-800"></div>
-                        <div class="p-6 md:p-8"><div class="h-6 bg-slate-200 dark:bg-slate-800 rounded mb-4 w-3/4"></div><div class="h-4 bg-slate-200 dark:bg-slate-800 rounded mb-2 w-full"></div><div class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/4 mt-6"></div></div>
-                    </div>
-                    <div class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 animate-pulse">
-                        <div class="h-48 md:h-60 bg-slate-200 dark:bg-slate-800"></div>
-                        <div class="p-6 md:p-8"><div class="h-6 bg-slate-200 dark:bg-slate-800 rounded mb-4 w-2/3"></div><div class="h-4 bg-slate-200 dark:bg-slate-800 rounded mb-2 w-full"></div><div class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/3 mt-6"></div></div>
-                    </div>
-                    <div class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 animate-pulse hidden md:block">
-                        <div class="h-48 md:h-60 bg-slate-200 dark:bg-slate-800"></div>
-                        <div class="p-6 md:p-8"><div class="h-6 bg-slate-200 dark:bg-slate-800 rounded mb-4 w-1/2"></div><div class="h-4 bg-slate-200 dark:bg-slate-800 rounded mb-2 w-full"></div><div class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/5 mt-6"></div></div>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-6">
-                    <button id="btn-show-all-projects" class="text-kvant text-xs md:text-sm font-bold uppercase tracking-widest hover:opacity-70 transition group">Показать все проекты <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i></button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Карусель Фотографий (за последний год) -->
-        <div class="w-full bg-white dark:bg-slate-950 py-16 md:py-24 overflow-x-hidden">
-            <div class="max-w-[90rem] mx-auto px-4 md:px-6">
-                <div class="mb-8 md:mb-12 text-center">
-                    <h2 class="heading-font text-2xl md:text-5xl uppercase tracking-tighter">Наш <span class="text-kvant">год</span></h2>
-                    <p class="text-xs md:text-base text-slate-500 mt-2 md:mt-4">Фотографии с мероприятий и занятий</p>
-                </div>
-                
-                <div id="gallery-carousel" class="flex flex-wrap gap-2 md:gap-4">
-                    <!-- Skeletons -->
-                    <div class="gallery-item bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse"></div>
-                    <div class="gallery-item bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse"></div>
-                    <div class="gallery-item bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse hidden md:block"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ИГРЫ -->
-    <section id="games" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center">Наши <span class="text-kvant">Игры</span></h2>
-            <div id="games-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
-        </div>
-    </section>
-
-    <!-- 2. СТРАНИЦА ПРОЕКТОВ -->
-    <section id="projects" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center">Все <span class="text-kvant">Проекты</span></h2>
-            <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
-        </div>
-    </section>
-
-    <!-- 3. СТРАНИЦА ТРЕКОВ -->
-    <section id="tracks" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center italic underline decoration-kvant underline-offset-8">Учебные Траектории</h2>
-            <div id="tracks-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10"></div>
-        </div>
-    </section>
-
-    <!-- 4. СТРАНИЦА ШПАРГАЛОК -->
-    <section id="cheats" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center">База <span class="text-kvant">Шпаргалок</span></h2>
-            <div id="cheats-container" class="space-y-3 md:space-y-4"></div>
-        </div>
-    </section>
-
-    <!-- 5. РЕЖИМ ЧТЕНИЯ (Статья) -->
-    <section id="article-viewer" class="page-content pt-20 md:pt-32 px-4 md:px-6 hidden">
-        <div class="max-w-[90rem] mx-auto flex items-start gap-8 pb-16 md:pb-20 relative">
-            
-            <aside class="hidden lg:block w-64 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pr-4 pb-10">
-                <h3 class="heading-font text-[10px] text-slate-400 mb-6 uppercase tracking-[0.2em] font-bold"><i class="fas fa-sitemap mr-2"></i> Иерархия</h3>
-                <div id="left-sidebar-content" class="space-y-8"></div>
-            </aside>
-
-            <div class="flex-1 min-w-0 max-w-4xl mx-auto w-full">
-                <div class="flex items-center gap-4 mb-6 md:mb-10">
-                    <div class="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 shadow-sm">
-                        <button id="btn-article-history-back" title="Назад" class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-700 transition-all">
-                            <i class="fas fa-chevron-left text-sm"></i>
-                        </button>
-                        <button id="btn-article-history-forward" title="Вперед" class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-700 transition-all border-l border-slate-200 dark:border-slate-700">
-                            <i class="fas fa-chevron-right text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Просмотр статьи</span>
-                </div>
-                <article id="article-content" class="prose max-w-none bg-white dark:bg-slate-900 px-5 py-8 md:p-12 lg:p-16 rounded-[1.5rem] md:rounded-[3rem] shadow-xl md:shadow-2xl border border-slate-100 dark:border-slate-800 overflow-x-hidden relative"></article>
-            </div>
-
-            <aside class="hidden xl:block w-72 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pl-4 pb-10 border-l border-slate-100 dark:border-slate-800/50">
-                <div class="flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 mb-6">
-                    <button id="tab-toc" title="Содержание" class="flex-1 py-2 text-xs rounded-lg bg-white dark:bg-slate-800 text-kvant shadow-sm transition active-tab">
-                        <i class="fas fa-list-ul"></i>
-                    </button>
-                    <button id="tab-links" title="Ссылки" class="flex-1 py-2 text-xs rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
-                        <i class="fas fa-link"></i>
-                    </button>
-                    <button id="tab-graph" title="Локальный граф" class="flex-1 py-2 text-xs rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
-                        <i class="fas fa-dot-circle"></i>
-                    </button>
-                </div>
-
-                <div id="pane-toc" class="sidebar-pane">
-                    <h3 class="heading-font text-[10px] text-slate-400 mb-4 uppercase tracking-[0.2em] font-bold">Содержание</h3>
-                    <div id="right-sidebar-content" class="space-y-1"></div>
-                </div>
-
-                <div id="pane-links" class="sidebar-pane hidden">
-                    <h3 class="heading-font text-[10px] text-slate-400 mb-4 uppercase tracking-[0.2em] font-bold">Ссылки в тексте</h3>
-                    <div id="links-sidebar-content" class="space-y-4"></div>
-                </div>
-
-                <div id="pane-graph" class="sidebar-pane hidden">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="heading-font text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">Локальный граф</h3>
-                        <button id="btn-open-global-graph" title="Открыть карту знаний" class="text-kvant hover:scale-110 transition-transform text-xs">
-                            <i class="fas fa-globe"></i>
-                        </button>
-                    </div>
-                    <div id="graph-container" class="w-full h-64 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-center overflow-hidden relative"></div>
-                    <div class="mt-4 px-1">
-                        <div class="flex justify-between items-center mb-1">
-                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Глубина связей</label>
-                            <span id="graph-depth-value" class="text-[9px] font-bold text-kvant">1</span>
-                        </div>
-                        <input type="range" id="graph-depth" min="1" max="3" value="1" class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-kvant">
-                    </div>
-                </div>
-            </aside>
-
-        </div>
-    </section>
-
-    <!-- 6. ГЛОБАЛЬНЫЙ ГРАФ (Полноэкранный режим) -->
-    <section id="global-graph-view" class="page-content pt-20 md:pt-24 px-4 md:px-6 hidden min-h-screen flex-col">
-        <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col">
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-6">
-                    <div class="flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 shadow-sm">
-                        <button id="btn-graph-history-back" title="Назад" class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-800 transition-all">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button id="btn-graph-history-forward" title="Вперед" class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-800 transition-all border-l border-slate-200 dark:border-slate-700">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    <div>
-                        <h2 class="heading-font text-2xl md:text-4xl uppercase tracking-tighter">Карта <span class="text-kvant italic">Знаний</span></h2>
-                        <p class="text-[9px] text-slate-500 uppercase tracking-[0.3em] font-bold mt-1">Интерактивная паутина обучения</p>
-                    </div>
-                </div>
-                
-                <button id="btn-close-global-graph" class="group flex items-center gap-3 bg-slate-100 dark:bg-slate-900 px-6 py-3 rounded-2xl text-slate-500 hover:text-kvant transition-all hover:scale-105 shadow-sm">
-                    <i class="fas fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em]">Выйти из режима карты</span>
+            <nav class="flex flex-col space-y-6 text-xl font-bold">
+                <button id="mobile-nav-home" class="text-left py-2 border-b dark:border-slate-800">
+                    Главная
                 </button>
+                <button
+                    id="mobile-nav-tracks"
+                    class="text-left py-2 border-b dark:border-slate-800"
+                >
+                    Треки
+                </button>
+                <button
+                    id="mobile-nav-cheats"
+                    class="text-left py-2 border-b dark:border-slate-800"
+                >
+                    Шпаргалки
+                </button>
+                <button
+                    id="mobile-nav-projects"
+                    class="text-left py-2 border-b dark:border-slate-800"
+                >
+                    Проекты
+                </button>
+                <button id="mobile-nav-games" class="text-left py-2 border-b dark:border-slate-800">
+                    Игры
+                </button>
+            </nav>
+        </div>
+
+        <!-- 1. ГЛАВНАЯ СТРАНИЦА -->
+        <main id="home" class="page-content pt-20 md:pt-32 active">
+            <div class="max-w-6xl mx-auto px-4 md:px-6 text-center mb-12 md:mb-16">
+                <h1
+                    class="heading-font text-2xl md:text-6xl mb-6 md:mb-8 leading-tight uppercase tracking-tighter mt-4"
+                >
+                    Центр Знаний <br /><span class="text-kvant italic">VR Kvant</span>
+                </h1>
+                <p
+                    class="text-sm md:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 md:mb-16 px-2"
+                >
+                    Все учебные материалы, инструкции по оборудованию и гайды по разработке в одном
+                    месте.
+                </p>
             </div>
-            
-            <div id="full-graph-container" class="flex-1 bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden relative min-h-[400px] max-h-[70vh]">
-                <div class="absolute top-6 left-6 z-10 flex flex-col gap-2">
-                    <div class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-lg pointer-events-none">
-                        <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-slate-100 dark:border-slate-800 pb-2">Легенда</div>
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"><span class="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.5)]"></span> Треки</div>
-                            <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"><span class="w-2.5 h-2.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]"></span> Модули</div>
-                            <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"><span class="w-2.5 h-2.5 rounded-full bg-kvant shadow-[0_0_8px_rgba(139,92,246,0.5)]"></span> Уроки</div>
-                            <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span> Шпаргалки</div>
-                            <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span> Проекты</div>
-                        </div>
+
+            <!-- ТРЕКИ (3 карточки по центру, без карусели) -->
+            <div class="max-w-5xl mx-auto px-4 md:px-6 mb-20 md:mb-24">
+                <div class="text-center mb-10 md:mb-14">
+                    <h2 class="heading-font text-2xl md:text-4xl uppercase tracking-tighter">
+                        Наши <span class="text-kvant">треки</span>
+                    </h2>
+                    <p class="text-xs md:text-base text-slate-500 mt-2 md:mt-3">
+                        Выбери направление для изучения
+                    </p>
+                </div>
+
+                <div
+                    id="home-tracks-container"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 pt-4"
+                >
+                    <!-- Skeletons -->
+                    <div
+                        class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-slate-50 dark:bg-slate-900/50 animate-pulse flex flex-col items-center border border-slate-100 dark:border-slate-800/50"
+                    >
+                        <div
+                            class="w-16 h-16 md:w-20 md:h-20 bg-slate-200 dark:bg-slate-800 rounded-[1.5rem] mb-6 md:mb-8"
+                        ></div>
+                        <div class="h-6 bg-slate-200 dark:bg-slate-800 rounded w-1/2"></div>
+                    </div>
+                    <div
+                        class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-slate-50 dark:bg-slate-900/50 animate-pulse flex flex-col items-center border border-slate-100 dark:border-slate-800/50 hidden md:flex"
+                    >
+                        <div
+                            class="w-16 h-16 md:w-20 md:h-20 bg-slate-200 dark:bg-slate-800 rounded-[1.5rem] mb-6 md:mb-8"
+                        ></div>
+                        <div class="h-6 bg-slate-200 dark:bg-slate-800 rounded w-3/4"></div>
+                    </div>
+                    <div
+                        class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-slate-50 dark:bg-slate-900/50 animate-pulse flex flex-col items-center border border-slate-100 dark:border-slate-800/50 hidden md:flex"
+                    >
+                        <div
+                            class="w-16 h-16 md:w-20 md:h-20 bg-slate-200 dark:bg-slate-800 rounded-[1.5rem] mb-6 md:mb-8"
+                        ></div>
+                        <div class="h-6 bg-slate-200 dark:bg-slate-800 rounded w-2/3"></div>
                     </div>
                 </div>
-                <div class="absolute bottom-6 right-6 z-10">
-                    <button id="btn-reset-graph" title="Центрировать" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-100 dark:border-slate-800 shadow-lg text-slate-500 hover:text-kvant transition-all">
-                        <i class="fas fa-crosshairs"></i>
+
+                <div class="text-center mt-8">
+                    <button
+                        id="btn-show-all-tracks"
+                        class="text-kvant text-xs md:text-sm font-bold uppercase tracking-widest hover:opacity-70 transition group"
+                    >
+                        Показать все треки
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
                     </button>
                 </div>
             </div>
-        </div>
-    </section>
 
-        </div>
-    </section>
+            <!-- Карусель Проектов -->
+            <div
+                class="w-full bg-slate-50 dark:bg-slate-900/50 py-16 md:py-24 border-y border-slate-100 dark:border-slate-800"
+            >
+                <div class="max-w-7xl mx-auto px-4 md:px-6">
+                    <div class="flex justify-between items-end mb-8 md:mb-12">
+                        <div>
+                            <h2
+                                class="heading-font text-2xl md:text-5xl uppercase tracking-tighter"
+                            >
+                                Наши <span class="text-kvant">проекты</span>
+                            </h2>
+                            <p class="text-xs md:text-base text-slate-500 mt-2 md:mt-4">
+                                Результаты работы команд в текущем учебном году
+                            </p>
+                        </div>
+                        <div class="hidden md:flex space-x-3">
+                            <button
+                                id="btn-portfolio-prev"
+                                class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"
+                            >
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button
+                                id="btn-portfolio-next"
+                                class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center hover:text-kvant transition"
+                            >
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
 
-    <!-- 7. МОДАЛЬНОЕ ОКНО ПОИСКА -->
-    <div id="search-modal" class="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md hidden flex flex-col items-center pt-20 md:pt-32 px-4">
-        <div class="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[70vh]">
-            <div class="p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
-                <i class="fas fa-search text-slate-400 text-xl"></i>
-                <input type="text" id="search-input" placeholder="Поиск по урокам, шпаргалкам..." class="flex-1 bg-transparent border-none outline-none text-lg md:text-2xl font-medium placeholder:text-slate-300 dark:placeholder:text-slate-700">
-                <button id="btn-close-search" class="text-slate-400 hover:text-kvant transition text-2xl">&times;</button>
-            </div>
-            <div id="search-results" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-2">
-                <!-- Результаты поиска появятся здесь -->
-                <div class="text-center py-10 text-slate-400 italic text-sm">Начните вводить текст для поиска...</div>
-            </div>
-        </div>
-    </div>
+                    <!-- pt-4 и px-2 спасают от обрезания анимации в карусели -->
+                    <div
+                        id="portfolio-carousel"
+                        class="flex overflow-x-auto snap-x snap-mandatory gap-6 md:gap-8 pt-4 pb-6 md:pb-10 hide-scrollbar scroll-smooth px-2 -mx-2"
+                    >
+                        <!-- Skeletons (3 штуки) -->
+                        <div
+                            class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 animate-pulse"
+                        >
+                            <div class="h-48 md:h-60 bg-slate-200 dark:bg-slate-800"></div>
+                            <div class="p-6 md:p-8">
+                                <div
+                                    class="h-6 bg-slate-200 dark:bg-slate-800 rounded mb-4 w-3/4"
+                                ></div>
+                                <div
+                                    class="h-4 bg-slate-200 dark:bg-slate-800 rounded mb-2 w-full"
+                                ></div>
+                                <div
+                                    class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/4 mt-6"
+                                ></div>
+                            </div>
+                        </div>
+                        <div
+                            class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 animate-pulse"
+                        >
+                            <div class="h-48 md:h-60 bg-slate-200 dark:bg-slate-800"></div>
+                            <div class="p-6 md:p-8">
+                                <div
+                                    class="h-6 bg-slate-200 dark:bg-slate-800 rounded mb-4 w-2/3"
+                                ></div>
+                                <div
+                                    class="h-4 bg-slate-200 dark:bg-slate-800 rounded mb-2 w-full"
+                                ></div>
+                                <div
+                                    class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/3 mt-6"
+                                ></div>
+                            </div>
+                        </div>
+                        <div
+                            class="snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 animate-pulse hidden md:block"
+                        >
+                            <div class="h-48 md:h-60 bg-slate-200 dark:bg-slate-800"></div>
+                            <div class="p-6 md:p-8">
+                                <div
+                                    class="h-6 bg-slate-200 dark:bg-slate-800 rounded mb-4 w-1/2"
+                                ></div>
+                                <div
+                                    class="h-4 bg-slate-200 dark:bg-slate-800 rounded mb-2 w-full"
+                                ></div>
+                                <div
+                                    class="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/5 mt-6"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
 
-    <!-- 8. ЛАЙТБОКС (Lightbox для Галереи) -->
-    <div id="lightbox" class="fixed inset-0 z-[110] bg-black/95 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300">
-        <button id="btn-lightbox-close" class="absolute top-4 md:top-8 right-4 md:right-8 text-white/50 hover:text-white transition z-10 w-12 h-12 flex justify-center items-center rounded-full bg-black/30 text-3xl">&times;</button>
-        <button id="btn-lightbox-prev" class="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition z-10 w-12 md:w-16 h-12 md:h-16 flex justify-center items-center rounded-full bg-black/30"><i class="fas fa-chevron-left text-xl md:text-3xl"></i></button>
-        <button id="btn-lightbox-next" class="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition z-10 w-12 md:w-16 h-12 md:h-16 flex justify-center items-center rounded-full bg-black/30"><i class="fas fa-chevron-right text-xl md:text-3xl"></i></button>
-        <div class="relative w-full h-full flex items-center justify-center p-4 md:p-12">
-            <img id="lightbox-img" src="" class="max-h-full max-w-full object-contain transition-transform duration-300 scale-95" alt="Enlarged photo">
-        </div>
-    </div>
-
-    <!-- ТАМПЛЕЙТЫ ДЛЯ РЕНДЕРЕРА -->
-    <div id="templates" style="display: none;">
-        <!-- Фото галереи -->
-        <template id="tpl-gallery-photo">
-            <div class="gallery-item rounded-2xl md:rounded-3xl overflow-hidden shadow-md bg-slate-100 dark:bg-slate-800 relative group cursor-pointer">
-                <img src="" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.15] transition-transform duration-[800ms] ease-out photo-img">
-                <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
-            </div>
-        </template>
-        
-        <!-- Карточка Игры -->
-        <template id="tpl-game-card">
-            <div data-path="" class="card-link snap-center shrink-0 w-full bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform relative">
-                <div class="h-48 md:h-56 bg-slate-100 dark:bg-slate-800 relative overflow-hidden card-img-container flex items-center justify-center">
-                    <i class="fas fa-gamepad text-5xl text-slate-300 dark:text-slate-700"></i>
-                </div>
-                <div class="absolute top-4 right-4 bg-kvant text-white text-[9px] uppercase font-black px-3 py-1.5 rounded-full z-10 shadow-lg">Play</div>
-                <div class="p-6">
-                    <h3 class="heading-font text-xl mb-2 group-hover:text-kvant transition card-title"></h3>
-                    <p class="text-slate-500 text-xs md:text-sm line-clamp-2 card-desc"></p>
-                </div>
-            </div>
-        </template>
-
-        <!-- Карточка Проекта -->
-        <template id="tpl-portfolio-card">
-            <div data-path="" class="card-link snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform">
-                <div class="h-48 md:h-60 bg-slate-100 dark:bg-slate-800 relative overflow-hidden card-img-container">
-                    <div class="absolute top-4 md:top-6 left-4 md:left-6 flex gap-2 card-tags-container"></div>
-                </div>
-                <div class="p-6 md:p-8">
-                    <h3 class="heading-font text-xl mb-2 md:mb-4 group-hover:text-kvant transition card-title"></h3>
-                    <p class="text-slate-500 text-xs md:text-sm mb-4 md:mb-6 line-clamp-2 card-desc"></p>
-                    <div class="flex items-center text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        <i class="fas fa-user-circle mr-2 text-kvant"></i> <span class="card-authors"></span>
+                    <div class="text-center mt-6">
+                        <button
+                            id="btn-show-all-projects"
+                            class="text-kvant text-xs md:text-sm font-bold uppercase tracking-widest hover:opacity-70 transition group"
+                        >
+                            Показать все проекты
+                            <i
+                                class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"
+                            ></i>
+                        </button>
                     </div>
                 </div>
             </div>
-        </template>
-        
-        <!-- Карточка трека (главная) -->
-        <template id="tpl-home-track-card">
-            <div data-path="" class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] cursor-pointer transition-all hover:-translate-y-3 flex flex-col items-center group relative overflow-hidden">
-                <div class="w-16 h-16 md:w-20 md:h-20 track-icon-container bg-white dark:bg-slate-900 mb-6 md:mb-8 card-icon flex items-center justify-center"></div>
-                <h3 class="heading-font text-lg md:text-xl font-bold mb-4 w-full text-center group-hover:text-kvant transition-colors card-title"></h3>
-            </div>
-        </template>
 
-        <!-- Карточка Шпаргалки -->
-        <template id="tpl-cheat-card">
-            <div data-path="" class="card-link p-5 md:p-8 bg-slate-50 dark:bg-slate-900 rounded-[1.25rem] md:rounded-[2rem] border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group">
-                <span class="font-bold text-sm md:text-base tracking-tight italic card-title"></span>
-                <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center opacity-100 md:opacity-0 group-hover:opacity-100 transition">
-                    <i class="fas fa-arrow-right text-xs md:text-base"></i>
+            <!-- Карусель Фотографий (за последний год) -->
+            <div class="w-full bg-white dark:bg-slate-950 py-16 md:py-24 overflow-x-hidden">
+                <div class="max-w-[90rem] mx-auto px-4 md:px-6">
+                    <div class="mb-8 md:mb-12 text-center">
+                        <h2 class="heading-font text-2xl md:text-5xl uppercase tracking-tighter">
+                            Наш <span class="text-kvant">год</span>
+                        </h2>
+                        <p class="text-xs md:text-base text-slate-500 mt-2 md:mt-4">
+                            Фотографии с мероприятий и занятий
+                        </p>
+                    </div>
+
+                    <div id="gallery-carousel" class="flex flex-wrap gap-2 md:gap-4">
+                        <!-- Skeletons -->
+                        <div
+                            class="gallery-item bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse"
+                        ></div>
+                        <div
+                            class="gallery-item bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse"
+                        ></div>
+                        <div
+                            class="gallery-item bg-slate-100 dark:bg-slate-800 rounded-3xl animate-pulse hidden md:block"
+                        ></div>
+                    </div>
                 </div>
             </div>
-        </template>
-        
-        <!-- Карточка детального Трека -->
-        <template id="tpl-track-page-card">
-            <div class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800">
-                <div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10">
-                    <div class="w-14 h-14 md:w-16 md:h-16 track-icon-container bg-white dark:bg-slate-900 flex items-center justify-center card-icon"></div>
-                    <div class="flex-1">
-                        <h3 class="heading-font text-lg md:text-xl mb-1 card-title"></h3>
-                        <div class="flex items-center gap-3">
-                            <div class="flex-1 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div class="h-full bg-kvant transition-all duration-1000 card-progress-bar" style="width: 0%"></div>
+        </main>
+
+        <!-- ИГРЫ -->
+        <section id="games" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
+            <div class="max-w-6xl mx-auto">
+                <h2
+                    class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center"
+                >
+                    Наши <span class="text-kvant">Игры</span>
+                </h2>
+                <div
+                    id="games-container"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"
+                ></div>
+            </div>
+        </section>
+
+        <!-- 2. СТРАНИЦА ПРОЕКТОВ -->
+        <section id="projects" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
+            <div class="max-w-6xl mx-auto">
+                <h2
+                    class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center"
+                >
+                    Все <span class="text-kvant">Проекты</span>
+                </h2>
+                <div
+                    id="projects-container"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"
+                ></div>
+            </div>
+        </section>
+
+        <!-- 3. СТРАНИЦА ТРЕКОВ -->
+        <section id="tracks" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
+            <div class="max-w-6xl mx-auto">
+                <h2
+                    class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center italic underline decoration-kvant underline-offset-8"
+                >
+                    Учебные Траектории
+                </h2>
+                <div
+                    id="tracks-container"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10"
+                ></div>
+            </div>
+        </section>
+
+        <!-- 4. СТРАНИЦА ШПАРГАЛОК -->
+        <section id="cheats" class="page-content pt-24 md:pt-32 px-4 md:px-6 hidden">
+            <div class="max-w-4xl mx-auto">
+                <h2
+                    class="heading-font text-xl md:text-3xl mb-10 md:mb-16 uppercase tracking-tighter text-center"
+                >
+                    База <span class="text-kvant">Шпаргалок</span>
+                </h2>
+                <div id="cheats-container" class="space-y-3 md:space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- 5. РЕЖИМ ЧТЕНИЯ (Статья) -->
+        <section id="article-viewer" class="page-content pt-20 md:pt-32 px-4 md:px-6 hidden">
+            <div class="max-w-[90rem] mx-auto flex items-start gap-8 pb-16 md:pb-20 relative">
+                <aside
+                    class="hidden lg:block w-64 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pr-4 pb-10"
+                >
+                    <h3
+                        class="heading-font text-[10px] text-slate-400 mb-6 uppercase tracking-[0.2em] font-bold"
+                    >
+                        <i class="fas fa-sitemap mr-2"></i> Иерархия
+                    </h3>
+                    <div id="left-sidebar-content" class="space-y-8"></div>
+                </aside>
+
+                <div class="flex-1 min-w-0 max-w-4xl mx-auto w-full">
+                    <div class="flex items-center gap-4 mb-6 md:mb-10">
+                        <div class="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-1 shadow-sm">
+                            <button
+                                id="btn-article-history-back"
+                                title="Назад"
+                                class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-700 transition-all"
+                            >
+                                <i class="fas fa-chevron-left text-sm"></i>
+                            </button>
+                            <button
+                                id="btn-article-history-forward"
+                                title="Вперед"
+                                class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-700 transition-all border-l border-slate-200 dark:border-slate-700"
+                            >
+                                <i class="fas fa-chevron-right text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
+                        <span
+                            class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400"
+                            >Просмотр статьи</span
+                        >
+                    </div>
+                    <article
+                        id="article-content"
+                        class="prose max-w-none bg-white dark:bg-slate-900 px-5 py-8 md:p-12 lg:p-16 rounded-[1.5rem] md:rounded-[3rem] shadow-xl md:shadow-2xl border border-slate-100 dark:border-slate-800 overflow-x-hidden relative"
+                    ></article>
+                </div>
+
+                <aside
+                    class="hidden xl:block w-72 shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto sidebar-scroll pl-4 pb-10 border-l border-slate-100 dark:border-slate-800/50"
+                >
+                    <div class="flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 mb-6">
+                        <button
+                            id="tab-toc"
+                            title="Содержание"
+                            class="flex-1 py-2 text-xs rounded-lg bg-white dark:bg-slate-800 text-kvant shadow-sm transition active-tab"
+                        >
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button
+                            id="tab-links"
+                            title="Ссылки"
+                            class="flex-1 py-2 text-xs rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+                        >
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button
+                            id="tab-graph"
+                            title="Локальный граф"
+                            class="flex-1 py-2 text-xs rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+                        >
+                            <i class="fas fa-dot-circle"></i>
+                        </button>
+                    </div>
+
+                    <div id="pane-toc" class="sidebar-pane">
+                        <h3
+                            class="heading-font text-[10px] text-slate-400 mb-4 uppercase tracking-[0.2em] font-bold"
+                        >
+                            Содержание
+                        </h3>
+                        <div id="right-sidebar-content" class="space-y-1"></div>
+                    </div>
+
+                    <div id="pane-links" class="sidebar-pane hidden">
+                        <h3
+                            class="heading-font text-[10px] text-slate-400 mb-4 uppercase tracking-[0.2em] font-bold"
+                        >
+                            Ссылки в тексте
+                        </h3>
+                        <div id="links-sidebar-content" class="space-y-4"></div>
+                    </div>
+
+                    <div id="pane-graph" class="sidebar-pane hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3
+                                class="heading-font text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold"
+                            >
+                                Локальный граф
+                            </h3>
+                            <button
+                                id="btn-open-global-graph"
+                                title="Открыть карту знаний"
+                                class="text-kvant hover:scale-110 transition-transform text-xs"
+                            >
+                                <i class="fas fa-globe"></i>
+                            </button>
+                        </div>
+                        <div
+                            id="graph-container"
+                            class="w-full h-64 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-center overflow-hidden relative"
+                        ></div>
+                        <div class="mt-4 px-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <label
+                                    class="text-[9px] font-bold text-slate-400 uppercase tracking-widest"
+                                    >Глубина связей</label
+                                >
+                                <span id="graph-depth-value" class="text-[9px] font-bold text-kvant"
+                                    >1</span
+                                >
                             </div>
-                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest card-progress-txt">0%</span>
+                            <input
+                                type="range"
+                                id="graph-depth"
+                                min="1"
+                                max="3"
+                                value="1"
+                                class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-kvant"
+                            />
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- 6. ГЛОБАЛЬНЫЙ ГРАФ (Полноэкранный режим) -->
+        <section
+            id="global-graph-view"
+            class="page-content pt-20 md:pt-24 px-4 md:px-6 hidden min-h-screen flex-col"
+        >
+            <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-6">
+                        <div class="flex bg-slate-100 dark:bg-slate-900 rounded-xl p-1 shadow-sm">
+                            <button
+                                id="btn-graph-history-back"
+                                title="Назад"
+                                class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-800 transition-all"
+                            >
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button
+                                id="btn-graph-history-forward"
+                                title="Вперед"
+                                class="w-10 h-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-kvant hover:bg-white dark:hover:bg-slate-800 transition-all border-l border-slate-200 dark:border-slate-700"
+                            >
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <h2
+                                class="heading-font text-2xl md:text-4xl uppercase tracking-tighter"
+                            >
+                                Карта <span class="text-kvant italic">Знаний</span>
+                            </h2>
+                            <p
+                                class="text-[9px] text-slate-500 uppercase tracking-[0.3em] font-bold mt-1"
+                            >
+                                Интерактивная паутина обучения
+                            </p>
+                        </div>
+                    </div>
+
+                    <button
+                        id="btn-close-global-graph"
+                        class="group flex items-center gap-3 bg-slate-100 dark:bg-slate-900 px-6 py-3 rounded-2xl text-slate-500 hover:text-kvant transition-all hover:scale-105 shadow-sm"
+                    >
+                        <i
+                            class="fas fa-arrow-left transition-transform group-hover:-translate-x-1"
+                        ></i>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em]"
+                            >Выйти из режима карты</span
+                        >
+                    </button>
+                </div>
+
+                <div
+                    id="full-graph-container"
+                    class="flex-1 bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden relative min-h-[400px] max-h-[70vh]"
+                >
+                    <div class="absolute top-6 left-6 z-10 flex flex-col gap-2">
+                        <div
+                            class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-lg pointer-events-none"
+                        >
+                            <div
+                                class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-slate-100 dark:border-slate-800 pb-2"
+                            >
+                                Легенда
+                            </div>
+                            <div class="space-y-2">
+                                <div
+                                    class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"
+                                >
+                                    <span
+                                        class="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.5)]"
+                                    ></span>
+                                    Треки
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"
+                                >
+                                    <span
+                                        class="w-2.5 h-2.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                                    ></span>
+                                    Модули
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"
+                                >
+                                    <span
+                                        class="w-2.5 h-2.5 rounded-full bg-kvant shadow-[0_0_8px_rgba(139,92,246,0.5)]"
+                                    ></span>
+                                    Уроки
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"
+                                >
+                                    <span
+                                        class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+                                    ></span>
+                                    Шпаргалки
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-tight"
+                                >
+                                    <span
+                                        class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                                    ></span>
+                                    Проекты
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-6 right-6 z-10">
+                        <button
+                            id="btn-reset-graph"
+                            title="Центрировать"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border border-slate-100 dark:border-slate-800 shadow-lg text-slate-500 hover:text-kvant transition-all"
+                        >
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. МОДАЛЬНОЕ ОКНО ПОИСКА -->
+        <div
+            id="search-modal"
+            class="fixed inset-0 z-[100] bg-slate-950/60 backdrop-blur-md hidden flex flex-col items-center pt-20 md:pt-32 px-4"
+        >
+            <div
+                class="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col max-h-[70vh]"
+            >
+                <div
+                    class="p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4"
+                >
+                    <i class="fas fa-search text-slate-400 text-xl"></i>
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Поиск по урокам, шпаргалкам..."
+                        class="flex-1 bg-transparent border-none outline-none text-lg md:text-2xl font-medium placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                    />
+                    <button
+                        id="btn-close-search"
+                        class="text-slate-400 hover:text-kvant transition text-2xl"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <div id="search-results" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-2">
+                    <!-- Результаты поиска появятся здесь -->
+                    <div class="text-center py-10 text-slate-400 italic text-sm">
+                        Начните вводить текст для поиска...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. ЛАЙТБОКС (Lightbox для Галереи) -->
+        <div
+            id="lightbox"
+            class="fixed inset-0 z-[110] bg-black/95 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300"
+        >
+            <button
+                id="btn-lightbox-close"
+                class="absolute top-4 md:top-8 right-4 md:right-8 text-white/50 hover:text-white transition z-10 w-12 h-12 flex justify-center items-center rounded-full bg-black/30 text-3xl"
+            >
+                &times;
+            </button>
+            <button
+                id="btn-lightbox-prev"
+                class="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition z-10 w-12 md:w-16 h-12 md:h-16 flex justify-center items-center rounded-full bg-black/30"
+            >
+                <i class="fas fa-chevron-left text-xl md:text-3xl"></i>
+            </button>
+            <button
+                id="btn-lightbox-next"
+                class="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition z-10 w-12 md:w-16 h-12 md:h-16 flex justify-center items-center rounded-full bg-black/30"
+            >
+                <i class="fas fa-chevron-right text-xl md:text-3xl"></i>
+            </button>
+            <div class="relative w-full h-full flex items-center justify-center p-4 md:p-12">
+                <img
+                    id="lightbox-img"
+                    src=""
+                    class="max-h-full max-w-full object-contain transition-transform duration-300 scale-95"
+                    alt="Enlarged photo"
+                />
+            </div>
+        </div>
+
+        <!-- ТАМПЛЕЙТЫ ДЛЯ РЕНДЕРЕРА -->
+        <div id="templates" style="display: none">
+            <!-- Фото галереи -->
+            <template id="tpl-gallery-photo">
+                <div
+                    class="gallery-item rounded-2xl md:rounded-3xl overflow-hidden shadow-md bg-slate-100 dark:bg-slate-800 relative group cursor-pointer"
+                >
+                    <img
+                        src=""
+                        loading="lazy"
+                        class="w-full h-full object-cover group-hover:scale-[1.15] transition-transform duration-[800ms] ease-out photo-img"
+                    />
+                    <div
+                        class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"
+                    ></div>
+                </div>
+            </template>
+
+            <!-- Карточка Игры -->
+            <template id="tpl-game-card">
+                <div
+                    data-path=""
+                    class="card-link snap-center shrink-0 w-full bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform relative"
+                >
+                    <div
+                        class="h-48 md:h-56 bg-slate-100 dark:bg-slate-800 relative overflow-hidden card-img-container flex items-center justify-center"
+                    >
+                        <i class="fas fa-gamepad text-5xl text-slate-300 dark:text-slate-700"></i>
+                    </div>
+                    <div
+                        class="absolute top-4 right-4 bg-kvant text-white text-[9px] uppercase font-black px-3 py-1.5 rounded-full z-10 shadow-lg"
+                    >
+                        Play
+                    </div>
+                    <div class="p-6">
+                        <h3
+                            class="heading-font text-xl mb-2 group-hover:text-kvant transition card-title"
+                        ></h3>
+                        <p class="text-slate-500 text-xs md:text-sm line-clamp-2 card-desc"></p>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Карточка Проекта -->
+            <template id="tpl-portfolio-card">
+                <div
+                    data-path=""
+                    class="card-link snap-center shrink-0 w-[85vw] md:w-[400px] bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-lg md:shadow-xl border border-slate-100 dark:border-slate-800 group cursor-pointer hover:-translate-y-2 transition-transform"
+                >
+                    <div
+                        class="h-48 md:h-60 bg-slate-100 dark:bg-slate-800 relative overflow-hidden card-img-container"
+                    >
+                        <div
+                            class="absolute top-4 md:top-6 left-4 md:left-6 flex gap-2 card-tags-container"
+                        ></div>
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <h3
+                            class="heading-font text-xl mb-2 md:mb-4 group-hover:text-kvant transition card-title"
+                        ></h3>
+                        <p
+                            class="text-slate-500 text-xs md:text-sm mb-4 md:mb-6 line-clamp-2 card-desc"
+                        ></p>
+                        <div
+                            class="flex items-center text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                        >
+                            <i class="fas fa-user-circle mr-2 text-kvant"></i>
+                            <span class="card-authors"></span>
                         </div>
                     </div>
                 </div>
-                <div class="space-y-6 md:space-y-8 card-modules-container"></div>
-            </div>
-        </template>
-        
-        <template id="tpl-track-module">
-            <div>
-                <h4 class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-3 md:mb-4 px-1 flex items-center">
-                    <span class="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mr-2"></span>
-                    <span class="module-title"></span>
-                </h4>
-                <div class="space-y-2 md:space-y-3 module-lessons-container"></div>
-            </div>
-        </template>
-        
-        <template id="tpl-track-lesson">
-            <div data-path="" class="card-link p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group">
-                <span class="font-bold text-xs md:text-sm group-hover:text-kvant transition lesson-title"></span>
-                <i class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
-            </div>
-        </template>
-    </div>
+            </template>
 
-    <!-- ПОДВАЛ -->
-    <footer class="py-8 md:py-12 text-center opacity-40 text-[8px] md:text-[10px] uppercase tracking-[0.4em] font-bold pb-20 md:pb-32">
-        © VR/AR Kvant Knowledge Hub
-    </footer>
+            <!-- Карточка трека (главная) -->
+            <template id="tpl-home-track-card">
+                <div
+                    data-path=""
+                    class="card-link p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] cursor-pointer transition-all hover:-translate-y-3 flex flex-col items-center group relative overflow-hidden"
+                >
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 track-icon-container bg-white dark:bg-slate-900 mb-6 md:mb-8 card-icon flex items-center justify-center"
+                    ></div>
+                    <h3
+                        class="heading-font text-lg md:text-xl font-bold mb-4 w-full text-center group-hover:text-kvant transition-colors card-title"
+                    ></h3>
+                </div>
+            </template>
 
-</body>
+            <!-- Карточка Шпаргалки -->
+            <template id="tpl-cheat-card">
+                <div
+                    data-path=""
+                    class="card-link p-5 md:p-8 bg-slate-50 dark:bg-slate-900 rounded-[1.25rem] md:rounded-[2rem] border border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-kvant hover:text-white transition group"
+                >
+                    <span
+                        class="font-bold text-sm md:text-base tracking-tight italic card-title"
+                    ></span>
+                    <div
+                        class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center opacity-100 md:opacity-0 group-hover:opacity-100 transition"
+                    >
+                        <i class="fas fa-arrow-right text-xs md:text-base"></i>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Карточка детального Трека -->
+            <template id="tpl-track-page-card">
+                <div
+                    class="bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-100 dark:border-slate-800"
+                >
+                    <div class="flex items-center space-x-4 md:space-x-5 mb-8 md:mb-10">
+                        <div
+                            class="w-14 h-14 md:w-16 md:h-16 track-icon-container bg-white dark:bg-slate-900 flex items-center justify-center card-icon"
+                        ></div>
+                        <div class="flex-1">
+                            <h3 class="heading-font text-lg md:text-xl mb-1 card-title"></h3>
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="flex-1 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"
+                                >
+                                    <div
+                                        class="h-full bg-kvant transition-all duration-1000 card-progress-bar"
+                                        style="width: 0%"
+                                    ></div>
+                                </div>
+                                <span
+                                    class="text-[9px] font-black text-slate-400 uppercase tracking-widest card-progress-txt"
+                                    >0%</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-6 md:space-y-8 card-modules-container"></div>
+                </div>
+            </template>
+
+            <template id="tpl-track-module">
+                <div>
+                    <h4
+                        class="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-3 md:mb-4 px-1 flex items-center"
+                    >
+                        <span
+                            class="w-1 h-1 bg-slate-300 dark:bg-slate-700 rounded-full mr-2"
+                        ></span>
+                        <span class="module-title"></span>
+                    </h4>
+                    <div class="space-y-2 md:space-y-3 module-lessons-container"></div>
+                </div>
+            </template>
+
+            <template id="tpl-track-lesson">
+                <div
+                    data-path=""
+                    class="card-link p-4 md:p-5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl flex justify-between items-center cursor-pointer hover:ring-2 md:hover:ring-4 ring-kvant/20 transition group"
+                >
+                    <span
+                        class="font-bold text-xs md:text-sm group-hover:text-kvant transition lesson-title"
+                    ></span>
+                    <i
+                        class="fas fa-chevron-right text-[10px] opacity-20 group-hover:opacity-100 group-hover:translate-x-1 transition"
+                    ></i>
+                </div>
+            </template>
+        </div>
+
+        <!-- ПОДВАЛ -->
+        <footer
+            class="py-8 md:py-12 text-center opacity-40 text-[8px] md:text-[10px] uppercase tracking-[0.4em] font-bold pb-20 md:pb-32"
+        >
+            © VR/AR Kvant Knowledge Hub
+        </footer>
+    </body>
 </html>

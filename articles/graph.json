@@ -1,117 +1,117 @@
 {
-  "nodes": [
-    {
-      "id": 1,
-      "title": "База знаний",
-      "path": "category:cheats",
-      "type": "category"
-    },
-    {
-      "id": 2,
-      "title": "Портфолио",
-      "path": "category:portfolio",
-      "type": "category"
-    },
-    {
-      "id": 3,
-      "title": "Blender",
-      "path": "articles/blender/intro.md",
-      "type": "track"
-    },
-    {
-      "id": 4,
-      "title": "Горячие клавиши Blender",
-      "path": "articles/cheats/blender_keys.md",
-      "type": "cheat"
-    },
-    {
-      "id": 5,
-      "title": "Настройка Meta Quest",
-      "path": "articles/cheats/quest_setup.md",
-      "type": "cheat"
-    },
-    {
-      "id": 6,
-      "title": "Командная работа",
-      "path": "articles/cheats/teamwork.md",
-      "type": "cheat"
-    },
-    {
-      "id": 7,
-      "title": "Шпаргалка по написанию статей (Полный гайд)",
-      "path": "articles/cheats/writing_articles.md",
-      "type": "cheat"
-    },
-    {
-      "id": 8,
-      "title": "Демонстрационная игра",
-      "path": "articles/games/demo.md",
-      "type": "project"
-    },
-    {
-      "id": 9,
-      "title": "Pixel Art",
-      "path": "articles/games/pixelart.md",
-      "type": "project"
-    },
-    {
-      "id": 10,
-      "title": "Unity",
-      "path": "articles/unity/intro.md",
-      "type": "track"
-    },
-    {
-      "id": 11,
-      "title": "Интерфейс",
-      "path": "articles/unity/interface.md",
-      "type": "lesson"
-    },
-    {
-      "id": 12,
-      "title": "Основы",
-      "path": "module:unity:Основы",
-      "type": "module",
-      "url": "articles/unity/interface.md"
-    },
-    {
-      "id": 13,
-      "title": "Unreal Engine",
-      "path": "articles/unreal/intro.md",
-      "type": "track"
-    }
-  ],
-  "links": [
-    {
-      "source": 4,
-      "target": 1
-    },
-    {
-      "source": 5,
-      "target": 1
-    },
-    {
-      "source": 6,
-      "target": 1
-    },
-    {
-      "source": 7,
-      "target": 1
-    },
-    {
-      "source": 8,
-      "target": 2
-    },
-    {
-      "source": 9,
-      "target": 2
-    },
-    {
-      "source": 12,
-      "target": 10
-    },
-    {
-      "source": 11,
-      "target": 12
-    }
-  ]
+    "nodes": [
+        {
+            "id": 1,
+            "title": "База знаний",
+            "path": "category:cheats",
+            "type": "category"
+        },
+        {
+            "id": 2,
+            "title": "Портфолио",
+            "path": "category:portfolio",
+            "type": "category"
+        },
+        {
+            "id": 3,
+            "title": "Blender",
+            "path": "articles/blender/intro.md",
+            "type": "track"
+        },
+        {
+            "id": 4,
+            "title": "Горячие клавиши Blender",
+            "path": "articles/cheats/blender_keys.md",
+            "type": "cheat"
+        },
+        {
+            "id": 5,
+            "title": "Настройка Meta Quest",
+            "path": "articles/cheats/quest_setup.md",
+            "type": "cheat"
+        },
+        {
+            "id": 6,
+            "title": "Командная работа",
+            "path": "articles/cheats/teamwork.md",
+            "type": "cheat"
+        },
+        {
+            "id": 7,
+            "title": "Шпаргалка по написанию статей (Полный гайд)",
+            "path": "articles/cheats/writing_articles.md",
+            "type": "cheat"
+        },
+        {
+            "id": 8,
+            "title": "Демонстрационная игра",
+            "path": "articles/games/demo.md",
+            "type": "project"
+        },
+        {
+            "id": 9,
+            "title": "Pixel Art",
+            "path": "articles/games/pixelart.md",
+            "type": "project"
+        },
+        {
+            "id": 10,
+            "title": "Unity",
+            "path": "articles/unity/intro.md",
+            "type": "track"
+        },
+        {
+            "id": 11,
+            "title": "Интерфейс",
+            "path": "articles/unity/interface.md",
+            "type": "lesson"
+        },
+        {
+            "id": 12,
+            "title": "Основы",
+            "path": "module:unity:Основы",
+            "type": "module",
+            "url": "articles/unity/interface.md"
+        },
+        {
+            "id": 13,
+            "title": "Unreal Engine",
+            "path": "articles/unreal/intro.md",
+            "type": "track"
+        }
+    ],
+    "links": [
+        {
+            "source": 4,
+            "target": 1
+        },
+        {
+            "source": 5,
+            "target": 1
+        },
+        {
+            "source": 6,
+            "target": 1
+        },
+        {
+            "source": 7,
+            "target": 1
+        },
+        {
+            "source": 8,
+            "target": 2
+        },
+        {
+            "source": 9,
+            "target": 2
+        },
+        {
+            "source": 12,
+            "target": 10
+        },
+        {
+            "source": 11,
+            "target": 12
+        }
+    ]
 }

@@ -1,19 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Demo Game</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; background: #222; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        button { padding: 10px 20px; font-size: 20px; cursor: pointer; border-radius: 8px; border: none; background: #8b5cf6; color: white; transition: 0.3s; }
-        button:hover { background: #7c3aed; transform: scale(1.05); }
-    </style>
-</head>
-<body>
-    <div>
-        <h1>Демо Игра</h1>
-        <p>Нажмите кнопку, чтобы "выгрузить" результат</p>
-        <button onclick="alert('Результат сохранен/скачан! Score: ' + Math.floor(Math.random()*100))">Сохранить результат</button>
-    </div>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Demo Game</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                text-align: center;
+                background: #222;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 20px;
+                cursor: pointer;
+                border-radius: 8px;
+                border: none;
+                background: #8b5cf6;
+                color: white;
+                transition: 0.3s;
+            }
+            button:hover {
+                background: #7c3aed;
+                transform: scale(1.05);
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>Демо Игра</h1>
+            <p>Нажмите кнопку, чтобы "выгрузить" результат</p>
+            <button
+                onclick="
+                    alert('Результат сохранен/скачан! Score: ' + Math.floor(Math.random() * 100))
+                "
+            >
+                Сохранить результат
+            </button>
+        </div>
+    </body>
 </html>

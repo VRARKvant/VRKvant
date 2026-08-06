@@ -4,181 +4,215 @@
 
 /* Ваши кастомные стили здесь */
 @layer base {
-  body {
-    @apply heading-font text-slate-700 dark:text-slate-300;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply heading-font;
-  }
-  .heading-font {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  }
+    body {
+        @apply heading-font text-slate-700 dark:text-slate-300;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply heading-font;
+    }
+    .heading-font {
+        font-family:
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            Roboto,
+            'Helvetica Neue',
+            Arial,
+            'Noto Sans',
+            sans-serif;
+    }
 }
 
 @layer components {
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .sidebar-scroll::-webkit-scrollbar {
-    width: 4px;
-  }
-  .sidebar-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
-    border-radius: 10px;
-  }
-  .dark .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: #1e293b;
-  }
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 
-  .hidden-menu {
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-  }
+    .sidebar-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    .dark .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: #1e293b;
+    }
 
-  /* Сворачиваемые заголовки */
-  .collapsible-header {
-    cursor: pointer;
-    position: relative;
-    padding-right: 2rem !important;
-    transition: color 0.2s;
-  }
-  .collapsible-header:hover {
-    @apply text-kvant;
-  }
-  .collapsible-header::after {
-    content: '\f078';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.8rem;
-    opacity: 0.3;
-    transition: transform 0.3s, opacity 0.3s;
-  }
-  .collapsible-header.active::after {
-    transform: translateY(-50%) rotate(180deg);
-    opacity: 1;
-    @apply text-kvant;
-  }
+    .hidden-menu {
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+    }
 
-  .collapsible-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, opacity 0.3s;
-    opacity: 0;
-  }
-  .collapsible-content.show {
-    max-height: 5000px; /* Достаточно для большинства статей */
-    opacity: 1;
-    margin-bottom: 1rem;
-  }
+    /* Сворачиваемые заголовки */
+    .collapsible-header {
+        cursor: pointer;
+        position: relative;
+        padding-right: 2rem !important;
+        transition: color 0.2s;
+    }
+    .collapsible-header:hover {
+        @apply text-kvant;
+    }
+    .collapsible-header::after {
+        content: '\f078';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        opacity: 0.3;
+        transition:
+            transform 0.3s,
+            opacity 0.3s;
+    }
+    .collapsible-header.active::after {
+        transform: translateY(-50%) rotate(180deg);
+        opacity: 1;
+        @apply text-kvant;
+    }
 
-  /* Специальные цитаты */
-  blockquote { @apply border-l-4 border-slate-200 dark:border-slate-800 p-3 md:p-4 my-6 bg-slate-50/30 dark:bg-slate-900/20 rounded-none; }
-  blockquote.quote-important { @apply border-red-500 bg-red-50 dark:bg-red-950/20 p-4 md:p-6; }
-  blockquote.quote-tip { @apply border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 p-4 md:p-6; }
-  blockquote.quote-warning { @apply border-amber-500 bg-amber-50 dark:bg-amber-950/20 p-4 md:p-6; }
-  blockquote.quote-note { @apply border-blue-500 bg-blue-50 dark:bg-blue-950/20 p-4 md:p-6; }
+    .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+            max-height 0.3s ease-out,
+            opacity 0.3s;
+        opacity: 0;
+    }
+    .collapsible-content.show {
+        max-height: 5000px; /* Достаточно для большинства статей */
+        opacity: 1;
+        margin-bottom: 1rem;
+    }
 
-  /* Карточки */
-  .card-link {
-    @apply border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all bg-white dark:bg-slate-900;
-  }
-  .dark .card-link {
-    @apply border-slate-800 shadow-none hover:shadow-2xl hover:shadow-kvant/10;
-  }
+    /* Специальные цитаты */
+    blockquote {
+        @apply border-l-4 border-slate-200 dark:border-slate-800 p-3 md:p-4 my-6 bg-slate-50/30 dark:bg-slate-900/20 rounded-none;
+    }
+    blockquote.quote-important {
+        @apply border-red-500 bg-red-50 dark:bg-red-950/20 p-4 md:p-6;
+    }
+    blockquote.quote-tip {
+        @apply border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 p-4 md:p-6;
+    }
+    blockquote.quote-warning {
+        @apply border-amber-500 bg-amber-50 dark:bg-amber-950/20 p-4 md:p-6;
+    }
+    blockquote.quote-note {
+        @apply border-blue-500 bg-blue-50 dark:bg-blue-950/20 p-4 md:p-6;
+    }
 
-  /* Ссылки в сайдбаре (без рамок) */
-  .sidebar-link {
-    @apply transition-colors duration-200 bg-transparent border-none shadow-none p-0;
-  }
+    /* Карточки */
+    .card-link {
+        @apply border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all bg-white dark:bg-slate-900;
+    }
+    .dark .card-link {
+        @apply border-slate-800 shadow-none hover:shadow-2xl hover:shadow-kvant/10;
+    }
 
-  /* Стили для статьи */
-  .prose {
-    @apply text-slate-700 dark:text-slate-300 antialiased;
-  }
-  
-  .prose p, .prose ul, .prose ol, .prose li {
-    @apply text-slate-700 dark:text-slate-300;
-  }
+    /* Ссылки в сайдбаре (без рамок) */
+    .sidebar-link {
+        @apply transition-colors duration-200 bg-transparent border-none shadow-none p-0;
+    }
 
-  .prose strong {
-    @apply font-bold text-slate-900 dark:text-white;
-  }
-  
-  .prose h1 {
-    @apply text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-8;
-  }
+    /* Стили для статьи */
+    .prose {
+        @apply text-slate-700 dark:text-slate-300 antialiased;
+    }
 
-  .prose h2 {
-    @apply block text-left mb-6 mt-16 pb-2 text-slate-900 dark:text-white font-bold text-2xl md:text-3xl border-b border-slate-200 dark:border-slate-800 bg-transparent p-0 rounded-none !important;
-  }
+    .prose p,
+    .prose ul,
+    .prose ol,
+    .prose li {
+        @apply text-slate-700 dark:text-slate-300;
+    }
 
-  .prose h3 {
-    @apply text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-400 mt-10 mb-4 !important;
-  }
+    .prose strong {
+        @apply font-bold text-slate-900 dark:text-white;
+    }
 
-  .prose code {
-    @apply bg-slate-100 dark:bg-slate-800/50 text-kvant px-1.5 py-0.5 rounded-md font-mono text-[0.9em] border border-slate-200 dark:border-slate-700/50;
-  }
-  
-  .prose code::before, .prose code::after {
-    content: "" !important;
-  }
+    .prose h1 {
+        @apply text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-8;
+    }
 
-  .prose pre {
-    @apply rounded-none border border-slate-200 dark:border-slate-800 p-0 overflow-hidden shadow-lg my-6 bg-slate-50 dark:bg-slate-950/50 !important;
-  }
+    .prose h2 {
+        @apply block text-left mb-6 mt-16 pb-2 text-slate-900 dark:text-white font-bold text-2xl md:text-3xl border-b border-slate-200 dark:border-slate-800 bg-transparent p-0 rounded-none !important;
+    }
 
-  .prose pre code {
-    @apply bg-transparent dark:bg-transparent border-none p-4 md:p-6 block text-[0.75rem] md:text-[0.85rem] leading-relaxed overflow-x-auto sidebar-scroll !important;
-  }
+    .prose h3 {
+        @apply text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-400 mt-10 mb-4 !important;
+    }
 
-  /* Исключаем двойное скругление для кастомных виджетов */
-  .prose img, .prose video {
-    @apply rounded-none shadow-lg mx-auto block my-6 border border-slate-100 dark:border-slate-800 max-w-full;
-  }
-  
-  .relative.overflow-hidden img {
-    @apply rounded-none border-none shadow-none;
-  }
+    .prose code {
+        @apply bg-slate-100 dark:bg-slate-800/50 text-kvant px-1.5 py-0.5 rounded-md font-mono text-[0.9em] border border-slate-200 dark:border-slate-700/50;
+    }
 
-  /* Кастомный скроллбар для кода */
-  .prose pre::-webkit-scrollbar {
-    height: 6px;
-  }
-  .prose pre::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  .prose pre::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 dark:bg-slate-700 rounded-full;
-  }
+    .prose code::before,
+    .prose code::after {
+        content: '' !important;
+    }
 
-  /* Бейдж языка и кнопка копирования */
-  .code-header {
-    @apply flex justify-between items-center px-4 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-400;
-  }
+    .prose pre {
+        @apply rounded-none border border-slate-200 dark:border-slate-800 p-0 overflow-hidden shadow-lg my-6 bg-slate-50 dark:bg-slate-950/50 !important;
+    }
 
-  .copy-code-btn {
-    @apply hover:text-kvant transition-colors flex items-center gap-1.5;
-  }
+    .prose pre code {
+        @apply bg-transparent dark:bg-transparent border-none p-4 md:p-6 block text-[0.75rem] md:text-[0.85rem] leading-relaxed overflow-x-auto sidebar-scroll !important;
+    }
 
-  /* Единый стиль для иконок треков */
-  .track-icon-container {
-    @apply rounded-2xl md:rounded-3xl flex items-center justify-center shadow-md border border-slate-100 dark:border-slate-800/50 text-kvant transition-all duration-300;
-  }
-  
-  .card-link:hover .track-icon-container {
-    @apply shadow-xl shadow-kvant/10 -translate-y-1 border-kvant/20;
-  }
+    /* Исключаем двойное скругление для кастомных виджетов */
+    .prose img,
+    .prose video {
+        @apply rounded-none shadow-lg mx-auto block my-6 border border-slate-100 dark:border-slate-800 max-w-full;
+    }
+
+    .relative.overflow-hidden img {
+        @apply rounded-none border-none shadow-none;
+    }
+
+    /* Кастомный скроллбар для кода */
+    .prose pre::-webkit-scrollbar {
+        height: 6px;
+    }
+    .prose pre::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+    .prose pre::-webkit-scrollbar-thumb {
+        @apply bg-slate-300 dark:bg-slate-700 rounded-full;
+    }
+
+    /* Бейдж языка и кнопка копирования */
+    .code-header {
+        @apply flex justify-between items-center px-4 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-400;
+    }
+
+    .copy-code-btn {
+        @apply hover:text-kvant transition-colors flex items-center gap-1.5;
+    }
+
+    /* Единый стиль для иконок треков */
+    .track-icon-container {
+        @apply rounded-2xl md:rounded-3xl flex items-center justify-center shadow-md border border-slate-100 dark:border-slate-800/50 text-kvant transition-all duration-300;
+    }
+
+    .card-link:hover .track-icon-container {
+        @apply shadow-xl shadow-kvant/10 -translate-y-1 border-kvant/20;
+    }
 }

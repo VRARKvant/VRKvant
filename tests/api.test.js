@@ -14,7 +14,7 @@ describe('API Functions', () => {
         });
 
         const result = await loadPortfolio();
-        
+
         expect(fetch).toHaveBeenCalledWith(expect.stringContaining(CONFIG.portfolio));
         expect(result).toEqual(mockData.projects);
     });
@@ -23,7 +23,7 @@ describe('API Functions', () => {
         fetch.mockResolvedValue({ ok: false });
 
         const result = await loadPortfolio();
-        
+
         expect(result).toEqual([]);
     });
 
@@ -35,7 +35,7 @@ describe('API Functions', () => {
         });
 
         const result = await loadTracks();
-        
+
         expect(fetch).toHaveBeenCalledWith(expect.stringContaining(CONFIG.tracks));
         expect(result).toEqual(mockData.tracks);
     });
@@ -48,7 +48,7 @@ describe('API Functions', () => {
         });
 
         const result = await loadCheats();
-        
+
         expect(fetch).toHaveBeenCalledWith(expect.stringContaining(CONFIG.cheats));
         expect(result).toEqual(mockData.cheats);
     });

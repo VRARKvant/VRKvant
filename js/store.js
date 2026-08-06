@@ -18,7 +18,7 @@ const listeners = [];
 export const store = new Proxy(state, {
     set(target, property, value) {
         target[property] = value;
-        listeners.forEach(fn => fn(property, value));
+        listeners.forEach((fn) => fn(property, value));
         return true;
     }
 });

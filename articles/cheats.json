@@ -1,20 +1,20 @@
 {
-  "cheats": [
-    {
-      "title": "Горячие клавиши Blender",
-      "file": "blender_keys.md"
-    },
-    {
-      "title": "Настройка Meta Quest",
-      "file": "quest_setup.md"
-    },
-    {
-      "title": "Командная работа",
-      "file": "teamwork.md"
-    },
-    {
-      "title": "Шпаргалка по написанию статей (Полный гайд)",
-      "file": "writing_articles.md"
-    }
-  ]
+    "cheats": [
+        {
+            "title": "Горячие клавиши Blender",
+            "file": "blender_keys.md"
+        },
+        {
+            "title": "Настройка Meta Quest",
+            "file": "quest_setup.md"
+        },
+        {
+            "title": "Командная работа",
+            "file": "teamwork.md"
+        },
+        {
+            "title": "Шпаргалка по написанию статей (Полный гайд)",
+            "file": "writing_articles.md"
+        }
+    ]
 }

@@ -11,7 +11,7 @@ export function initGithubAuth() {
     if (tokenInput) {
         const savedToken = localStorage.getItem('gh_token');
         if (savedToken) tokenInput.value = savedToken;
-        
+
         tokenInput.addEventListener('change', (e) => {
             localStorage.setItem('gh_token', e.target.value);
         });
@@ -23,9 +23,9 @@ export function generateFrontmatter() {
     const type = document.getElementById('meta-type').value;
     const title = document.getElementById('meta-title').value.trim() || 'Без названия';
     const order = document.getElementById('meta-order').value || 10;
-    
+
     let fm = `---\ntitle: "${title.replace(/"/g, '\\"')}"\ntype: ${type}\norder: ${order}\n`;
-    
+
     if (type === 'lesson') {
         const moduleName = document.getElementById('meta-module').value.trim() || 'Разное';
         fm += `module: "${moduleName.replace(/"/g, '\\"')}"\n`;
@@ -34,8 +34,13 @@ export function generateFrontmatter() {
     } else if (type === 'project') {
         const desc = document.getElementById('meta-desc').value.trim();
         const authors = document.getElementById('meta-authors').value.trim();
-        const tags = document.getElementById('meta-tags').value.split(',').map(t => `"${t.trim()}"`).filter(t => t !== '""').join(', ');
-        
+        const tags = document
+            .getElementById('meta-tags')
+            .value.split(',')
+            .map((t) => `"${t.trim()}"`)
+            .filter((t) => t !== '""')
+            .join(', ');
+
         fm += `description: "${desc.replace(/"/g, '\\"')}"\n`;
         fm += `authors: "${authors.replace(/"/g, '\\"')}"\n`;
         fm += `tags: [${tags}]\n`;
@@ -43,12 +48,12 @@ export function generateFrontmatter() {
         const trackId = document.getElementById('meta-track-id').value.trim();
         const icon = document.getElementById('meta-icon').value.trim();
         const color = document.getElementById('meta-color').value;
-        
+
         fm += `name: "${title.replace(/"/g, '\\"')}"\n`; // Для intro.md title идет в name
         if (icon) fm += `icon: ${icon}\n`;
         fm += `colorClass: ${color}\n`;
     }
-    
+
     fm += `---\n\n`;
     return fm;
 }
@@ -57,10 +62,10 @@ export function generateFrontmatter() {
 export function generateFilePath() {
     const type = document.getElementById('meta-type').value;
     let filename = document.getElementById('meta-filename').value.trim();
-    
+
     // Транслитерация и очистка имени файла (если пользователь ввел кириллицу)
     if (!filename) {
-        filename = "new_article_" + Date.now();
+        filename = 'new_article_' + Date.now();
     } else if (filename !== 'intro') {
         filename = filename.toLowerCase().replace(/[^a-z0-9_]/g, '_');
     }
@@ -77,7 +82,7 @@ export function generateFilePath() {
         const trackId = document.getElementById('meta-track-id').value.trim() || 'new_track';
         return `articles/${trackId}/intro.md`;
     }
-    
+
     return `articles/other/${filename}`;
 }
 
@@ -110,7 +115,7 @@ export async function publishToGitHub() {
         let sha = null;
         try {
             const getRes = await fetch(GITHUB_API_URL + filePath + `?ref=${GITHUB_BRANCH}`, {
-                headers: { 'Authorization': `token ${token}` }
+                headers: { Authorization: `token ${token}` }
             });
             if (getRes.ok) {
                 const data = await getRes.json();
@@ -131,7 +136,7 @@ export async function publishToGitHub() {
         const putRes = await fetch(GITHUB_API_URL + filePath, {
             method: 'PUT',
             headers: {
-                'Authorization': `token ${token}`,
+                Authorization: `token ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(body)
@@ -145,7 +150,7 @@ export async function publishToGitHub() {
         btn.innerHTML = '<i class="fas fa-check mr-2"></i>Успешно!';
         btn.classList.replace('bg-slate-900', 'bg-green-600');
         btn.classList.replace('dark:bg-white', 'dark:bg-green-500');
-        
+
         setTimeout(() => {
             btn.innerHTML = originalBtnHtml;
             btn.disabled = false;
@@ -153,7 +158,6 @@ export async function publishToGitHub() {
             btn.classList.replace('dark:bg-green-500', 'dark:bg-white');
             window.togglePublishPanel(); // Скрываем панель
         }, 3000);
-
     } catch (error) {
         console.error('Ошибка публикации:', error);
         alert(`Ошибка публикации: ${error.message}`);
@@ -186,7 +190,7 @@ export async function uploadImage(event) {
         reader.onload = async () => {
             // Убираем префикс "data:image/png;base64,"
             const base64Content = reader.result.split(',')[1];
-            
+
             // Генерируем уникальное имя файла
             const safeFileName = file.name.toLowerCase().replace(/[^a-z0-9_.]/g, '_');
             const filePath = `img/uploads/${Date.now()}_${safeFileName}`;
@@ -196,7 +200,7 @@ export async function uploadImage(event) {
             const putRes = await fetch(GITHUB_API_URL + filePath, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${token}`,
+                    Authorization: `token ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -219,20 +223,22 @@ export async function uploadImage(event) {
             const insertion = `![Описание](${filePath})`;
 
             mdInput.value = text.substring(0, start) + insertion + text.substring(end);
-            
+
             // Запускаем обновление превью
             const event = new Event('input', { bubbles: true });
             mdInput.dispatchEvent(event);
 
             btn.innerHTML = '<i class="fas fa-check text-green-500 mr-2"></i>Готово';
-            setTimeout(() => { btn.innerHTML = originalHtml; btn.disabled = false; }, 2000);
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }, 2000);
             document.getElementById('image-upload-input').value = '';
         };
 
         reader.onerror = () => {
             throw new Error('Не удалось прочитать файл локально.');
         };
-
     } catch (error) {
         console.error('Ошибка загрузки медиа:', error);
         alert(`Ошибка загрузки: ${error.message}`);

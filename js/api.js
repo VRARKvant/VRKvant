@@ -1,8 +1,8 @@
 import { store } from './store.js';
 
-export const CONFIG = { 
-    tracks: 'articles/tracks.json', 
-    cheats: 'articles/cheats.json', 
+export const CONFIG = {
+    tracks: 'articles/tracks.json',
+    cheats: 'articles/cheats.json',
     portfolio: 'articles/portfolio.json',
     games: 'articles/games.json',
     gallery: 'articles/gallery.json'
@@ -10,7 +10,7 @@ export const CONFIG = {
 
 /**
  * Универсальная обертка для fetch с обработкой JSON и добавлением метки времени.
- * @param {string} url 
+ * @param {string} url
  * @returns {Promise<any>}
  */
 async function fetchJSON(url) {
@@ -27,24 +27,24 @@ async function fetchJSON(url) {
 
 export async function loadGlobalData() {
     try {
-        if(!store.tracks) {
+        if (!store.tracks) {
             const data = await fetchJSON(CONFIG.tracks);
             store.tracks = data.tracks;
         }
-        if(!store.cheats) {
+        if (!store.cheats) {
             const data = await fetchJSON(CONFIG.cheats);
             store.cheats = data.cheats;
         }
-        if(!store.portfolio) {
+        if (!store.portfolio) {
             const data = await fetchJSON(CONFIG.portfolio);
             store.portfolio = data.projects;
         }
-        if(!store.games) {
-            const data = await fetchJSON(CONFIG.games).catch(() => ({games: []}));
+        if (!store.games) {
+            const data = await fetchJSON(CONFIG.games).catch(() => ({ games: [] }));
             store.games = data.games;
         }
-    } catch(e) { 
-        console.error("Ошибка загрузки манифестов:", e); 
+    } catch (e) {
+        console.error('Ошибка загрузки манифестов:', e);
     }
 }
 
@@ -52,8 +52,8 @@ export async function loadPortfolio() {
     try {
         const data = await fetchJSON(CONFIG.portfolio);
         return data.projects || [];
-    } catch(e) { 
-        console.error("Ошибка загрузки портфолио:", e);
+    } catch (e) {
+        console.error('Ошибка загрузки портфолио:', e);
         return [];
     }
 }
@@ -62,8 +62,8 @@ export async function loadTracks() {
     try {
         const data = await fetchJSON(CONFIG.tracks);
         return data.tracks || [];
-    } catch(e) {
-        console.error("Ошибка загрузки треков:", e);
+    } catch (e) {
+        console.error('Ошибка загрузки треков:', e);
         return [];
     }
 }
@@ -72,8 +72,8 @@ export async function loadCheats() {
     try {
         const data = await fetchJSON(CONFIG.cheats);
         return data.cheats || [];
-    } catch(e) {
-        console.error("Ошибка загрузки шпаргалок:", e);
+    } catch (e) {
+        console.error('Ошибка загрузки шпаргалок:', e);
         return [];
     }
 }
@@ -82,8 +82,8 @@ export async function loadGames() {
     try {
         const data = await fetchJSON(CONFIG.games);
         return data.games || [];
-    } catch(e) {
-        console.error("Ошибка загрузки игр:", e);
+    } catch (e) {
+        console.error('Ошибка загрузки игр:', e);
         return [];
     }
 }
@@ -92,8 +92,8 @@ export async function loadGallery() {
     try {
         const data = await fetchJSON(CONFIG.gallery);
         return data.photos || [];
-    } catch(e) {
-        console.error("Ошибка загрузки фото галереи:", e);
+    } catch (e) {
+        console.error('Ошибка загрузки фото галереи:', e);
         return [];
     }
 }

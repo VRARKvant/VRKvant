@@ -48,21 +48,33 @@ describe('UI Generators (js/ui.js)', () => {
 
     it('renderPortfolio should generate project cards in both containers', async () => {
         const mockProjects = [
-            { title: 'Project 1', description: 'Desc 1', authors: 'Auth 1', file: 'p1.md', tags: ['VR'] },
-            { title: 'Project 2', description: 'Desc 2', authors: 'Auth 2', file: 'p2.md', tags: ['AR'] }
+            {
+                title: 'Project 1',
+                description: 'Desc 1',
+                authors: 'Auth 1',
+                file: 'p1.md',
+                tags: ['VR']
+            },
+            {
+                title: 'Project 2',
+                description: 'Desc 2',
+                authors: 'Auth 2',
+                file: 'p2.md',
+                tags: ['AR']
+            }
         ];
-        
+
         api.loadPortfolio.mockResolvedValue(mockProjects);
-        
+
         await renderPortfolio();
-        
+
         const carousel = document.getElementById('portfolio-carousel');
         const grid = document.getElementById('projects-container');
-        
+
         // Проверяем наличие карточек в обоих контейнерах
         expect(carousel.querySelectorAll('.card-link').length).toBe(2);
         expect(grid.querySelectorAll('.card-link').length).toBe(2);
-        
+
         // Проверяем контент первой карточки
         const firstCard = carousel.querySelector('.card-link');
         expect(firstCard.innerHTML).toContain('Project 1');
@@ -73,10 +85,12 @@ describe('UI Generators (js/ui.js)', () => {
 
     it('renderPortfolio should show empty message if no projects', async () => {
         api.loadPortfolio.mockResolvedValue([]);
-        
+
         await renderPortfolio();
-        
-        expect(document.getElementById('portfolio-carousel').innerHTML).toContain('Проекты появятся здесь');
+
+        expect(document.getElementById('portfolio-carousel').innerHTML).toContain(
+            'Проекты появятся здесь'
+        );
     });
 
     it('renderHomeTracks should generate first 3 track cards and apply background logic', async () => {
@@ -86,20 +100,24 @@ describe('UI Generators (js/ui.js)', () => {
             { id: 'unity', name: 'Unity', icon: 'fas fa-y', lessons: [] },
             { id: 'other', name: 'Other', icon: 'fas fa-o', lessons: [] }
         ];
-        
+
         api.loadTracks.mockResolvedValue(mockTracks);
-        
+
         await renderHomeTracks();
-        
+
         const container = document.getElementById('home-tracks-container');
         const cards = container.querySelectorAll('.card-link');
-        
+
         expect(cards.length).toBe(3); // Должно быть только первые три
         expect(cards[0].innerHTML).toContain('Unreal');
-        
-        const unrealContainer = container.querySelector('[data-path="article:articles/unreal/intro.md"] .track-icon-container');
-        const blenderContainer = container.querySelector('[data-path="article:articles/blender/intro.md"] .track-icon-container');
-        
+
+        const unrealContainer = container.querySelector(
+            '[data-path="article:articles/unreal/intro.md"] .track-icon-container'
+        );
+        const blenderContainer = container.querySelector(
+            '[data-path="article:articles/blender/intro.md"] .track-icon-container'
+        );
+
         expect(unrealContainer.classList.contains('bg-white')).toBe(true);
         expect(unrealContainer.classList.contains('dark:bg-slate-900')).toBe(true);
         expect(blenderContainer.classList.contains('bg-white')).toBe(true);
@@ -111,16 +129,17 @@ describe('UI Generators (js/ui.js)', () => {
             { id: 'unreal', name: 'Unreal', icon: 'fas fa-u', lessons: [] },
             { id: 'blender', name: 'Blender', icon: 'fas fa-b', lessons: [] }
         ];
-        
+
         api.loadTracks.mockResolvedValue(mockTracks);
-        
+
         await renderTracks();
-        
+
         const container = document.getElementById('tracks-container');
-        const iconBoxes = container.querySelectorAll('.track-icon-container.bg-white.dark\\:bg-slate-900');
-        
+        const iconBoxes = container.querySelectorAll(
+            '.track-icon-container.bg-white.dark\\:bg-slate-900'
+        );
+
         expect(iconBoxes.length).toBe(2);
         expect(iconBoxes[0].previousElementSibling).toBeNull(); // it's first in its parent (name is in another container) - wait, looking at HTML it's first in flex container
     });
 });
-

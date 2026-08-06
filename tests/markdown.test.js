@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { processCustomTags, styleSpecialQuotes, makeHeadersCollapsible, addCodeFeatures } from '../js/markdown.js';
+import {
+    processCustomTags,
+    styleSpecialQuotes,
+    makeHeadersCollapsible,
+    addCodeFeatures
+} from '../js/markdown.js';
 
 describe('Markdown Parser - Custom Tags', () => {
     it('should parse [video: <url>] tag correctly', () => {
@@ -50,7 +55,7 @@ describe('Markdown Parser - Custom Tags', () => {
 
 describe('Markdown DOM Features', () => {
     let container;
-    
+
     beforeEach(() => {
         container = document.createElement('div');
         container.id = 'article-content';
@@ -83,7 +88,7 @@ describe('Markdown DOM Features', () => {
         expect(wrapper.className).toBe('collapsible-content');
         expect(wrapper.innerHTML.includes('Paragraph 1')).toBe(true);
         expect(wrapper.innerHTML.includes('Paragraph 2')).toBe(true);
-        
+
         // Проверяем клик
         h2.click();
         expect(h2.classList.contains('active')).toBe(true);
@@ -92,24 +97,24 @@ describe('Markdown DOM Features', () => {
 
     it('should add code features to pre blocks', () => {
         container.innerHTML = '<pre><code class="language-python">print("hello")</code></pre>';
-        
+
         // Мокаем hljs
         window.hljs = { highlightElement: () => {} };
-        
+
         // Мокаем navigator.clipboard
         Object.assign(navigator, {
             clipboard: { writeText: () => Promise.resolve() }
         });
-        
+
         addCodeFeatures(container);
-        
+
         const header = container.querySelector('.code-header');
         expect(header).toBeTruthy();
         expect(header.innerHTML).toContain('PYTHON');
-        
+
         const btn = header.querySelector('.copy-code-btn');
         expect(btn).toBeTruthy();
-        
+
         delete window.hljs;
     });
 });

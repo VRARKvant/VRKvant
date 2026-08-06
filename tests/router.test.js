@@ -5,7 +5,7 @@ describe('parseFrontmatter', () => {
     it('should correctly parse valid frontmatter', () => {
         const input = `---\ntitle: "Test Title"\nmodule: Intro\n---\nContent starts here`;
         const { data, content } = parseFrontmatter(input);
-        
+
         expect(data).toEqual({
             title: 'Test Title',
             module: 'Intro'
@@ -16,7 +16,7 @@ describe('parseFrontmatter', () => {
     it('should handle quoted values correctly', () => {
         const input = `---\ntitle: 'Single Quotes'\nsubtitle: "Double Quotes"\n---`;
         const { data } = parseFrontmatter(input);
-        
+
         expect(data.title).toBe('Single Quotes');
         expect(data.subtitle).toBe('Double Quotes');
     });
@@ -24,7 +24,7 @@ describe('parseFrontmatter', () => {
     it('should return empty data and full content if no frontmatter found', () => {
         const input = 'Just plain markdown';
         const { data, content } = parseFrontmatter(input);
-        
+
         expect(data).toEqual({});
         expect(content).toBe('Just plain markdown');
     });
@@ -32,7 +32,7 @@ describe('parseFrontmatter', () => {
     it('should handle BOM and leading spaces', () => {
         const input = `\uFEFF  ---\ntitle: BOM Test\n---\nContent`;
         const { data, content } = parseFrontmatter(input);
-        
+
         expect(data.title).toBe('BOM Test');
         expect(content.trim()).toBe('Content');
     });

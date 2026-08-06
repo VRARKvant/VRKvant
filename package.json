@@ -1,22 +1,30 @@
 {
-  "name": "vrkvant-knowledge-hub",
-  "version": "3.0.0",
-  "description": "База знаний VR/AR Квантума",
-  "scripts": {
-    "build:css": "tailwindcss -i ./css/input.css -o ./css/style.css --minify",
-    "watch:css": "tailwindcss -i ./css/input.css -o ./css/style.css --watch",
-    "build:manifests": "node scripts/build.js",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:e2e": "playwright test"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.42.0",
-    "@tailwindcss/typography": "^0.5.10",
-    "http-server": "^14.1.1",
-    "jsdom": "^24.0.0",
-    "tailwindcss": "^3.4.1",
-    "vitest": "^1.4.0",
-    "wait-on": "^7.2.0"
-  }
+    "name": "vrkvant-knowledge-hub",
+    "version": "3.0.0",
+    "description": "База знаний VR/AR Квантума",
+    "scripts": {
+        "build:css": "tailwindcss -i ./css/input.css -o ./css/style.css --minify",
+        "watch:css": "tailwindcss -i ./css/input.css -o ./css/style.css --watch",
+        "build:manifests": "node scripts/build.js",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest",
+        "test:e2e": "playwright test --pass-with-no-tests",
+        "lint": "eslint \"js/**/*.js\" \"scripts/**/*.js\"",
+        "lint:fix": "eslint \"js/**/*.js\" \"scripts/**/*.js\" --fix",
+        "format": "prettier --write \"**/*.{js,json,md,html,css}\""
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@playwright/test": "^1.42.0",
+        "@tailwindcss/typography": "^0.5.10",
+        "eslint": "^10.8.0",
+        "eslint-config-prettier": "^10.1.8",
+        "globals": "^17.9.0",
+        "http-server": "^14.1.1",
+        "jsdom": "^24.0.0",
+        "prettier": "^3.9.6",
+        "tailwindcss": "^3.4.1",
+        "vitest": "^1.4.0",
+        "wait-on": "^7.2.0"
+    }
 }

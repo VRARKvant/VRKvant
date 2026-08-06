@@ -46,7 +46,7 @@ export async function initSearch() {
     try {
         const res = await fetch('./articles/search_index.json');
         searchIndex = await res.json();
-        
+
         // Инициализация Fuse.js
         fuse = new Fuse(searchIndex, {
             keys: [
@@ -58,7 +58,7 @@ export async function initSearch() {
             minMatchCharLength: 2
         });
     } catch (e) {
-        console.error("Ошибка загрузки индекса поиска:", e);
+        console.error('Ошибка загрузки индекса поиска:', e);
     }
 }
 
@@ -71,8 +71,8 @@ export function openSearch() {
             input.value = '';
             input.focus();
         }
-        document.body.style.overflow = 'hidden'; 
-        renderResults([]); 
+        document.body.style.overflow = 'hidden';
+        renderResults([]);
     }
 }
 
@@ -91,7 +91,7 @@ function performSearch(query) {
     }
 
     const fuseResults = fuse.search(query);
-    const results = fuseResults.map(r => ({
+    const results = fuseResults.map((r) => ({
         ...r.item,
         score: r.score
     }));
@@ -105,12 +105,15 @@ function renderResults(results) {
 
     if (results.length === 0) {
         const input = document.getElementById('search-input');
-        const text = input && input.value ? 'Ничего не найдено...' : 'Начните вводить текст для поиска...';
+        const text =
+            input && input.value ? 'Ничего не найдено...' : 'Начните вводить текст для поиска...';
         container.innerHTML = `<div class="text-center py-10 text-slate-400 italic text-sm">${text}</div>`;
         return;
     }
 
-    container.innerHTML = results.map(r => `
+    container.innerHTML = results
+        .map(
+            (r) => `
         <div data-path="${r.path}" class="search-result-item p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-kvant hover:text-white rounded-2xl cursor-pointer transition group flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-kvant group-hover:bg-white/20 group-hover:text-white transition">
@@ -123,5 +126,7 @@ function renderResults(results) {
             </div>
             <i class="fas fa-arrow-right opacity-0 group-hover:opacity-100 transition mr-2"></i>
         </div>
-    `).join('');
+    `
+        )
+        .join('');
 }
