@@ -1,0 +1,65 @@
+local_backend: true
+backend:
+  name: github
+  repo: NekrasovLE/VRKvant
+  branch: main
+  base_url: https://vr-kvant.vercel.app
+
+media_folder: "img"
+public_folder: "/img"
+
+collections:
+  - name: "unity"
+    label: "Unity"
+    folder: "articles/unity"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Модуль", name: "module", widget: "string", required: false}
+      - {label: "Порядок", name: "order", widget: "number", required: false}
+      - {label: "Имя (коротко)", name: "name", widget: "string", required: false}
+      - {label: "Иконка", name: "icon", widget: "string", default: "fab fa-unity", required: false}
+      - {label: "Цвет", name: "colorClass", widget: "string", default: "bg-zinc-800", required: false}
+      - {label: "Тип", name: "type", widget: "select", options: ["intro", "article"], default: "article"}
+      - {label: "Контент", name: "body", widget: "markdown"}
+
+  - name: "unreal"
+    label: "Unreal Engine"
+    folder: "articles/unreal"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Модуль", name: "module", widget: "string", required: false}
+      - {label: "Порядок", name: "order", widget: "number", required: false}
+      - {label: "Имя (коротко)", name: "name", widget: "string", required: false}
+      - {label: "Иконка", name: "icon", widget: "string", default: "fab fa-ioxhost", required: false}
+      - {label: "Цвет", name: "colorClass", widget: "string", default: "bg-blue-600", required: false}
+      - {label: "Тип", name: "type", widget: "select", options: ["intro", "article"], default: "article"}
+      - {label: "Контент", name: "body", widget: "markdown"}
+
+  - name: "blender"
+    label: "Blender"
+    folder: "articles/blender"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Модуль", name: "module", widget: "string", required: false}
+      - {label: "Порядок", name: "order", widget: "number", required: false}
+      - {label: "Имя (коротко)", name: "name", widget: "string", required: false}
+      - {label: "Иконка", name: "icon", widget: "string", default: "fas fa-cube", required: false}
+      - {label: "Цвет", name: "colorClass", widget: "string", default: "bg-orange-500", required: false}
+      - {label: "Тип", name: "type", widget: "select", options: ["intro", "article"], default: "article"}
+      - {label: "Контент", name: "body", widget: "markdown"}
+
+  - name: "cheats"
+    label: "Шпаргалки"
+    folder: "articles/cheats"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Иконка", name: "icon", widget: "string", default: "fa-book", required: false}
+      - {label: "Контент", name: "body", widget: "markdown"}
