@@ -113,11 +113,11 @@ url: Путь к файлу (Например: games/pixelart/index.html)
 
 **Как писать:**
 ```text
-[gallery: img/unity/step1.png | img/unity/step2.png | img/unity/step3.png]
+[gallery: img/unreal/unreal_logo.jpg | img/blender/blender_logo.jpg | img/unity/unity_logo.jpeg]
 ```
 
 **Как это выглядит:**
-[gallery: img/unity/step1.png | img/unity/step2.png | img/unity/step3.png]
+[gallery: img/unreal/unreal_logo.jpg | img/blender/blender_logo.jpg | img/unity/unity_logo.jpeg]
 
 ### 🌓 Слайдер "До и После" (Сравнение)
 Позволяет пользователю тянуть ползунок, сравнивая два изображения. Первая картинка будет сверху ("До"), вторая снизу ("После").
