@@ -1,20 +1,20 @@
 {
-    "games": [
-        {
-            "title": "Демонстрационная игра",
-            "description": "Тестовая игра для проверки функционала Unity / HTML5",
-            "icon": "",
-            "file": "demo.md",
-            "url": "games/demo/index.html",
-            "order": 1
-        },
-        {
-            "title": "Pixel Art",
-            "description": "Творческая студия для создания пиксель-арта: развивает моторику и воображение у детей. Сохраняйте свои шедевры!",
-            "icon": "",
-            "file": "pixelart.md",
-            "url": "games/pixelart/index.html",
-            "order": 9999
-        }
-    ]
+  "games": [
+    {
+      "title": "Демонстрационная игра",
+      "description": "Тестовая игра для проверки функционала Unity / HTML5",
+      "icon": "",
+      "file": "demo.md",
+      "url": "games/demo/index.html",
+      "order": 1
+    },
+    {
+      "title": "Pixel Art",
+      "description": "Творческая студия для создания пиксель-арта: развивает моторику и воображение у детей. Сохраняйте свои шедевры!",
+      "icon": "",
+      "file": "pixelart.md",
+      "url": "games/pixelart/index.html",
+      "order": 9999
+    }
+  ]
 }

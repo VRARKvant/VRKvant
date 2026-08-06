@@ -1,52 +1,52 @@
 {
-    "tracks": [
+  "tracks": [
+    {
+      "id": "blender",
+      "name": "Blender",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Blender_logo_no_text.svg",
+      "colorClass": "bg-white dark:bg-[#1d1d1d]",
+      "lessons": [
         {
-            "id": "blender",
-            "name": "Blender",
-            "icon": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Blender_logo_no_text.svg",
-            "colorClass": "bg-white dark:bg-[#1d1d1d]",
-            "lessons": [
-                {
-                    "title": "Введение в Blender",
-                    "file": "intro.md",
-                    "module": "Основы",
-                    "order": 1
-                }
-            ]
-        },
-        {
-            "id": "unity",
-            "name": "Unity",
-            "icon": "fab fa-unity",
-            "colorClass": "bg-zinc-800",
-            "lessons": [
-                {
-                    "title": "Введение в Unity",
-                    "file": "intro.md",
-                    "module": "Основы",
-                    "order": 1
-                },
-                {
-                    "title": "Интерфейс",
-                    "file": "interface.md",
-                    "module": "Основы",
-                    "order": 2
-                }
-            ]
-        },
-        {
-            "id": "unreal",
-            "name": "Unreal Engine",
-            "icon": "https://cdn.simpleicons.org/unrealengine/fff",
-            "colorClass": "bg-black dark:bg-[#0a0a0a]",
-            "lessons": [
-                {
-                    "title": "Введение в Unreal Engine",
-                    "file": "intro.md",
-                    "module": "Введение",
-                    "order": 1
-                }
-            ]
+          "title": "Введение в Blender",
+          "file": "intro.md",
+          "module": "Основы",
+          "order": 1
         }
-    ]
+      ]
+    },
+    {
+      "id": "unity",
+      "name": "Unity",
+      "icon": "fab fa-unity",
+      "colorClass": "bg-zinc-800",
+      "lessons": [
+        {
+          "title": "Введение в Unity",
+          "file": "intro.md",
+          "module": "Основы",
+          "order": 1
+        },
+        {
+          "title": "Интерфейс",
+          "file": "interface.md",
+          "module": "Основы",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "id": "unreal",
+      "name": "Unreal Engine",
+      "icon": "https://cdn.simpleicons.org/unrealengine/fff",
+      "colorClass": "bg-black dark:bg-[#0a0a0a]",
+      "lessons": [
+        {
+          "title": "Введение в Unreal Engine",
+          "file": "intro.md",
+          "module": "Введение",
+          "order": 1
+        }
+      ]
+    }
+  ]
 }
