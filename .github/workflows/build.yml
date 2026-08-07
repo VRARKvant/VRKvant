@@ -20,6 +20,7 @@ on:
       - 'tailwind.config.js'
       - 'ROADMAP.md'
       - 'index.html'
+      - 'admin/**'
 
 jobs:
   changes:
