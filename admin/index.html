@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Управление контентом (CMS)</title>
-    
+    <!-- Явно указываем путь к конфигу, чтобы он грузился даже без слэша на конце (как бывает на Vercel) -->
+    <link href="config.yml" type="text/yaml" rel="cms-config-url">
   </head>
   <body>
     <!-- Decap CMS will render here -->
