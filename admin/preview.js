@@ -2,8 +2,8 @@
 const md = window.markdownit({ html: true });
 
 // Создаем React-компонент для предпросмотра
-class ArticlePreview extends React.Component {
-    render() {
+var ArticlePreview = createClass({
+    render: function() {
         const entry = this.props.entry;
         const title = entry.getIn(['data', 'title']) || '';
         const body = entry.getIn(['data', 'body']) || '';
@@ -36,13 +36,13 @@ class ArticlePreview extends React.Component {
             </div>`;
         });
 
-        // Рендер через стандартный React
-        return React.createElement('div', { className: 'prose mx-auto' },
-            React.createElement('h1', { style: { marginTop: '20px', marginBottom: '20px' } }, title),
-            React.createElement('div', { dangerouslySetInnerHTML: { __html: htmlContent } })
+        // Рендер через встроенный 'h'
+        return h('div', { className: 'prose mx-auto' },
+            h('h1', { style: { marginTop: '20px', marginBottom: '20px' } }, title),
+            h('div', { dangerouslySetInnerHTML: { __html: htmlContent } })
         );
     }
-}
+});
 
 // Подключаем стили основного сайта к iframe предпросмотра
 CMS.registerPreviewStyle('../css/style.css');
