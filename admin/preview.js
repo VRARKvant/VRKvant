@@ -44,8 +44,8 @@ var ArticlePreview = createClass({
     }
 });
 
-// Подключаем стили основного сайта к iframe предпросмотра
-CMS.registerPreviewStyle('../css/style.css');
+// Подключаем стили основного сайта к iframe предпросмотра (сбрасываем кэш)
+CMS.registerPreviewStyle('../css/style.css?v=2');
 
 // Регистрируем кастомный шаблон для каждой коллекции
 CMS.registerPreviewTemplate('unity', ArticlePreview);
