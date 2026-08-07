@@ -2,6 +2,8 @@
 module.exports = {
     content: [
         './index.html',
+        './admin/**/*.html',
+        './admin/**/*.js',
         './js/**/*.js',
         './articles/**/*.md',
         './articles/*.json',
