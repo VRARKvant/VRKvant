@@ -13,6 +13,8 @@ collections:
     folder: "articles/unity"
     create: true
     slug: "{{slug}}"
+    extension: "md"
+    format: "yaml-frontmatter"
     fields:
       - {label: "Заголовок", name: "title", widget: "string"}
       - {label: "Модуль", name: "module", widget: "string", required: false}
@@ -28,6 +30,8 @@ collections:
     folder: "articles/unreal"
     create: true
     slug: "{{slug}}"
+    extension: "md"
+    format: "yaml-frontmatter"
     fields:
       - {label: "Заголовок", name: "title", widget: "string"}
       - {label: "Модуль", name: "module", widget: "string", required: false}
@@ -43,6 +47,8 @@ collections:
     folder: "articles/blender"
     create: true
     slug: "{{slug}}"
+    extension: "md"
+    format: "yaml-frontmatter"
     fields:
       - {label: "Заголовок", name: "title", widget: "string"}
       - {label: "Модуль", name: "module", widget: "string", required: false}
@@ -58,6 +64,8 @@ collections:
     folder: "articles/cheats"
     create: true
     slug: "{{slug}}"
+    extension: "md"
+    format: "yaml-frontmatter"
     fields:
       - {label: "Заголовок", name: "title", widget: "string"}
       - {label: "Иконка", name: "icon", widget: "string", default: "fa-book", required: false}
