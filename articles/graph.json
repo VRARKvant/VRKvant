@@ -78,6 +78,37 @@
       "title": "Unreal Engine",
       "path": "articles/unreal/intro.md",
       "type": "track"
+    },
+    {
+      "id": 14,
+      "title": "Работа с Git и Git LFS в Unreal Engine",
+      "path": "articles/unreal/git-source-control.md",
+      "type": "lesson"
+    },
+    {
+      "id": 15,
+      "title": "Инфраструктура и VR",
+      "path": "module:unreal:Инфраструктура и VR",
+      "type": "module",
+      "url": "articles/unreal/git-source-control.md"
+    },
+    {
+      "id": 16,
+      "title": "Git for Windows",
+      "path": "https://git-scm.com/",
+      "type": "external"
+    },
+    {
+      "id": 17,
+      "title": "Terminal",
+      "path": "https://apps.microsoft.com/detail/9n0dx20hk701?hl=ru-RU&gl=RU",
+      "type": "external"
+    },
+    {
+      "id": 18,
+      "title": "GitHub gitignore UnrealEngine",
+      "path": "https://github.com/github/gitignore/blob/main/UnrealEngine.gitignore",
+      "type": "external"
     }
   ],
   "links": [
@@ -112,6 +143,26 @@
     {
       "source": 11,
       "target": 12
+    },
+    {
+      "source": 15,
+      "target": 13
+    },
+    {
+      "source": 14,
+      "target": 15
+    },
+    {
+      "source": 14,
+      "target": 16
+    },
+    {
+      "source": 14,
+      "target": 17
+    },
+    {
+      "source": 14,
+      "target": 18
     }
   ]
 }

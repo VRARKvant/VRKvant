@@ -45,6 +45,12 @@
           "file": "intro.md",
           "module": "Введение",
           "order": 1
+        },
+        {
+          "title": "Работа с Git и Git LFS в Unreal Engine",
+          "file": "git-source-control.md",
+          "module": "Инфраструктура и VR",
+          "order": 2
         }
       ]
     }
