@@ -1,7 +1,7 @@
 ---
 title: Работа с Git и Git LFS в Unreal Engine
-module: Инфраструктура и VR
-order: 2
+module: Инфраструктура
+order: 1
 slug: git-source-control
 ---
 
