@@ -41,12 +41,6 @@
       "colorClass": "bg-black dark:bg-[#0a0a0a]",
       "lessons": [
         {
-          "title": "Работа с Git и Git LFS в Unreal Engine",
-          "file": "git-source-control.md",
-          "module": "Инфраструктура",
-          "order": 1
-        },
-        {
           "title": "Введение в Unreal Engine",
           "file": "intro.md",
           "module": "Введение",
@@ -55,6 +49,12 @@
         {
           "title": "Шпаргалка по командам git",
           "file": "git-comands.md",
+          "module": "Инфраструктура",
+          "order": 2
+        },
+        {
+          "title": "Работа с Git и Git LFS в Unreal Engine",
+          "file": "git-source-control.md",
           "module": "Инфраструктура",
           "order": 2
         }
