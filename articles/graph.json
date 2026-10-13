@@ -81,31 +81,37 @@
     },
     {
       "id": 14,
+      "title": "Шпаргалка по командам git",
+      "path": "articles/unreal/git-comands.md",
+      "type": "lesson"
+    },
+    {
+      "id": 15,
+      "title": "Инфраструктура",
+      "path": "module:unreal:Инфраструктура",
+      "type": "module",
+      "url": "articles/unreal/git-comands.md"
+    },
+    {
+      "id": 16,
       "title": "Работа с Git и Git LFS в Unreal Engine",
       "path": "articles/unreal/git-source-control.md",
       "type": "lesson"
     },
     {
-      "id": 15,
-      "title": "Инфраструктура и VR",
-      "path": "module:unreal:Инфраструктура и VR",
-      "type": "module",
-      "url": "articles/unreal/git-source-control.md"
-    },
-    {
-      "id": 16,
+      "id": 17,
       "title": "Git for Windows",
       "path": "https://git-scm.com/",
       "type": "external"
     },
     {
-      "id": 17,
+      "id": 18,
       "title": "Terminal",
       "path": "https://apps.microsoft.com/detail/9n0dx20hk701?hl=ru-RU&gl=RU",
       "type": "external"
     },
     {
-      "id": 18,
+      "id": 19,
       "title": "GitHub gitignore UnrealEngine",
       "path": "https://github.com/github/gitignore/blob/main/UnrealEngine.gitignore",
       "type": "external"
@@ -153,16 +159,20 @@
       "target": 15
     },
     {
-      "source": 14,
-      "target": 16
+      "source": 16,
+      "target": 15
     },
     {
-      "source": 14,
+      "source": 16,
       "target": 17
     },
     {
-      "source": 14,
+      "source": 16,
       "target": 18
+    },
+    {
+      "source": 16,
+      "target": 19
     }
   ]
 }
